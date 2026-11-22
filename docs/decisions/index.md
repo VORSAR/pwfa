@@ -4,8 +4,8 @@
 
 | ADR | Topic | Selection | Status |
 |---|---|---|---|
-| [ADR-046](ADR-046.md) | Independent hostile review gates | C | Recovered-partial |
-| [ADR-055](ADR-055.md) | Close every Gate-1 finding before executable Lean | B | Recovered-partial |
+| [ADR-046](ADR-046.md) | Independent hostile review gates | C | Recovered-partial; slice-level application via ADR-108 |
+| [ADR-055](ADR-055.md) | Close every Gate-1 finding before executable Lean | B | Recovered-partial; global scope superseded by ADR-108 |
 | [ADR-057](ADR-057.md) | Historical choice with unrecovered semantics | C | Recovered-partial |
 | [ADR-058](ADR-058.md) | Historical choice with unrecovered semantics | A | Recovered-partial |
 | [ADR-059](ADR-059.md) | Historical choice with unrecovered semantics | B | Recovered-partial |
