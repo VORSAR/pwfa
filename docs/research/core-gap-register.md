@@ -3,7 +3,7 @@
 **Status:** Active gap inventory. ADR-101 through ADR-105 are approved owner choices; mathematical completeness and Gate 1 remain open.  
 **Baseline:** [2026-11-22 repository baseline](../../README.md)  
 **Tracking:** [Issue #5](https://github.com/VORSAR/pwfa/issues/5); [ADR-101](../decisions/ADR-101.md), [ADR-102](../decisions/ADR-102.md), [ADR-103](../decisions/ADR-103.md), [ADR-104](../decisions/ADR-104.md), [ADR-105](../decisions/ADR-105.md)  
-**Gate:** [Independent Gate 1 remains OPEN](../verification/review-gates.md).
+**Review:** [ADR-109 experimental policy applies](../decisions/ADR-109.md); independent certification remains OPEN. The [phase-only experiment](../verification/slices/phase-algebra-experiment.md) is scope-cleared internally but not compiled here.
 
 ## Classification
 
@@ -16,6 +16,7 @@
 
 - GAP-001: spatial **topology** selected as T² in ADR-102; phase representation selected as unit-complex S¹ in ADR-103; shortest periodic Euclidean metric selected in ADR-105. Still missing integration measure, function-space regularity and initial conditions. Therefore GAP-001 remains **partially open**, not closed.
 - GAP-002: ADR-104 selects the isotropic distance-based baseline; ADR-105 supplies the periodic metric. The kernel profile, normalization, full phase evolution and learned interaction remain **OPEN**.
+- GAP-001 experimental sub-slice: [phase algebra](../verification/slices/phase-algebra-experiment.md) explicitly excludes geometry; [IR-001/IR-002 metric findings](../verification/slices/spatial-metric-remediation.md) remain open. This does **not** close GAP-001.
 - GAP-005: historical 1D bump placement does not define 2D encoding; must explicitly decide how to reconcile.
 - GAP-007/008: numeric grid size N, quadrature and two-direction winding conventions remain undecided under 2D topology.
 
@@ -31,7 +32,7 @@
 | GAP-006 | P0 | RECOVER→DECIDE | Training and recall event schedule, episode duration and every trace/phase/memory/homeostat carry/reset | [Data flow](../architecture/data-flow.md), [ADR-096](../decisions/ADR-096.md) | State transition table and event timeline with deterministic replay semantics | GAP-003, GAP-004, GAP-005 |
 | GAP-007 | P0 | RECOVER→DECIDE→VERIFY | Concrete midpoint step map, exponential stage order, event alignment, winding and convergence metrics | [Numerics](../mathematics/numerical-methods.md), [ADR-097](../decisions/ADR-097.md) | Discrete update equations, error definitions and testable convergence criteria | GAP-002, GAP-004, GAP-006 |
 | GAP-008 | P0 | RECOVER→DECIDE→VERIFY | Periodic quadrature, row normalization, residual and quality diagnostics, top-k tie rules | [Numerics](../mathematics/numerical-methods.md), [ADR-098](../decisions/ADR-098.md) | Explicit formulas and diagnostics; no unintended sparsification of learned pairwise coupling | GAP-005, GAP-007 |
-| GAP-009 | P0 | VERIFY | Independent Gate-1 review and every finding's closure; independent reviewer identity and attestations | [Review gates](../verification/review-gates.md), [ADR-046](../decisions/ADR-046.md), [ADR-055](../decisions/ADR-055.md) | Review dossier, complete findings ledger, closure evidence and independent authorization; executable Lean blocked until then | GAP-001–008, GAP-010 |
+| GAP-009 | P0 | VERIFY | Independent mathematical certification still outstanding; experimental slices instead follow ADR-109 internal hostile review and every in-scope finding's documented closure | [Review gates](../verification/review-gates.md), [ADR-046](../decisions/ADR-046.md), [ADR-055](../decisions/ADR-055.md) | Review dossier, complete findings ledger, closure evidence and independent authorization; executable Lean blocked until then | GAP-001–008, GAP-010 |
 | GAP-010 | P1 | RECOVER→DECIDE | Exact recall metric, comparator, matched budget, deterministic cue/corruption rule, sampling, statistical cluster and power | [Benchmark](../experiments/benchmarks.md), [ADR-099](../decisions/ADR-099.md), [ADR-100](../decisions/ADR-100.md) | Preregistered protocol specifying all choices without observed benchmark results | GAP-005, GAP-006 |
 | GAP-011 | P1 | RECOVER→DECIDE | External knowledge payload, provenance, timing, consistency, reinjection and error policy | [Interfaces](../architecture/interfaces.md) | Version-independent normative external knowledge contract or explicit deferred scope decision | GAP-001, GAP-005 |
 | GAP-012 | P1 | RECOVER | Historical ADR alternatives, contemporaneous rationale, ADR-057/058/059 meanings and primary source bibliography | [Decision index](../decisions/index.md), [Evidence register](../research/evidence-register.md) | Each recovered fact links to verifiable evidence, otherwise remains explicitly NOT RECOVERED | — |
