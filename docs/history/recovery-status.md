@@ -2,11 +2,11 @@
 
 **Snapshot date:** 2026-11-22. The archived [original recovery snapshot](recovery-original.md) is preserved byte-for-byte from its initial repository commit. Its filename is stable; the historical revision identifier appears inside the document and in Git history.
 
-The previous ChatGPT master WritingBlock ID **57318** was not accessible as a complete source during recovery. The current summary therefore represents **partial context**, not a complete audited specification.
+The previous ChatGPT master WritingBlock ID **57318** was not accessible as a complete source during recovery. Current documents therefore represent **partial context**, not a complete audited specification.
 
-## Known recoverable material
+## Recovered choices
 
-The snapshot records choices for ADR-046, 055, 057–059, 076a/b and 093–100. The meanings of ADR-057/058/059 are not recovered. Most original choice matrices, contemporary recommendations, exact equations, scientific sources, numerical protocols, and independent reviews are absent.
+Fifteen individual [ADRs](../decisions/index.md) now isolate recovered selections: ADR-046, 055, 057–059, 076a/b and 093–100. The meanings of ADR-057/058/059 are not recovered. Most original choice matrices, contemporary recommendations, exact equations, scientific sources, numerical protocols, and independent reviews are absent.
 
 ## Recovery constraints
 
