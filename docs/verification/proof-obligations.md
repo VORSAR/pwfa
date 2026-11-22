@@ -13,6 +13,6 @@
 | Benchmark | Deterministic held-out protocol, matched comparator and statistically valid interval | [ADR-099](../decisions/ADR-099.md), [ADR-100](../decisions/ADR-100.md) |
 | Governance | Independent hostile Gate-1 report and **all** findings closed | [Review gates](review-gates.md) |
 
-Formal verification will require explicit theorem statements and assumptions, pinned Lean/mathlib versions, and a verified dependency chain **after the applicable slice Gate 1 under [ADR-108](../decisions/ADR-108.md)**. Independent Gate 2 and whole-system integration reviews remain separate. No purported Lean proofs or experimental results have been recovered.
+Formal verification requires explicit theorem statements and assumptions, pinned Lean/mathlib versions, and verifiable dependency chains. Under [ADR-109](../decisions/ADR-109.md), an internally reviewed, finding-closed subset can enter **experimental** Lean; independent Gate 1/2 certification and whole-system validation remain separate and unachieved. See the [phase-algebra experiment](slices/phase-algebra-experiment.md). No purported Lean proofs or experimental results have been recovered.
 
 [Traceability matrix](requirements-matrix.md) · [Evidence register](../research/evidence-register.md).
