@@ -2,7 +2,7 @@
 
 **Historical source:** [Original recovery snapshot](../history/recovery-original.md). The 15 historical extracts are **partial**, not a complete inventory of PWFA decisions. The original historical total is **NOT VERIFIED** (prior summaries conflicted between 79 and 83). New, owner-approved decisions are identified separately.
 
-| ADR | Topic | Recovered selection | Status |
+| ADR | Topic | Selection | Status |
 |---|---|---|---|
 | [ADR-046](ADR-046.md) | Independent hostile review gates | C | Recovered-partial |
 | [ADR-055](ADR-055.md) | Close every Gate-1 finding before executable Lean | B | Recovered-partial |
@@ -20,6 +20,8 @@
 | [ADR-099](ADR-099.md) | Primary associative recall benchmark | C | Recovered-partial |
 | [ADR-100](ADR-100.md) | Preregistered performance threshold | C | Recovered-partial |
 | [ADR-101](ADR-101.md) | Constrained reconstruction of mathematical core (new decision, 2026-11-22) | A | Accepted strategy; Gate 1 open |
+| [ADR-102](ADR-102.md) | Continuous 2D periodic spatial domain (new) | B | Accepted topology; Gate 1 open |
+| [ADR-103](ADR-103.md) | Unit-complex phase representation (new) | A | Accepted representation; Gate 1 open |
 
 ## What these statuses mean
 
