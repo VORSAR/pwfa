@@ -1,8 +1,8 @@
 # PWFA core-specification gap register
 
-**Status:** Proposed work inventory; no architectural choice approved by this document.  
+**Status:** Active gap inventory. ADR-101, ADR-102 and ADR-103 are approved owner choices; mathematical completeness and Gate 1 remain open.  
 **Baseline:** [2026-11-22 repository baseline](../../README.md)  
-**Tracking:** [Issue #5](https://github.com/VORSAR/pwfa/issues/5); [ADR-101](../decisions/ADR-101.md)  
+**Tracking:** [Issue #5](https://github.com/VORSAR/pwfa/issues/5); [ADR-101](../decisions/ADR-101.md), [ADR-102](../decisions/ADR-102.md), [ADR-103](../decisions/ADR-103.md)  
 **Gate:** [Independent Gate 1 remains OPEN](../verification/review-gates.md).
 
 ## Classification
@@ -11,6 +11,12 @@
 - **DECIDE:** record new explicit A/B/C/Other alternatives with owner-selected decision, date, rationale, costs, evidence, and obligations. Never retrofit into the historical record.
 - **VERIFY:** independently check a fully specified claim, formula, numerical diagnostic, or experimental protocol.
 - **P0:** blocks a coherent mathematical or preimplementation review contract. **P1:** blocks downstream empirical evaluation or scope. **P2:** governance or maintenance.
+
+## Newly resolved decisions and unresolved detail
+
+- GAP-001: spatial **topology** selected as T² in ADR-102; phase representation selected as unit-complex S¹ in ADR-103. Still missing metric, measure, function-space regularity and initial conditions. Therefore GAP-001 remains **partially open**, not closed.
+- GAP-005: historical 1D bump placement does not define 2D encoding; must explicitly decide how to reconcile.
+- GAP-007/008: numeric grid size N, quadrature and two-direction winding conventions remain undecided under 2D topology.
 
 ## Critical dependency register
 
