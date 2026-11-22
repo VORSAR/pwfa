@@ -1,28 +1,33 @@
-# Independent adversarial review gates
+# Adversarial review gates and experimental authorization
 
-## Current governing policy
+## Current governance — [ADR-109](../decisions/ADR-109.md)
 
-[ADR-108](../decisions/ADR-108.md) establishes **scope-limited independent Gate 1 per vertical slice**. It explicitly supersedes [ADR-055](../decisions/ADR-055.md) only concerning the former *global* preimplementation review scope. ADR-055's **every finding closes, including documentation findings** requirement remains binding for each reviewed slice.
+The owner selected a **two-person role-separated internal hostile review** for experimental Lean development. Within each tightly bounded slice, the assistant may design, switch to an adversarial-review role, record every finding, remediate all *applicable* findings, and explicitly authorize **experimental** formalization.
 
-Historical [ADR-046](../decisions/ADR-046.md) requires two independent hostile review gates; their current application is:
+This is **not independent external review** and must never be described as such.
 
-- **Slice Gate 1:** after a frozen mathematical/engineering contract, **before executable Lean for that slice**.
-- **Slice Gate 2:** after that slice's first Lean reference implementation.
-- **System integration review:** separate independent review before claiming assembled PWFA validity. A passed slice is not a passed system.
+The historical [ADR-046](../decisions/ADR-046.md) and [ADR-055](../decisions/ADR-055.md) remain unchanged as historical decisions. [ADR-108](../decisions/ADR-108.md) first introduced slice-level independent reviews; ADR-109 supersedes its external independence requirement **only for experimental authorization**, not for independent certification.
 
-## Review prerequisites
+## Experimental implementation requirements
 
-An independent reviewer must have no responsibility for creating the subject contract. Record their identity, independence, exact frozen Git commit and scope, assumptions, dependencies, excluded claims, findings and severity. All findings, including minor documentation findings, require remediation and **independent closure**. No automatic CI result or assistant self-review qualifies as independence.
+1. Freeze a narrow mathematical contract and enumerate precisely stated theorem obligations.
+2. Document adversarial findings and their dispositions. Resolve **every in-scope finding**, including documentation problems, before experimental Lean work.
+3. Keep out-of-scope findings visible and their respective slices blocked. **No scope leakage.**
+4. Record the assistant-reviewer identity, review limits, owner governance authorization, contract SHA and experimental approval.
+5. Pin Lean and mathlib, run compilation and check for `sorry`, `admit`, unsupported axioms and mismatches. Declare unexecuted checks **UNVERIFIED**.
+6. After the first code, re-review the actual statements against the contract.
+7. Require a distinct outside reviewer or a separately documented external audit before claiming **independent mathematical certification**. A tool-generated proof is not evidence of physical memory or recall.
 
-After a slice Gate 1 is independently closed, only the reviewed frozen slice may enter executable Lean implementation. Pin toolchain and mathlib versions and maintain source-to-theorem traceability. Material changes to the contract or dependencies require review impact assessment and reauthorization.
+## Slice statuses
 
-## Current status
+- [SLICE-001-PHASE](slices/phase-algebra-experiment.md): internal review scope-cleared for **experimental algebraic Lean**, build status UNVERIFIED.
+- [SLICE-001-METRIC](slices/spatial-metric-remediation.md): IR-001 and IR-002 OPEN; **metric executable Lean BLOCKED**.
+- [Parent SLICE-001](slices/spatial-phase-foundation.md): full mathematical scope NOT independently reviewed or closed.
+- [Review request #8](https://github.com/VORSAR/pwfa/issues/8): retained as a record of the unmet external-review option; the owner coordinates the two-person project.
+- Whole PWFA: no independent certification, no validated memory/learning behavior, no system-level performance claims.
 
-- [SLICE-001: spatial and phase foundations](slices/spatial-phase-foundation.md): **DRAFT / NOT REVIEWED / executable Lean BLOCKED**.
-- Every other slice: **NOT DEFINED / NOT REVIEWED / BLOCKED**.
-- Whole PWFA: **no integration-level review or closure**.
-- Preliminary internal [hostile review](preliminary-hostile-review.md) is not independent Gate 1.
+## Independent certification and Gate 2
 
-A future slice closure record requires named reviewer(s), full findings ledger, closure evidence, remediation commit links, dated authorization, and verified freeze/authorized SHA.
+A role-separated hostile review is not independent Gate 1. After each first reference implementation, perform an adversarial code-conformance review (internal). Independent certification and full-system claims require their own documented external scrutiny. The original independent Gate-2 objective cannot be claimed by assistant self-review.
 
-[ADR-108](../decisions/ADR-108.md) · [Original ADR-046](../decisions/ADR-046.md) · [Original ADR-055](../decisions/ADR-055.md) · [Proof obligations](proof-obligations.md).
+[ADR-109](../decisions/ADR-109.md) · [Internal hostile findings](slices/spatial-phase-foundation-internal-review.md) · [Requirements](requirements-matrix.md) · [Proof obligations](proof-obligations.md).
