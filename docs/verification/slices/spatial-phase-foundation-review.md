@@ -2,7 +2,7 @@
 
 - **Target:** [Spatial and phase foundations](spatial-phase-foundation.md)
 - **Governing policy:** [ADR-108](../../decisions/ADR-108.md)
-- **Status:** INTERNAL HOSTILE REVIEW COMPLETE / CHANGES REQUIRED; independent Gate 1 NOT PERFORMED; executable Lean NOT AUTHORIZED
+- **Status:** PARENT INDEPENDENT REVIEW NOT PERFORMED; phase-only EXPERIMENT authorized by ADR-109; metric remains BLOCKED.
 - **Scope freeze SHA:** `16a913ab5bfee18870c5d24535124055bca671fb` (initial frozen SLICE-001 contract)
 - **Independent reviewer:** NOT ASSIGNED
 - **Independence attestation:** NOT PROVIDED
@@ -16,6 +16,10 @@
 Review only the normative mathematical definition and proof obligations of SLICE-001 at a fixed commit. Inspect dependencies ADR-102/103/105, existing preliminary findings and current risk boundaries. Report hidden assumptions, circular definitions, missing proofs, difficult quotient/API obligations, theorem flaws, unsupported generalizations and failure modes. Label each finding and severity.
 
 The reviewer must be independent of the contract author. A ChatGPT self-review, user selection, automated documentation checks, or a passing Lean build is not a substitute.
+
+## Separate bounded experimental route
+
+The owner selected [ADR-109](../../decisions/ADR-109.md) instead of relying on an outside reviewer for experiments. [Phase-only internal clearance](phase-algebra-internal-review.md) is **not** independent Gate 1. This parent ledger remains historical and does not authorize metric or system implementation.
 
 ## Separate internal hostile review
 
