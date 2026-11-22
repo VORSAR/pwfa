@@ -2,6 +2,8 @@
 
 **Original mathematical specification: NOT RECOVERED.**
 
+[SLICE-001](../verification/slices/spatial-phase-foundation.md) drafts the independently reviewable quotient torus, shortest periodic Euclidean distance, and unit-complex foundation. Its review is **NOT STARTED**; no executable Lean is authorized.
+
 Recovered conceptual elements: a spatially distributed coupled oscillator model, a continuous circle-valued phase field, learned memory and homeostasis, observation, and a periodic numerical grid.
 
 ## Newly approved partial state-space contracts (2026-11-22)
