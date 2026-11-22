@@ -51,3 +51,7 @@ Options for owner:
 ## References
 
 [Review gates](review-gates.md) · [Proof obligations](proof-obligations.md) · [Core gap register](../research/core-gap-register.md) · [State space](../mathematics/state-space.md) · [Memory](../mathematics/memory.md) · [Evolution](../mathematics/evolution.md).
+
+## Governance disposition (2026-11-22)
+
+The owner selected Option A for iterative review. [ADR-108](../decisions/ADR-108.md) now supersedes the global Gate-1 scope of ADR-055 while retaining mandatory independent review and closure of every in-scope finding before each executable slice. PRE-008 is **policy-addressed**, not independently closed, and other findings remain open. [SLICE-001](slices/spatial-phase-foundation.md) is the first proposed contract, with independent Gate 1 pending.
