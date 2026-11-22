@@ -1,0 +1,4 @@
+# Proposed ownership; branch rulesets must enforce required reviews.
+/docs/ @ramith
+/lean/ @ramith
+/.github/ @ramith
