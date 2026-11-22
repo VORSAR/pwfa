@@ -6,6 +6,8 @@ This is an initial **mapping of recovered constraints**, not a verified original
 |---|---|---|---|
 | NEW-SPACE-01: 2D periodic spatial torus | [102](../decisions/ADR-102.md) | [State space](../mathematics/state-space.md) | Topology selected; metric, grid, and encoder reconciliation open |
 | NEW-PHASE-01: Unit-complex phase | [103](../decisions/ADR-103.md) | [State space](../mathematics/state-space.md), [Numerics](../mathematics/numerical-methods.md) | Representation selected; evolution/norm preservation not proved |
+| NEW-COUPLING-01: Distance-based isotropic baseline | [104](../decisions/ADR-104.md) | [Evolution](../mathematics/evolution.md) | Geometry selected; kernel profile and proof missing |
+| NEW-METRIC-01: Shortest periodic Euclidean distance | [105](../decisions/ADR-105.md) | [State space](../mathematics/state-space.md) | Metric selected; analytical verification and Gate 1 open |
 | REC-GATE-01: Two independent review gates | [046](../decisions/ADR-046.md) | [Review gates](review-gates.md) | Gate 1 **NOT VERIFIED** |
 | REC-GATE-02: Close all Gate-1 findings | [055](../decisions/ADR-055.md) | [Review gates](review-gates.md) | **NOT VERIFIED** |
 | REC-MEM-01: Gain and homeostasis | [093](../decisions/ADR-093.md), [094](../decisions/ADR-094.md) | [Memory](../mathematics/memory.md) | Formula summaries only |
