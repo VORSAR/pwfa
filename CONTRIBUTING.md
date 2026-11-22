@@ -1,15 +1,15 @@
 # Contributing and change control
 
-GitHub is the single source of truth. Chat conversations, local drafts, and generated summaries are not authoritative until merged.
+GitHub `main` is the single source of truth. Chat conversations, local drafts, and generated summaries are not authoritative until committed to `main`.
 
-## Workflow
+## Workflow (owner directive, 2026-11-22)
 
-1. Open a GitHub issue describing motivation, scope, affected decisions/specifications, risks, and acceptance criteria.
-2. Work on a feature branch. Prefer `docs/<topic>`, `adr/<id>-<topic>`, `spec/<topic>`, or `ci/<topic>`.
-3. Commit coherent changes using a Conventional Commit-style subject: `docs:`, `adr:`, `research:`, `spec:`, `proof:`, `test:`, `fix:`, or `ci:`. Explain **why** in the commit body when the reasoning is not obvious.
-4. Open a pull request (PR) with links to issue, affected ADRs, evidence, proof obligations, and an impact summary.
-5. Pass automated checks, obtain appropriate review, and record unresolved concerns before merge. Do not self-certify an independent review.
-6. Merge with a traceable commit/PR history; avoid direct pushes to `main`. Squash routine PRs; preserve separate commits when provenance matters.
+1. Commit coherent changes **directly to `main`**, using Conventional Commit-style subjects: `docs:`, `adr:`, `research:`, `spec:`, `proof:`, `test:`, `fix:`, or `ci:`. Include rationale in the commit body when needed.
+2. For an architectural choice, present ranked alternatives, pros, cons, original-project alignment, feasibility and a recommendation. Record the owner's explicit selection in a stable ADR, with decision date and provenance. Never silently decide on behalf of the owner.
+3. Keep requirements, ADRs, mathematical contracts, proof obligations, tests and evidence cross-linked. Verify local checks when possible, and record any checks not run.
+4. Issues, feature branches and pull requests are **optional** tools for coordination or isolated experiments, not mandatory for changes. Do not create them routinely.
+5. Direct commits **do not** constitute independent technical review or satisfy Gate 1. External independent reviewer evidence and every finding's closure remain mandatory before executable Lean implementation.
+6. Preserve append-only historical and decision provenance. Never silently rewrite the immutable recovery snapshot or previously approved decision meaning.
 
 ## Architecture decision records (ADRs)
 
@@ -31,6 +31,6 @@ Document filenames are stable, lower-kebab-case where possible. **Never encode s
 - **ADR-046 and ADR-055 remain mandatory**: no executable Lean implementation before an independent Gate 1 has closed **all** findings, including documentation findings. This does not block documentation, review preparation, or non-executable specification work.
 - Only after Gate 1 may executable Lean work proceed in small slices with pinned Lean/mathlib toolchains and continuous integration.
 
-## Repository policy gap
+## Repository protection and verification
 
-The initial repository had no branch protection or rulesets. Configure a main-branch ruleset requiring PRs, review, and passing documentation checks. The presence of CODEOWNERS alone does not enforce approvals.
+The owner currently permits direct commits to `main`. Do not configure a pull-request-required ruleset without a new owner decision. Prefer automated documentation checks on every push. CODEOWNERS does not establish independent scientific review.
