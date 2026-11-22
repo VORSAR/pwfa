@@ -59,3 +59,11 @@ Both are valid metrics for the same topology. **Only the first conforms to ADR-1
 This is an internal finding register, **not an independent finding ledger**, and must not be represented as an independent reviewer signoff. No implementation is authorized under the current ADR-108. [External-review issue #8](https://github.com/VORSAR/pwfa/issues/8) remains open pending governance choice.
 
 [SLICE-001 contract](spatial-phase-foundation.md) · [Gate-1 ledger](spatial-phase-foundation-review.md) · [ADR-108](../../decisions/ADR-108.md) · [ADR-105](../../decisions/ADR-105.md)
+
+## Owner Decision 9 and bounded experimental dispositions (2026-11-22)
+
+The owner approved Option A under [ADR-109](../../decisions/ADR-109.md). This changes the experimental authorization policy, **not the mathematical truth or independence status** of the review. The original six findings above remain preserved.
+
+[SLICE-001-PHASE](phase-algebra-experiment.md) explicitly excludes metric and quotient definitions, so IR-001/IR-002 remain **OPEN** and block only [SLICE-001-METRIC](spatial-metric-remediation.md). The algebraic subset addresses IR-003 (arbitrary phase maps), IR-004 (explicit PH-P01–P06 and pinned toolchain), IR-005 (bounded proof/claim surface), and IR-006 (honest self-review governance). These are **internal, scope-limited remediations**, not external review closures.
+
+[Internal source audit](phase-algebra-internal-review.md) found the six theorem declarations and no simple proof holes; it did **not** compile the Lean code. No independent or system-level approval exists.
