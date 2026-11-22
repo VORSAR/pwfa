@@ -5,9 +5,9 @@ This is an initial **mapping of recovered constraints**, not a verified original
 | Requirement | Decision | Current specification | Verification status |
 |---|---|---|---|
 | NEW-SPACE-01: 2D periodic spatial torus | [102](../decisions/ADR-102.md) | [State space](../mathematics/state-space.md) | Topology selected; metric, grid, and encoder reconciliation open |
-| NEW-PHASE-01: Unit-complex phase | [103](../decisions/ADR-103.md) | [State space](../mathematics/state-space.md), [Numerics](../mathematics/numerical-methods.md) | Representation selected; evolution/norm preservation not proved |
+| NEW-PHASE-01: Unit-complex phase | [103](../decisions/ADR-103.md), [109](../decisions/ADR-109.md) | [State space](../mathematics/state-space.md), [Experimental phase algebra](slices/phase-algebra-experiment.md) | Algebraic Lean source drafted; compilation and independent validation unverified; evolution not proved |
 | NEW-COUPLING-01: Distance-based isotropic baseline | [104](../decisions/ADR-104.md) | [Evolution](../mathematics/evolution.md) | Geometry selected; kernel profile and proof missing |
-| NEW-METRIC-01: Shortest periodic Euclidean distance | [105](../decisions/ADR-105.md) | [State space](../mathematics/state-space.md) | Metric selected; analytical verification and Gate 1 open |
+| NEW-METRIC-01: Shortest periodic Euclidean distance | [105](../decisions/ADR-105.md) | [Metric remediation](slices/spatial-metric-remediation.md) | IR-001/002 open; executable metric formalization blocked |
 | NEW-VERIFY-02: Internal role-separated review for experimental Lean only | [109](../decisions/ADR-109.md) | [Review gates](review-gates.md), [Phase-only slice](slices/phase-algebra-experiment.md) | Internal phase scope cleared; build and independent certification unverified |
 | NEW-VERIFY-01: Independent review and full closure per frozen slice | [108](../decisions/ADR-108.md), [109](../decisions/ADR-109.md) | [Review gates](review-gates.md), [SLICE-001](slices/spatial-phase-foundation.md) | Independent certification not started; experiment policy separate |
 | REC-GATE-01: Two independent review gates | [046](../decisions/ADR-046.md), [108](../decisions/ADR-108.md) | [Review gates](review-gates.md) | Each slice Gate 1/2 NOT VERIFIED |
