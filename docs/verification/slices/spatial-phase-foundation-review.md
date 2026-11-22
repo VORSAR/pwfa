@@ -2,7 +2,7 @@
 
 - **Target:** [Spatial and phase foundations](spatial-phase-foundation.md)
 - **Governing policy:** [ADR-108](../../decisions/ADR-108.md)
-- **Status:** REVIEW REQUEST OPEN — independent reviewer unassigned; no assessment or implementation authorization
+- **Status:** INTERNAL HOSTILE REVIEW COMPLETE / CHANGES REQUIRED; independent Gate 1 NOT PERFORMED; executable Lean NOT AUTHORIZED
 - **Scope freeze SHA:** `16a913ab5bfee18870c5d24535124055bca671fb` (initial frozen SLICE-001 contract)
 - **Independent reviewer:** NOT ASSIGNED
 - **Independence attestation:** NOT PROVIDED
@@ -17,11 +17,15 @@ Review only the normative mathematical definition and proof obligations of SLICE
 
 The reviewer must be independent of the contract author. A ChatGPT self-review, user selection, automated documentation checks, or a passing Lean build is not a substitute.
 
+## Separate internal hostile review
+
+[Role-separated internal review](spatial-phase-foundation-internal-review.md) recorded **six internal findings, all open**, including a high-severity mismatch between the selected Euclidean torus distance and default Lean product metric. This assistant review **does not satisfy independence under ADR-108**. Owner decision regarding two-person review governance is pending.
+
 ## Findings ledger
 
 | Finding ID | Severity | Exact scope and evidence | Required remedy | Remediation commit | Independent closure evidence | Status |
 |---|---|---|---|---|---|---|
-| — | — | No findings evaluated yet | — | — | — | NOT REVIEWED |
+| — | — | Independent reviewer findings NOT RECEIVED | — | — | — | NOT REVIEWED |
 
 Do not treat the empty ledger as zero findings. Before approval, replace the placeholder with the review's complete finding inventory and preserve its chronology. Closure requires every severity, including documentation findings, to be independently resolved.
 
@@ -37,7 +41,7 @@ Do not treat the empty ledger as zero findings. Before approval, replace the pla
 - [ ] Toolchain and mathlib pin plan documented for authorized executable Lean
 - [ ] Gate-2 reviewer and review trigger defined
 
-**Only the initial contract freeze is recorded. Independent review has not begun. Until documented approval, SLICE-001 remains non-executable.**
+**Only the initial contract freeze is recorded. The internal review is not a substitute for this independent ledger. Until revised governance and authorized closure, SLICE-001 remains non-executable.**
 
 ## Gate 2
 
