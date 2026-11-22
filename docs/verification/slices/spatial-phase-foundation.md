@@ -72,7 +72,11 @@ These are ordinary mathematical observations, **not completed formal proofs**, a
 
 **No checkbox is currently asserted complete.**
 
-## 7. Next step
+## 7. Independent review ledger
+
+The dedicated [SLICE-001 reviewer findings and closure ledger](spatial-phase-foundation-review.md) is **NOT STARTED**. No implementation authorization exists.
+
+## 8. Next step
 
 Obtain independent review of this frozen slice. In parallel, continue only non-executable mathematical contract drafting for the oscillator and memory slices. Once SLICE-001 Gate 1 closes, create a Lean 4 implementation limited to these foundations and separately schedule Gate 2.
 
