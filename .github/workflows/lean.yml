@@ -9,6 +9,7 @@ on:
       - 'PWFA.lean'
       - 'lean-toolchain'
       - 'lakefile.toml'
+      - 'lake-manifest.json'
       - '.github/workflows/lean.yml'
   workflow_dispatch:
 
@@ -30,6 +31,22 @@ jobs:
             echo "Disallowed proof hole or axiom found in experimental Lean source."
             exit 1
           fi
+
+      - name: Verify committed dependency manifest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("lake-manifest.json").read_text())
+          assert data["name"] == "pwfa"
+          assert any(
+              pkg["name"] == "mathlib"
+              and pkg["rev"] == "56a005855ea17e0b0958f73ec801ae140b0a1679"
+              for pkg in data["packages"]
+          )
+          print("Lockfile verified: mathlib v4.35.0 Git commit")
+          PY
 
       - name: Set up Lean and compile phase module
         uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1.7.0
