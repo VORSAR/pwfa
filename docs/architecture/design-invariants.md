@@ -8,6 +8,6 @@ These are **design constraints and candidate obligations**, not all formally pro
 4. Pairwise learning must not be sparsified as a consequence of diagnostic top-k selection.
 5. Negative effective kernel values are not automatically excluded; do not assert stability without explicit assumptions.
 6. Engineering success thresholds are not empirical findings.
-7. Independent pre-implementation review Gate 1 blocks executable Lean development until **every** finding closes.
+7. Under the current owner-selected [ADR-109](../decisions/ADR-109.md), experimental Lean requires internal role-separated hostile review and closure of **every applicable in-scope finding** before implementation. This is **not** independent Gate-1 or system certification. The historical independent review decisions remain preserved.
 
 [ADR-093](../decisions/ADR-093.md) · [ADR-096](../decisions/ADR-096.md) · [ADR-097](../decisions/ADR-097.md) · [ADR-098](../decisions/ADR-098.md) · [Proof obligations](../verification/proof-obligations.md).
