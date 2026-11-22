@@ -8,8 +8,9 @@ This is an initial **mapping of recovered constraints**, not a verified original
 | NEW-PHASE-01: Unit-complex phase | [103](../decisions/ADR-103.md) | [State space](../mathematics/state-space.md), [Numerics](../mathematics/numerical-methods.md) | Representation selected; evolution/norm preservation not proved |
 | NEW-COUPLING-01: Distance-based isotropic baseline | [104](../decisions/ADR-104.md) | [Evolution](../mathematics/evolution.md) | Geometry selected; kernel profile and proof missing |
 | NEW-METRIC-01: Shortest periodic Euclidean distance | [105](../decisions/ADR-105.md) | [State space](../mathematics/state-space.md) | Metric selected; analytical verification and Gate 1 open |
-| REC-GATE-01: Two independent review gates | [046](../decisions/ADR-046.md) | [Review gates](review-gates.md) | Gate 1 **NOT VERIFIED** |
-| REC-GATE-02: Close all Gate-1 findings | [055](../decisions/ADR-055.md) | [Review gates](review-gates.md) | **NOT VERIFIED** |
+| NEW-VERIFY-01: Independent review and full closure per frozen slice | [108](../decisions/ADR-108.md) | [Review gates](review-gates.md), [SLICE-001](slices/spatial-phase-foundation.md) | SLICE-001 draft; independent review not started |
+| REC-GATE-01: Two independent review gates | [046](../decisions/ADR-046.md), [108](../decisions/ADR-108.md) | [Review gates](review-gates.md) | Each slice Gate 1/2 NOT VERIFIED |
+| REC-GATE-02: Close all findings within authorized review scope | [055](../decisions/ADR-055.md), [108](../decisions/ADR-108.md) | [Review gates](review-gates.md) | **NOT VERIFIED** |
 | REC-MEM-01: Gain and homeostasis | [093](../decisions/ADR-093.md), [094](../decisions/ADR-094.md) | [Memory](../mathematics/memory.md) | Formula summaries only |
 | REC-ENC-01: Spatial encoding and decoder | [095](../decisions/ADR-095.md) | [Encoding](../mathematics/encoding-decoding.md) | Exact formula missing |
 | REC-NUM-01: Convergence and quadrature | [097](../decisions/ADR-097.md), [098](../decisions/ADR-098.md) | [Numerics](../mathematics/numerical-methods.md) | Solver details missing |
