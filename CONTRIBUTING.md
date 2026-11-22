@@ -8,7 +8,7 @@ GitHub `main` is the single source of truth. Chat conversations, local drafts, a
 2. For an architectural choice, present ranked alternatives, pros, cons, original-project alignment, feasibility and a recommendation. Record the owner's explicit selection in a stable ADR, with decision date and provenance. Never silently decide on behalf of the owner.
 3. Keep requirements, ADRs, mathematical contracts, proof obligations, tests and evidence cross-linked. Verify local checks when possible, and record any checks not run.
 4. Issues, feature branches and pull requests are **optional** tools for coordination or isolated experiments, not mandatory for changes. Do not create them routinely.
-5. Direct commits **do not** constitute independent technical review or satisfy Gate 1. External independent reviewer evidence and every finding's closure remain mandatory before executable Lean implementation.
+5. Direct commits **do not** constitute independent technical review or satisfy Gate 1. External independent reviewer evidence and closure of every finding remain mandatory before executable Lean for the **reviewed slice**; see ADR-108.
 6. Preserve append-only historical and decision provenance. Never silently rewrite the immutable recovery snapshot or previously approved decision meaning.
 
 ## Architecture decision records (ADRs)
@@ -28,8 +28,8 @@ Document filenames are stable, lower-kebab-case where possible. **Never encode s
 - Research citations must distinguish directly verified primary sources, secondary interpretations, and missing evidence. Do not manufacture bibliographic entries.
 - Separate hypotheses, engineering choices, mathematical theorems, numerical test results, and empirical evidence.
 - Results and independent review artifacts are append-only or corrected with explicit provenance, never silently overwritten.
-- **ADR-046 and ADR-055 remain mandatory**: no executable Lean implementation before an independent Gate 1 has closed **all** findings, including documentation findings. This does not block documentation, review preparation, or non-executable specification work.
-- Only after Gate 1 may executable Lean work proceed in small slices with pinned Lean/mathlib toolchains and continuous integration.
+- **ADR-108 governs** the application of original ADR-046 and ADR-055. Each bounded slice requires an independent Gate 1 and closure of **every** finding, including documentation findings, before its executable Lean work. A slice review cannot authorize unreviewed dependencies or whole-system claims.
+- After each slice Gate 1, executable Lean may proceed only within the frozen authorized contract, with pinned Lean/mathlib toolchains and continuous integration. Gate 2 remains independent and follows the slice's first reference implementation.
 
 ## Repository protection and verification
 
