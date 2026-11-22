@@ -1,6 +1,6 @@
 # SLICE-001: Spatial and phase foundations
 
-- **Status:** DRAFT CONTRACT; independent Gate 1 **NOT STARTED**; executable Lean **NOT AUTHORIZED**
+- **Status:** PARENT CONTRACT PARTIALLY SPLIT — algebraic phase subset experimentally authorized under [ADR-109](../../decisions/ADR-109.md); metric remains blocked. No independent approval.
 - **Policy:** [ADR-108](../../decisions/ADR-108.md)
 - **Source decisions:** [ADR-102](../../decisions/ADR-102.md), [ADR-103](../../decisions/ADR-103.md), [ADR-105](../../decisions/ADR-105.md)
 - **Author/review independence:** Drafted by assistant; must obtain an external independent hostile reviewer.
@@ -76,7 +76,13 @@ These are ordinary mathematical observations, **not completed formal proofs**, a
 
 The dedicated [SLICE-001 reviewer findings and closure ledger](spatial-phase-foundation-review.md) is **NOT STARTED**. No implementation authorization exists.
 
-## 8. Next step
+## 8. Bounded experimental decomposition (2026-11-22)
+
+- [SLICE-001-PHASE](phase-algebra-experiment.md) restricts implementation to the unit-complex algebra PH-P01–PH-P06. Its internal role-separated [source review](phase-algebra-internal-review.md) records applicable findings and explicitly unverified compilation.
+- [SLICE-001-METRIC](spatial-metric-remediation.md) retains **OPEN** IR-001 and IR-002. The original torus distance obligations S1-P01–P05 remain blocked for executable Lean until a separate review closes those findings.
+- This does not retroactively alter the [frozen original parent](https://github.com/VORSAR/pwfa/blob/16a913ab5bfee18870c5d24535124055bca671fb/docs/verification/slices/spatial-phase-foundation.md). The approved experimental scope is a separately documented subset, not a passed full parent Gate 1.
+
+## 9. Next step
 
 Obtain independent review of this frozen slice. In parallel, continue only non-executable mathematical contract drafting for the oscillator and memory slices. Once SLICE-001 Gate 1 closes, create a Lean 4 implementation limited to these foundations and separately schedule Gate 2.
 
