@@ -2,11 +2,12 @@
 
 - **Target:** [Spatial and phase foundations](spatial-phase-foundation.md)
 - **Governing policy:** [ADR-108](../../decisions/ADR-108.md)
-- **Status:** NOT STARTED — no independent assessment or implementation authorization
-- **Scope freeze SHA:** NOT SET
+- **Status:** REVIEW REQUEST OPEN — independent reviewer unassigned; no assessment or implementation authorization
+- **Scope freeze SHA:** `16a913ab5bfee18870c5d24535124055bca671fb` (initial frozen SLICE-001 contract)
 - **Independent reviewer:** NOT ASSIGNED
 - **Independence attestation:** NOT PROVIDED
 - **Review date:** NOT SET
+- **Review request:** [Issue #8](https://github.com/VORSAR/pwfa/issues/8) · [Frozen review packet](spatial-phase-foundation-review-packet.md)
 - **Authorization:** NOT GRANTED
 - **Authorized contract SHA:** NOT SET
 
@@ -26,7 +27,7 @@ Do not treat the empty ledger as zero findings. Before approval, replace the pla
 
 ## Review decision checklist
 
-- [ ] Freeze and record reviewed SHA
+- [x] Freeze and record initial reviewed contract SHA
 - [ ] Confirm independence and reviewer identity
 - [ ] Independent reviewer has examined definitions and theorem obligations
 - [ ] Complete inventory of findings received
@@ -36,7 +37,7 @@ Do not treat the empty ledger as zero findings. Before approval, replace the pla
 - [ ] Toolchain and mathlib pin plan documented for authorized executable Lean
 - [ ] Gate-2 reviewer and review trigger defined
 
-**No checkboxes are complete. Until documented approval, SLICE-001 remains non-executable.**
+**Only the initial contract freeze is recorded. Independent review has not begun. Until documented approval, SLICE-001 remains non-executable.**
 
 ## Gate 2
 
