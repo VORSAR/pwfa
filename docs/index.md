@@ -33,7 +33,11 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 - [Outstanding research questions](research/open-questions.md)
 - [Proof obligations](verification/proof-obligations.md)
 - [Requirements traceability](verification/requirements-matrix.md)
-- [Independent review gates](verification/review-gates.md)
+- [Current experimental and independent review policy](verification/review-gates.md)
+- [Experimental phase algebra slice](verification/slices/phase-algebra-experiment.md)
+- [Phase source audit](verification/slices/phase-algebra-internal-review.md)
+- [Blocked metric remediation](verification/slices/spatial-metric-remediation.md)
+- [Role-separated hostile findings](verification/slices/spatial-phase-foundation-internal-review.md)
 
 ## Project history and governance
 - [Glossary](glossary.md)
