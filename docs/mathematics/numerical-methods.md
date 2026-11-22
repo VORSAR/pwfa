@@ -10,6 +10,10 @@
 
 The exact integrator maps, stage ordering, numerical operators, residual/contrast definitions, error norms, stability conditions, and convergence guarantees are **NOT RECOVERED**.
 
+## New topology and representation implications
+
+[ADR-102](../decisions/ADR-102.md) selects a continuous two-dimensional periodic torus; [ADR-103](../decisions/ADR-103.md) selects an S¹-valued unit-complex phase field. The recovered periodic grid size `N` is not yet assigned a two-dimensional meaning (per axis versus total sites). Historical winding `0/±1` likewise needs two-direction topology conventions. The eventual integrator must maintain unit magnitude, subject to clearly defined numerical tolerances and proof conditions. **No 2D solver or quadrature is approved by these choices alone.**
+
 ## Obligations before execution
 
 Recover formulas and establish tests for event alignment, phase topology/winding, grid/time-step convergence, conservation where applicable, and reported quadrature residuals.
