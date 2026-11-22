@@ -51,3 +51,13 @@ Source inspection checks performed using the GitHub connector on 2026-11-22:
 5. Keep further metric work isolated until [SLICE-001-METRIC](spatial-metric-remediation.md) passes its own internal hostile review.
 
 **Internal review conclusion:** The bounded experimental phase work is permitted under ADR-109. No proposition has been independently certified; compiler success remains to be established.
+
+## CI failure and remediation (2026-11-22)
+
+- [Run #1, job 137126792530](https://github.com/VORSAR/pwfa/actions/runs/44995915568/job/137126792530) **FAILED** before compilation. The Lean 4.35.0 installation and proof-hole grep succeeded, but lean-action failed during configuration: `No lake-manifest.json found. Run lake update to generate manifest`.
+- This first failure is a **dependency configuration error**, not evidence that phase proof statements type-check or fail.
+- [Commit 7a1803e](https://github.com/VORSAR/pwfa/commit/7a1803e4aea96d7dc9b1588d9345646a19b8a13a) added a committed Lake manifest based on the exact mathlib4 v4.35.0 release revision `56a005855ea17e0b0958f73ec801ae140b0a1679` and its transitive dependency lock entries.
+- [Commit a4a338f](https://github.com/VORSAR/pwfa/commit/a4a338ff90e21b63931b58c7f429bccb6997727d) added manifest-validation and path-trigger checks to the workflow.
+- [Run #2](https://github.com/VORSAR/pwfa/actions/runs/45003571679) **IN PROGRESS** at this report's initial observation. The manifest-validation step passed; Lean compilation was still running. **No passing Lean compilation is asserted here.**
+
+These records preserve the failed run and corrective commits rather than rewriting the earlier unverified-build evidence. A later completed CI result must be recorded separately and accurately.
