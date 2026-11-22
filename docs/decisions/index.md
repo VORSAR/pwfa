@@ -22,6 +22,8 @@
 | [ADR-101](ADR-101.md) | Constrained reconstruction of mathematical core (new decision, 2026-11-22) | A | Accepted strategy; Gate 1 open |
 | [ADR-102](ADR-102.md) | Continuous 2D periodic spatial domain (new) | B | Accepted topology; Gate 1 open |
 | [ADR-103](ADR-103.md) | Unit-complex phase representation (new) | A | Accepted representation; Gate 1 open |
+| [ADR-104](ADR-104.md) | Isotropic distance-based baseline coupling (new) | A | Accepted geometry; kernel profile open |
+| [ADR-105](ADR-105.md) | Shortest periodic Euclidean spatial distance (new) | A | Accepted flat-torus metric; Gate 1 open |
 
 ## What these statuses mean
 
