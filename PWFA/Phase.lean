@@ -12,6 +12,8 @@ import Mathlib
 namespace PWFA
 namespace Phase
 
+universe u
+
 /-- Complex phase values constrained to have unit norm. -/
 abbrev UnitPhase := { z : ℂ // ‖z‖ = 1 }
 
