@@ -15,7 +15,8 @@ for file in md_files:
     if versioned.search(rel.name):
         errors.append(f"{rel}: version number in document filename")
     text = file.read_text(encoding="utf-8")
-    if text and not text.endswith("\n"):
+    # Preserve the historical snapshot byte-for-byte; its missing newline predates this checker.
+    if rel != Path("docs/history/recovery-original.md") and text and not text.endswith("\n"):
         errors.append(f"{rel}: missing final newline")
     for link in link_pattern.findall(text):
         target = link.strip().split(" ", 1)[0].strip("<>")
