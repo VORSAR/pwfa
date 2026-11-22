@@ -1,0 +1,9 @@
+# Lean and Lake build outputs
+.lake/
+*.olean
+*.ilean
+*.trace
+
+# Local editor and OS files
+.DS_Store
+.vscode/.history/
