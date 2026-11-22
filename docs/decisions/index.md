@@ -24,6 +24,7 @@
 | [ADR-103](ADR-103.md) | Unit-complex phase representation (new) | A | Accepted representation; Gate 1 open |
 | [ADR-104](ADR-104.md) | Isotropic distance-based baseline coupling (new) | A | Accepted geometry; kernel profile open |
 | [ADR-105](ADR-105.md) | Shortest periodic Euclidean spatial distance (new) | A | Accepted flat-torus metric; Gate 1 open |
+| [ADR-108](ADR-108.md) | Scope-limited independent Gate 1 per vertical slice (new) | A | Accepted governance; no slice reviewed |
 
 ## What these statuses mean
 
