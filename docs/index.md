@@ -1,19 +1,45 @@
-# PWFA documentation
+# PWFA documentation index
 
-This index is a map, not a duplicate architecture specification.
+This repository is the authoritative, version-controlled source for PWFA. No monolithic master document is maintained.
 
-## Current source
+## Research scope
+- [Problem statement](vision/problem-statement.md)
+- [Research objectives](vision/objectives.md)
+- [Testable hypotheses](vision/hypotheses.md)
 
-- [Project overview](../README.md)
-- [Contributing and change management](../CONTRIBUTING.md)
-- [Architectural decisions](decisions/index.md)
-- [ADR format and preservation policy](decisions/README.md)
+## System architecture
+- [Overview](architecture/overview.md)
+- [Components](architecture/components.md)
+- [Interfaces and contracts](architecture/interfaces.md)
+- [Data flow](architecture/data-flow.md)
+- [Design invariants](architecture/design-invariants.md)
+
+## Mathematical specification
+- [State space](mathematics/state-space.md)
+- [Evolution and coupling](mathematics/evolution.md)
+- [Memory and homeostasis](mathematics/memory.md)
+- [Encoding and decoding](mathematics/encoding-decoding.md)
+- [Numerical methods](mathematics/numerical-methods.md)
+
+## Experiments
+- [Experimental methodology](experiments/methodology.md)
+- [Primary benchmark](experiments/benchmarks.md)
+- [Controls and baselines](experiments/baselines.md)
+
+## Decisions, evidence, and verification
+- [ADR index](decisions/index.md)
+- [ADR policy](decisions/README.md)
+- [Evidence register](research/evidence-register.md)
+- [Outstanding research questions](research/open-questions.md)
+- [Proof obligations](verification/proof-obligations.md)
+- [Requirements traceability](verification/requirements-matrix.md)
+- [Independent review gates](verification/review-gates.md)
+
+## Project history and governance
 - [Glossary](glossary.md)
-- [Original recovery snapshot](history/recovery-original.md)
-- [Recovery status and missing evidence](history/recovery-status.md)
+- [Recovery status](history/recovery-status.md)
+- [Immutable original recovery snapshot](history/recovery-original.md)
+- [Change policy](../CONTRIBUTING.md)
+- [Changelog](../CHANGELOG.md)
 
-## Planned domains
-
-The following directories are populated progressively with verified, linkable material: `vision/`, `architecture/`, `mathematics/`, `experiments/`, `research/`, and `verification/`.
-
-An absent section does not imply that the underlying decision or contract never existed. Do not fill historical gaps with inferred details.
+**Evidence caveat:** Most original mathematical definitions and research references have **NOT BEEN RECOVERED**. These documents separate recovered choices from implementation-ready specifications.
