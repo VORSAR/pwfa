@@ -1,6 +1,6 @@
 # Architectural decision index
 
-**Source:** [Original recovery snapshot](../history/recovery-original.md). These 15 extracts are **partial**, not a complete set of historical PWFA decisions. Original total is **NOT VERIFIED** (prior summaries conflicted between 79 and 83).
+**Historical source:** [Original recovery snapshot](../history/recovery-original.md). The 15 historical extracts are **partial**, not a complete inventory of PWFA decisions. The original historical total is **NOT VERIFIED** (prior summaries conflicted between 79 and 83). New, owner-approved decisions are identified separately.
 
 | ADR | Topic | Recovered selection | Status |
 |---|---|---|---|
@@ -19,6 +19,7 @@
 | [ADR-098](ADR-098.md) | Periodic quadrature and quality-gated diagnostics | C | Recovered-partial |
 | [ADR-099](ADR-099.md) | Primary associative recall benchmark | C | Recovered-partial |
 | [ADR-100](ADR-100.md) | Preregistered performance threshold | C | Recovered-partial |
+| [ADR-101](ADR-101.md) | Constrained reconstruction of mathematical core (new decision, 2026-11-22) | A | Accepted strategy; Gate 1 open |
 
 ## What these statuses mean
 
