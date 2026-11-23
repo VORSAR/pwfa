@@ -64,7 +64,8 @@ run_cmd do
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
     ``norm_meanField_le, ``norm_meanField_le_of_unit_mass, ``norm_meanField_uniform_le,
     ``meanOperator, ``meanOperator_apply, ``norm_meanOperator_le, ``norm_meanOperator_sub_le,
-    ``continuous_baselineRhs, ``continuousRhs]
+    ``continuous_baselineRhs, ``continuousRhs, ``norm_continuousRhs_sub_le,
+    ``lipschitzOnWith_continuousRhs]
   for name in declarations do
     let axioms ← Lean.collectAxioms name
     let unexpected := axioms.filter fun axiomName => !allowedAxioms.contains axiomName
