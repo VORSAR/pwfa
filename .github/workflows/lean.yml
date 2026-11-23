@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   experimental-phase:
-    name: Build experimental phase proofs
+    name: Build experimental Lean modules
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout source
@@ -55,7 +55,7 @@ jobs:
           print("Lockfile verified: mathlib v4.35.0 Git commit")
           PY
 
-      - name: Set up Lean and compile phase module
+      - name: Set up Lean and build the project
         uses: leanprover/lean-action@fe408643ea7367d8c0404a8be3975bb145f5fb64 # v1.7.0
         with:
           build: true

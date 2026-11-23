@@ -1,6 +1,6 @@
 # Mathematical and experimental proof obligations
 
-**Status:** candidate recovery-derived obligations; none asserted as discharged.
+**Status:** system-level obligations remain open. The linked slice contracts record individually compiled results.
 
 | Area | Required evidence | Governing references |
 |---|---|---|

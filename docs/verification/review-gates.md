@@ -21,8 +21,9 @@ The historical [ADR-046](../decisions/ADR-046.md) and [ADR-055](../decisions/ADR
 ## Slice statuses
 
 - [SLICE-001-PHASE](slices/phase-algebra-experiment.md) has six experimental theorems that compiled in CI. Independent Gate 1 is pending. [Review packet](slices/phase-algebra-review-packet.md).
-- [Phase conjugation and inverse](slices/phase-inverse-experiment.md) is internally cleared for experimental Lean under ADR-109.
-- [SLICE-001-METRIC](slices/spatial-metric-remediation.md) has written remediation for IR-001 and IR-002 and internal clearance for a bounded Euclidean-distance experiment. Independent review is pending.
+- [Phase conjugation and inverse](slices/phase-inverse-experiment.md) compiled as a bounded ADR-109 experiment.
+- [SLICE-001-METRIC](slices/spatial-metric-remediation.md) has written remedies for IR-001 and IR-002 and compiled proofs for the named Euclidean distance. Independent review is pending.
+- The [flat torus oscillator baseline](slices/torus-oscillator-baseline.md#compiled-scope) has compiled kernel and pointwise phase-law definitions. Review of the full flow remains open.
 - [Parent SLICE-001](slices/spatial-phase-foundation.md): full mathematical scope NOT independently reviewed or closed.
 - [Review request #8](https://github.com/VORSAR/pwfa/issues/8): retained as a record of the unmet external-review option; the owner coordinates the two-person project.
 - Whole PWFA: no independent certification, no validated memory/learning behavior, no system-level performance claims.

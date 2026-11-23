@@ -91,3 +91,9 @@ On 2026-11-23 the assistant reviewed the following experimental scope as the aut
 | Does a pointwise formula establish an oscillator flow? | The checked scope is the definitions and local properties. The disk and smooth kernel row integrals, regularity of the mean field, full solution existence and winding preservation, and discretization each require further proofs. |
 
 The dispositions clear this smaller scope for experimental Lean under ADR-109. The larger oscillator flow remains in written review.
+
+## Compiled scope
+
+[PWFA.TorusOscillator](../../../PWFA/TorusOscillator.lean) defines normalized torus area, the smooth and disk kernels, the uniform control, and the pointwise right-hand side. Its theorems check area mass one, positivity of the bump integral, nonnegative finite-range kernels and their cutoff, the constant-field rotation law under uniform coupling, and pointwise tangency. The [extension audit](../../../scripts/audit-extensions.lean) checks the public statements and their axiom dependencies.
+
+The next proof obligations are the disk and smooth kernel row integrals, regularity of the integral operator, and existence and uniqueness of the resulting continuous flow. The radius stays configurable.

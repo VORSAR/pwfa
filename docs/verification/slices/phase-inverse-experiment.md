@@ -17,3 +17,7 @@ The assistant reviewed a separate extension to the original six-theorem contract
 | PH-INV-03 | Preserve the frozen phase review target. The extension can import the original phase module and expose its own declarations. The original phase definitions and six obligations stay pinned in the independent review packet. |
 
 Experimental authorization covers this algebraic extension. Compilation and the axiom audit are required evidence before any formal proof is reported as checked.
+
+## Compiled scope
+
+[PWFA.PhaseInverse](../../../PWFA/PhaseInverse.lean) defines phase conjugation and proves norm preservation, involution, and both multiplicative inverse identities. The [extension audit](../../../scripts/audit-extensions.lean) checks the operation and its identities through the public entry point and checks their axiom dependencies.

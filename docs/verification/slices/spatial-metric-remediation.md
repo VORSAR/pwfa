@@ -56,3 +56,7 @@ A library product `MetricSpace` instance using a sup metric **must not** be reus
 The assistant checked the proposed mathematical remedies on 2026-11-23, acting in the internal review role after drafting them. The reviewer is also the author. For IR-001, the named Euclidean distance, diagonal witness, and explicit bounds against the sup distance resolve the representation ambiguity. For IR-002, the nearest-integer bound handles ties, representative changes, and the infinite-lattice minimum. The metric proof uses interchangeable representatives and carries the minimizing shifts through the triangle inequality. The exact statements and pinned library references address the specification requirements for this metric-only scope.
 
 The bounded experimental authorization under ADR-109 covers the named distance, its quotient and metric properties above, and the diagonal witness. This internal closure applies to the written metric scope. Independent Gate 1, the oscillator contract review, and proof compilation are separate obligations.
+
+## Compiled scope
+
+[PWFA.TorusDistance](../../../PWFA/TorusDistance.lean) proves representative invariance under integer shifts, the metric laws, translation invariance, attainment of the least lattice displacement, and the attained diameter bound. The diagonal theorems give separate Euclidean and product distances. The [extension audit](../../../scripts/audit-extensions.lean) checks the minimum and diagonal statements through the public entry point and checks their axiom dependencies.
