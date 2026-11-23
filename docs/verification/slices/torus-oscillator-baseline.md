@@ -1,6 +1,6 @@
 # Flat torus oscillator baseline
 
-**Status:** The owner selected the phase law and finite-range kernel for the written baseline. Internal review of the oscillator contract and independent Gate 1 are pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
+**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Internal review has cleared bounded Lean work through local phase solutions. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 
@@ -96,8 +96,6 @@ The dispositions clear this smaller scope for experimental Lean under ADR-109. T
 
 [PWFA.TorusOscillator](../../../PWFA/TorusOscillator.lean) defines normalized torus area, the smooth and disk kernels, the uniform control, and the pointwise right-hand side. Its theorems check area mass one, positivity of the bump integral, nonnegative finite-range kernels and their cutoff, the constant-field rotation law under uniform coupling, and pointwise tangency. The [extension audit](../../../scripts/audit-extensions.lean) checks the public statements and their axiom dependencies.
 
-The next proof obligations are the disk and smooth kernel row integrals, regularity of the integral operator, and existence and uniqueness of the resulting continuous flow. The radius stays configurable.
-
 ## Internal review of the continuous mean field
 
 On 2026-11-23 the assistant reviewed the following extension in the internal review role. The reviewer is also the author. This scope covers Euclidean distance continuity, translation invariance and integrability of the three selected kernels, and the passage from the pointwise formula to a continuous vector field.
@@ -133,3 +131,18 @@ For two differentiable solutions with the same initial field, continuity places 
 On 2026-11-23 the assistant reviewed this extension as the author in the internal review role. Evaluation at any torus point is a continuous real-linear map on the space of fields, so the derivative of the evaluated trajectory is the evaluated velocity. The real and imaginary components give $d|z(t,x)|^2/dt=2\operatorname{Re}(\overline{z(t,x)}\,\dot z(t,x))=0$ by the established tangency identity. The open time interval is connected and contains the initial time, so the squared modulus is constant throughout it. Taking nonnegative square roots works for every initial value, including zero. The proof uses tangency and does not depend on the centered kernel's exact mass. Unit initial fields therefore remain unit on the whole local solution interval.
 
 This clears the local invariant and its use in the existence theorem under ADR-109. The global continuation and winding statements remain separate obligations.
+
+## Compiled local phase solutions and post-implementation review
+
+[PWFA.TorusLocalFlow](../../../PWFA/TorusLocalFlow.lean) proves that the modulus at every point equals its initial value throughout the local time interval. For unit initial data it supplies a differentiable trajectory of unit phase fields on that interval.
+
+Codex (GPT-6), the author of these changes, checked the implementation against the written dispositions above as an internal reviewer on 2026-11-23. The commits immediately preceding each proof record the corresponding authorization and scope.
+
+| Finding | Severity | Implementation check |
+|---|---|---|
+| TORUS-LOCAL-01 | Blocking | A disk boundary can make the kernel discontinuous in the base point. The proof of mean-field continuity translates the row first and uses a common integrable bound. |
+| TORUS-LOCAL-02 | Blocking | Replacing the absolute row integral with signed mass would give an invalid bound for a signed kernel. The Lipschitz and local solution statements use the absolute row integral and require no normalization hypothesis. |
+| TORUS-LOCAL-03 | Blocking | A zero velocity bound would invalidate a time window defined by its reciprocal. The local existence proof uses the reciprocal of one plus the bound, and the uniqueness theorem states agreement near the initial time. |
+| TORUS-LOCAL-04 | Blocking | Pointwise tangency alone makes no assertion about a differentiable trajectory. The proof applies continuous linear evaluation to the trajectory and proves the derivative of squared modulus is zero on the entire connected interval. |
+
+These findings are closed for the local slice. On Lean 4.35.0 with the pinned mathlib, the local build passed with warnings treated as errors, the phase and extension audits passed, and the experimental source check found no admitted proofs or custom axioms. The Lean proofs of exact disk and smooth row mass, global continuation, and winding preservation remain open. The radius remains configurable.
