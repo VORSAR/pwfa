@@ -7,7 +7,11 @@ These statements are purely algebraic facts about complex values of norm one.
 
 Proof obligations: docs/verification/slices/phase-algebra-experiment.md
 -/
-import Mathlib
+module
+
+public import Mathlib.Analysis.Complex.Norm
+
+@[expose] public section
 
 namespace PWFA
 namespace Phase
@@ -22,13 +26,11 @@ abbrev UnitPhase := { z : ℂ // ‖z‖ = 1 }
 abbrev PhaseField (X : Type u) := X → UnitPhase
 
 /-- The multiplicative identity is a valid phase. -/
-def phaseOne : UnitPhase := ⟨1, by simp⟩
+def phaseOne : UnitPhase := ⟨1, by simpa using Complex.norm_natCast 1⟩
 
 /-- Multiplication of two valid phases preserves unit norm. -/
 def phaseMul (u v : UnitPhase) : UnitPhase :=
-  ⟨u.1 * v.1, by
-    rw [norm_mul, u.property, v.property]
-    norm_num⟩
+  ⟨u.1 * v.1, by rw [Complex.norm_mul, u.property, v.property, one_mul]⟩
 
 /-- PH-P01: The unit phase has norm one. -/
 theorem phaseOne_norm : ‖(phaseOne : ℂ)‖ = 1 :=

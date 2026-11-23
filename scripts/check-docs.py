@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """Validate link targets and stable document filenames without external packages."""
 from pathlib import Path
+from subprocess import check_output
 from urllib.parse import unquote
 import re
 import sys
 
 root = Path(__file__).resolve().parents[1]
 errors = []
-md_files = sorted(root.rglob("*.md"))
+tracked_and_unignored = check_output(
+    ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", "*.md"],
+    cwd=root,
+    text=True,
+)
+markdown_paths = (root / path for path in tracked_and_unignored.split("\0") if path)
+md_files = sorted(path for path in markdown_paths if path.is_file())
 versioned = re.compile(r"(?:^|[-_.])v\d+\.\d+(?:\.\d+)?(?=[-_.]|$)", re.I)
 link_pattern = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 for file in md_files:

@@ -78,7 +78,7 @@ The dedicated [SLICE-001 reviewer findings and closure ledger](spatial-phase-fou
 
 ## 8. Bounded experimental decomposition (2026-11-22)
 
-- [SLICE-001-PHASE](phase-algebra-experiment.md) restricts implementation to the unit-complex algebra PH-P01–PH-P06. Its internal role-separated [source review](phase-algebra-internal-review.md) records applicable findings and explicitly unverified compilation.
+- [SLICE-001-PHASE](phase-algebra-experiment.md) restricts implementation to the unit-complex algebra PH-P01–PH-P06. The [source review](phase-algebra-internal-review.md) records the original findings and subsequent CI result. The [phase review packet](phase-algebra-review-packet.md) covers the six compiled theorems.
 - [SLICE-001-METRIC](spatial-metric-remediation.md) retains **OPEN** IR-001 and IR-002. The original torus distance obligations S1-P01–P05 remain blocked for executable Lean until a separate review closes those findings.
 - This does not retroactively alter the [frozen original parent](https://github.com/VORSAR/pwfa/blob/16a913ab5bfee18870c5d24535124055bca671fb/docs/verification/slices/spatial-phase-foundation.md). The approved experimental scope is a separately documented subset, not a passed full parent Gate 1.
 

@@ -1,1 +1,3 @@
-import PWFA.Phase
+module
+
+public import PWFA.Phase

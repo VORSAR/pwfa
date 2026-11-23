@@ -10,6 +10,7 @@ on:
       - 'lean-toolchain'
       - 'lakefile.toml'
       - 'lake-manifest.json'
+      - 'scripts/audit-phase.lean'
       - '.github/workflows/lean.yml'
   workflow_dispatch:
 
@@ -27,9 +28,14 @@ jobs:
       - name: Reject admitted proofs and custom axioms
         shell: bash
         run: |
-          if grep -RInE '(^|[[:space:]])(sorry|admit|axiom)[[:space:]]' PWFA --include='*.lean'; then
+          status=0
+          git grep -n -w -E 'sorry|admit|axiom' -- PWFA.lean ':(glob)PWFA/**/*.lean' || status=$?
+          if [ "$status" -eq 0 ]; then
             echo "Disallowed proof hole or axiom found in experimental Lean source."
             exit 1
+          fi
+          if [ "$status" -ne 1 ]; then
+            exit "$status"
           fi
 
       - name: Verify committed dependency manifest
@@ -55,3 +61,6 @@ jobs:
           test: false
           lint: false
           use-mathlib-cache: true
+
+      - name: Audit phase statement types and axiom dependencies
+        run: lake env lean scripts/audit-phase.lean

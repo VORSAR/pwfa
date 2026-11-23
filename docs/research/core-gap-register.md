@@ -3,7 +3,7 @@
 **Status:** Active gap inventory. ADR-101 through ADR-105 are approved owner choices; mathematical completeness and Gate 1 remain open.  
 **Baseline:** [2026-11-22 repository baseline](../../README.md)  
 **Tracking:** [Issue #5](https://github.com/VORSAR/pwfa/issues/5); [ADR-101](../decisions/ADR-101.md), [ADR-102](../decisions/ADR-102.md), [ADR-103](../decisions/ADR-103.md), [ADR-104](../decisions/ADR-104.md), [ADR-105](../decisions/ADR-105.md)  
-**Review:** [ADR-109 experimental policy applies](../decisions/ADR-109.md); independent certification remains OPEN. The [phase-only experiment](../verification/slices/phase-algebra-experiment.md) is scope-cleared internally but not compiled here.
+**Review:** The [phase-only experiment](../verification/slices/phase-algebra-experiment.md) compiled in CI under [ADR-109](../decisions/ADR-109.md). Independent certification is open. [Phase review packet](../verification/slices/phase-algebra-review-packet.md).
 
 ## Classification
 

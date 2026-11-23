@@ -20,7 +20,7 @@ The historical [ADR-046](../decisions/ADR-046.md) and [ADR-055](../decisions/ADR
 
 ## Slice statuses
 
-- [SLICE-001-PHASE](slices/phase-algebra-experiment.md): internal review scope-cleared for **experimental algebraic Lean**, build status UNVERIFIED.
+- [SLICE-001-PHASE](slices/phase-algebra-experiment.md) has six experimental theorems that compiled in CI. Independent Gate 1 is pending. [Review packet](slices/phase-algebra-review-packet.md).
 - [SLICE-001-METRIC](slices/spatial-metric-remediation.md): IR-001 and IR-002 OPEN; **metric executable Lean BLOCKED**.
 - [Parent SLICE-001](slices/spatial-phase-foundation.md): full mathematical scope NOT independently reviewed or closed.
 - [Review request #8](https://github.com/VORSAR/pwfa/issues/8): retained as a record of the unmet external-review option; the owner coordinates the two-person project.

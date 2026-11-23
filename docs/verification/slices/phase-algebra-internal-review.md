@@ -61,3 +61,7 @@ Source inspection checks performed using the GitHub connector on 2026-11-22:
 - [Run #2](https://github.com/VORSAR/pwfa/actions/runs/45003571679) **IN PROGRESS** at this report's initial observation. The manifest-validation step passed; Lean compilation was still running. **No passing Lean compilation is asserted here.**
 
 These records preserve the failed run and corrective commits rather than rewriting the earlier unverified-build evidence. A later completed CI result must be recorded separately and accurately.
+
+## Completed CI result and follow-up review (2026-11-23)
+
+[Run #2](https://github.com/VORSAR/pwfa/actions/runs/45003571679/job/137150133548) succeeded at `a4a338ff90e21b63931b58c7f429bccb6997727d`. It built `PWFA.Phase` and `PWFA` with Lean v4.35.0 and the committed dependency manifest. It reported one Mathlib module-system warning. The [phase review packet](phase-algebra-review-packet.md) records the follow-up audit, remediations, and instructions for an independent reviewer.

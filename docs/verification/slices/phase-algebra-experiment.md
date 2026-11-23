@@ -1,6 +1,6 @@
 # SLICE-001-PHASE: Experimental unit-complex phase algebra
 
-- **Status:** Internal review remediation complete for this bounded phase-only contract; **experimental Lean authorized under ADR-109**; no independent certification; compilation NOT YET VERIFIED.
+- **Status:** **Experimental Lean authorized under ADR-109.** PH-P01–PH-P06 compiled in CI. Independent review is pending. [Review packet](phase-algebra-review-packet.md).
 - **Decision authority:** [ADR-109](../../decisions/ADR-109.md) (owner-selected two-person role-separated review).
 - **Parent:** [SLICE-001](spatial-phase-foundation.md).
 - **Adversarial source:** [SLICE-001 internal hostile review](spatial-phase-foundation-internal-review.md).
@@ -29,8 +29,8 @@ Each statement follows from the underlying complex-field norm and multiplication
 
 ## Formalization constraints
 
-- Lean toolchain **v4.35.0** and mathlib tag **v4.35.0** for this experiment; record resolved mathlib Git revision in a lockfile when tooling becomes available.
-- Allowed mathematical dependencies: Lean kernel, Lean core, mathlib complex arithmetic, subtype equality and norm identities. The initial `import Mathlib` is a build convenience, **not** permission to use geometry or memory assumptions.
+- The [Lean toolchain](../../../lean-toolchain) and [Lake manifest](../../../lake-manifest.json) pin Lean v4.35.0, mathlib v4.35.0, and mathlib's transitive dependencies.
+- Allowed mathematical dependencies: Lean core and kernel, mathlib complex arithmetic, subtype equality, and norm identities. The source imports `Mathlib.Analysis.Complex.Norm`.
 - Forbidden in claimed proofs: `sorry`, `admit`, custom axioms, unreviewed postulates, unsafe proof shortcuts or unstated assumptions.
 - `PhaseField X` is generic in `X`, avoiding any claim about the unresolved periodic Euclidean metric.
 - No implementation of `T²` distance, topology, winding, homeostatic variables, phase evolution or learned memory within this release.
@@ -43,7 +43,7 @@ Each statement follows from the underlying complex-field norm and multiplication
 | IR-001 (wrong product metric) | **OPEN for metric scope**; no metric type or distance imported as a theorem premise, not applicable to phase-only statements |
 | IR-002 (metric minimum and quotient) | **OPEN for metric scope**; this slice defines no quotient nor metric |
 | IR-003 (field continuity) | **REMEDIED in this scope**: `PhaseField X` is arbitrary, and continuity/winding explicitly excluded |
-| IR-004 (formal interfaces and toolchain) | **REMEDIED in this scope** by PH-P01–P06 plus v4.35.0 toolchain/mathlib requirement; compiler verification remains pending |
+| IR-004 (formal interfaces and toolchain) | **REMEDIED in this scope** by PH-P01–PH-P06, pinned dependencies, and the passing build recorded in the review packet |
 | IR-005 (scope conformance) | **REMEDIED in this scope** by permitted dependencies and explicit forbidden claims |
 | IR-006 (two-person independence conflict) | **GOVERNANCE-ADDRESSED** by owner-selected ADR-109; no independent review claim |
 

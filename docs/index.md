@@ -36,6 +36,7 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 - [Current experimental and independent review policy](verification/review-gates.md)
 - [Experimental phase algebra slice](verification/slices/phase-algebra-experiment.md)
 - [Phase source audit](verification/slices/phase-algebra-internal-review.md)
+- [Phase algebra review packet](verification/slices/phase-algebra-review-packet.md)
 - [Blocked metric remediation](verification/slices/spatial-metric-remediation.md)
 - [Role-separated hostile findings](verification/slices/spatial-phase-foundation-internal-review.md)
 
