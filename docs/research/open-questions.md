@@ -2,7 +2,7 @@
 
 Questions here are not new accepted ADRs.
 
-1. Recover the full original nonlocal phase-evolution and learned pairwise-memory equations.
+1. Review the transfer of the [recovered ring phase law](../mathematics/ring-oscillator-reference.md) to the [draft torus baseline](../verification/slices/torus-oscillator-baseline.md). Resolve the full pairwise-memory equation as a separate contract.
 2. Recover precise external knowledge retrieval and reinjection contracts.
 3. Establish phase-state and parameter definitions, initial/reset values, and admissible negative coupling conditions.
 4. Recover complete numerical integration stages, observation/residual/decoder formulas, and diagnostic calibration.

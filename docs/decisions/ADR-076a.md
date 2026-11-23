@@ -38,7 +38,7 @@ The original comparative rationale and tradeoffs were **NOT RECOVERED**. Baselin
 
 ## Missing evidence and source limits
 
-Definitions, units, admissible domains, precise initial states, control schedule, complete alternatives. Primary external research citations and evidence scope were **NOT RECOVERED**. See the [recovery status](../history/recovery-status.md).
+The initial extraction lacked definitions, units, admissible domains, precise initial states, the control schedule, and complete alternatives. The amendment below records a later partial recovery. Original research citations and evidence scope remain unavailable. See the [recovery status](../history/recovery-status.md).
 
 ## Traceability and dependencies
 
@@ -49,3 +49,4 @@ Cross-links are **proposed recovery navigation**, not verified historical cross-
 ## Amendments (append-only)
 
 - **2026-11-22:** Created this partial extraction from the archived recovery snapshot. Missing original evidence and alternatives remain marked **NOT RECOVERED**. No new architectural decision made.
+- **2026-11-23:** Recovered the ring cosine kernel, continuous phase law, and parameter meanings from master excerpts. The amplitude $a$ controls cosine modulation, with uniform all-to-all coupling at $a=0$. The [historical ring reference](../mathematics/ring-oscillator-reference.md) records the equations and derived winding checks. The [evidence register](../research/evidence-register.md) identifies the excerpts. The original option matrix and comparative rationale remain unavailable.

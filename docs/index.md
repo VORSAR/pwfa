@@ -17,6 +17,8 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 ## Mathematical specification
 - [State space](mathematics/state-space.md)
 - [Evolution and coupling](mathematics/evolution.md)
+- [Historical ring oscillator reference](mathematics/ring-oscillator-reference.md)
+- [Candidate flat torus oscillator baseline](verification/slices/torus-oscillator-baseline.md)
 - [Memory and homeostasis](mathematics/memory.md)
 - [Encoding and decoding](mathematics/encoding-decoding.md)
 - [Numerical methods](mathematics/numerical-methods.md)

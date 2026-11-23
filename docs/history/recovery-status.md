@@ -2,7 +2,7 @@
 
 **Snapshot date:** 2026-11-22. The [original recovery snapshot](recovery-original.md) is preserved byte-for-byte. The historical version marker is inside the document, not its filename.
 
-The previous master ChatGPT WritingBlock ID **57318** could not be retrieved in full. The repository contains a **partial reconstruction**; missing original equations, evidence, and option matrices must not be fabricated.
+The previous master ChatGPT WritingBlock ID **57318** was partially recovered. Excerpts available on 2026-11-23 establish the historical ring kernel, structural phase law, and meanings of its oscillator parameters. The full master, original option matrices, and bibliography remain outstanding. [Historical ring reference](../mathematics/ring-oscillator-reference.md) · [Evidence register](../research/evidence-register.md)
 
 ## Recovered items
 

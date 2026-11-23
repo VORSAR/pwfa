@@ -15,7 +15,7 @@
 ## Newly resolved decisions and unresolved detail
 
 - GAP-001: spatial **topology** selected as T² in ADR-102; phase representation selected as unit-complex S¹ in ADR-103; shortest periodic Euclidean metric selected in ADR-105. Still missing integration measure, function-space regularity and initial conditions. Therefore GAP-001 remains **partially open**, not closed.
-- GAP-002: ADR-104 selects the isotropic distance-based baseline; ADR-105 supplies the periodic metric. The kernel profile, normalization, full phase evolution and learned interaction remain **OPEN**.
+- GAP-002: ADR-104 selects the isotropic distance-based baseline and ADR-105 supplies the periodic metric. The [historical ring phase law](../mathematics/ring-oscillator-reference.md) is recovered. The [torus oscillator draft](../verification/slices/torus-oscillator-baseline.md) proposes the 2D transfer, normalization, and a smooth profile with a disk comparator. The final 2D kernel, initial fields, review, and learned interaction remain open.
 - GAP-001 experimental sub-slice: [phase algebra](../verification/slices/phase-algebra-experiment.md) explicitly excludes geometry; [IR-001/IR-002 metric findings](../verification/slices/spatial-metric-remediation.md) remain open. This does **not** close GAP-001.
 - GAP-005: historical 1D bump placement does not define 2D encoding; must explicitly decide how to reconcile.
 - GAP-007/008: numeric grid size N, quadrature and two-direction winding conventions remain undecided under 2D topology.
