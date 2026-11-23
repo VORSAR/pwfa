@@ -109,3 +109,5 @@ On 2026-11-23 the assistant reviewed the following extension in the internal rev
 | Which estimate can the flow proof rely on? | The mean has sup norm bounded by the centered row's absolute integral times the field's sup norm. For a nonnegative row of mass one this is a contraction. The mass condition remains explicit until it is proved for the individual kernels. |
 
 This clears the continuous mean field and its norm bound for experimental Lean under ADR-109. It leaves the radial row-mass calculations and continuous-time solution theorem as separate proof obligations.
+
+[PWFA.TorusMeanField](../../../PWFA/TorusMeanField.lean) verifies those statements for all three selected kernels. It also represents the mean as a bounded complex-linear operator. The extension audit checks the disk-driven field's continuity, the uniform mean's norm bound, and axiom dependencies. [Extension audit](../../../scripts/audit-extensions.lean)

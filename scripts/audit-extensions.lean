@@ -34,6 +34,15 @@ example (r : Radius) (x y : Point) (h : (r : ℝ) ≤ euclideanDist x y) :
   ⟨smoothKernel_zero_of_le_dist r h, diskKernel_zero_of_le_dist r h⟩
 
 open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) (z : Field) :
+    Continuous (baselineRhs p (diskKernel r) z) :=
+  continuous_baselineRhs p (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0) z
+
+open PWFA.TorusOscillator in
+example (z : Field) (x : Point) : ‖meanField uniformKernel z x‖ ≤ ‖z‖ :=
+  norm_meanField_uniform_le z x
+
+open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
   let declarations := #[
@@ -48,7 +57,14 @@ run_cmd do
     ``diskKernel_nonneg, ``diskKernel_zero_of_le_dist, ``uniformKernel, ``Parameters,
     ``meanField, ``meanField_uniform_const, ``angularVelocity, ``angularVelocity_self,
     ``pointVelocity, ``pointVelocity_tangent, ``baselineRhs, ``baselineRhs_tangent,
-    ``baselineRhs_uniform_const]
+    ``baselineRhs_uniform_const, ``continuous_euclideanDist, ``TranslationInvariant,
+    ``smoothKernel_translationInvariant, ``diskKernel_translationInvariant,
+    ``uniformKernel_translationInvariant, ``continuous_smoothKernel_row,
+    ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
+    ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
+    ``norm_meanField_le, ``norm_meanField_le_of_unit_mass, ``norm_meanField_uniform_le,
+    ``meanOperator, ``meanOperator_apply, ``norm_meanOperator_le, ``norm_meanOperator_sub_le,
+    ``continuous_baselineRhs, ``continuousRhs]
   for name in declarations do
     let axioms ← Lean.collectAxioms name
     let unexpected := axioms.filter fun axiomName => !allowedAxioms.contains axiomName

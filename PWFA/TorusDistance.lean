@@ -32,6 +32,12 @@ theorem euclideanDist_eq_sqrt_sum (x y : Point) :
     euclideanDist x y = Real.sqrt (∑ i : Fin 2, dist (x i) (y i) ^ 2) := by
   simp [euclideanDist, PiLp.norm_eq_of_L2, Real.norm_eq_abs]
 
+theorem continuous_euclideanDist {X : Type*} [TopologicalSpace X] {x y : X → Point}
+    (hx : Continuous x) (hy : Continuous y) : Continuous (fun t => euclideanDist (x t) (y t)) := by
+  simp only [euclideanDist_eq_sqrt_sum]
+  refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun i _ => ?_)
+  exact (((continuous_apply i).comp hx).dist ((continuous_apply i).comp hy)).pow 2
+
 theorem euclideanDist_nonneg (x y : Point) : 0 ≤ euclideanDist x y :=
   norm_nonneg _
 
