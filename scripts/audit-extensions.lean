@@ -6,6 +6,7 @@ meta import Lean.Util.CollectAxioms
 
 open Lean PWFA.Phase PWFA.Torus
 open scoped ComplexConjugate Topology
+open Filter Set
 
 example (z : UnitPhase) : (phaseConj z : ℂ) = conj (z : ℂ) := rfl
 
@@ -43,6 +44,24 @@ example (z : Field) (x : Point) : ‖meanField uniformKernel z x‖ ≤ ‖z‖ 
   norm_meanField_uniform_le z x
 
 open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) (initial : Field) :
+    ∃ ε > (0 : ℝ), ∃ solution : ℝ → Field, solution 0 = initial ∧
+      ∀ t ∈ Ioo (-ε) ε, HasDerivAt solution (continuousRhs p (diskKernel r)
+        (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0) (solution t)) t := by
+  exact exists_local_solution p (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0)
+    initial
+
+open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) {z w : ℝ → Field} (hinitial : z 0 = w 0)
+    (hz : ∀ᶠ t in 𝓝 0, HasDerivAt z (continuousRhs p (diskKernel r)
+        (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0) (z t)) t)
+    (hw : ∀ᶠ t in 𝓝 0, HasDerivAt w (continuousRhs p (diskKernel r)
+        (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0) (w t)) t) :
+    z =ᶠ[𝓝 0] w :=
+  local_solution_unique p (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0)
+    hinitial hz hw
+
+open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
   let declarations := #[
@@ -65,7 +84,7 @@ run_cmd do
     ``norm_meanField_le, ``norm_meanField_le_of_unit_mass, ``norm_meanField_uniform_le,
     ``meanOperator, ``meanOperator_apply, ``norm_meanOperator_le, ``norm_meanOperator_sub_le,
     ``continuous_baselineRhs, ``continuousRhs, ``norm_continuousRhs_sub_le,
-    ``lipschitzOnWith_continuousRhs]
+    ``lipschitzOnWith_continuousRhs, ``exists_local_solution, ``local_solution_unique]
   for name in declarations do
     let axioms ← Lean.collectAxioms name
     let unexpected := axioms.filter fun axiomName => !allowedAxioms.contains axiomName
