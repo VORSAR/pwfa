@@ -78,3 +78,16 @@ To obtain this formula, integrate a Euclidean disk of radius $R$ along the direc
 2. Verify the primary and comparison kernels and their expected rotation rates. Track the earlier Batch 4 provenance separately from the explicit owner choice in ADR-111.
 3. Check the written torus metric remediation and the kernel arguments, including normalization, representative independence, smoothness at zero separation and at the support edge, and the continuation argument.
 4. Freeze the chosen contract and close every applicable internal adversarial finding before experimental Lean. Independent Gate 1 remains pending. [ADR-109](../../decisions/ADR-109.md) · [Review gates](../review-gates.md)
+
+## Bounded review of the oscillator definitions
+
+On 2026-11-23 the assistant reviewed the following experimental scope as the author acting in the internal review role. The scope consists of the Haar probability measure, the three kernel formulas, the integral mean field for continuous complex fields, and the pointwise phase velocity. The associated proofs may establish bump normalization-factor positivity, finite support, and the pointwise angular-velocity checks.
+
+| Question | Disposition |
+|---|---|
+| Does a radius at zero make the profile undefined? | Encode the selected interval $0<R<1/2$ in the radius type. The normalized smooth coefficient is positive since the bump is continuous, nonnegative, and positive on $0\le s<1$. |
+| Could a kernel use the library's product distance? | Both finite-range kernels use the named Euclidean torus distance. The independent uniform control is constant one. |
+| Could the phase term count the coupling strength twice or reverse the lag? | The mean field uses kernel weights only. The phase velocity applies $\kappa$ once and uses a lag factor $\cos\alpha-i\sin\alpha$. When the mean equals a unit phase, the angular velocity is $\omega-\kappa\sin\alpha$. |
+| Does a pointwise formula establish an oscillator flow? | The checked scope is the definitions and local properties. The disk and smooth kernel row integrals, regularity of the mean field, full solution existence and winding preservation, and discretization each require further proofs. |
+
+The dispositions clear this smaller scope for experimental Lean under ADR-109. The larger oscillator flow remains in written review.
