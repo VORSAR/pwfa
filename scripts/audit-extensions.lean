@@ -62,6 +62,16 @@ example (p : Parameters) (r : Radius) {z w : ℝ → Field} (hinitial : z 0 = w 
     hinitial hz hw
 
 open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) (initial : Field) (hunit : ∀ x, ‖initial x‖ = 1) :
+    ∃ ε > (0 : ℝ), ∃ solution : ℝ → Field, solution 0 = initial ∧
+      ∀ t ∈ Ioo (-ε) ε,
+        HasDerivAt solution (continuousRhs p (smoothKernel r)
+          (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0) (solution t)) t ∧
+          ∀ x, ‖solution t x‖ = 1 :=
+  exists_local_phase_solution p (smoothKernel_translationInvariant r)
+    (integrable_smoothKernel_row r 0) initial hunit
+
+open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
   let declarations := #[
@@ -84,7 +94,8 @@ run_cmd do
     ``norm_meanField_le, ``norm_meanField_le_of_unit_mass, ``norm_meanField_uniform_le,
     ``meanOperator, ``meanOperator_apply, ``norm_meanOperator_le, ``norm_meanOperator_sub_le,
     ``continuous_baselineRhs, ``continuousRhs, ``norm_continuousRhs_sub_le,
-    ``lipschitzOnWith_continuousRhs, ``exists_local_solution, ``local_solution_unique]
+    ``lipschitzOnWith_continuousRhs, ``exists_local_solution, ``local_solution_unique,
+    ``norm_local_solution_eq_initial, ``exists_local_phase_solution]
   for name in declarations do
     let axioms ← Lean.collectAxioms name
     let unexpected := axioms.filter fun axiomName => !allowedAxioms.contains axiomName

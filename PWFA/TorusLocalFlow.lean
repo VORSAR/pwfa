@@ -1,6 +1,7 @@
 module
 
 public import PWFA.TorusVelocityBound
+public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Mathlib.Analysis.ODE.ExistUnique
 
 @[expose] public section
@@ -8,7 +9,7 @@ public import Mathlib.Analysis.ODE.ExistUnique
 namespace PWFA.TorusOscillator
 
 open PWFA.Torus Filter MeasureTheory Set
-open scoped NNReal Topology
+open scoped ComplexConjugate NNReal Topology
 
 noncomputable section
 
@@ -88,6 +89,43 @@ theorem local_solution_unique (p : Parameters) {kernel : Point → Point → ℝ
     (v := fun _ => continuousRhs p kernel h hrow)
     (s := fun _ => Metric.closedBall 0 M)
     (Eventually.of_forall fun _ => hK) (hz.and zmem) (hw.and wmem) hinitial
+
+/-- At each torus point, a local solution keeps its initial modulus. -/
+theorem norm_local_solution_eq_initial (p : Parameters) {kernel : Point → Point → ℝ}
+    (h : TranslationInvariant kernel) (hrow : Integrable (kernel 0) area)
+    {solution : ℝ → Field} {ε : ℝ} (hε : 0 < ε)
+    (hsol : ∀ t ∈ Ioo (-ε) ε,
+      HasDerivAt solution (continuousRhs p kernel h hrow (solution t)) t)
+    (x : Point) {t : ℝ} (ht : t ∈ Ioo (-ε) ε) :
+    ‖solution t x‖ = ‖solution 0 x‖ := by
+  let evaluate : Field →L[ℝ] ℂ := ContinuousMap.evalCLM ℝ x
+  have hflat (s : ℝ) (hs : s ∈ Ioo (-ε) ε) :
+      HasDerivAt (fun u => ‖solution u x‖ ^ 2) 0 s := by
+    have hz := evaluate.hasFDerivAt.comp_hasDerivAt s (hsol s hs)
+    have hradial : (evaluate (continuousRhs p kernel h hrow (solution s)) *
+        conj (evaluate (solution s))).re = 0 := by
+      change (baselineRhs p kernel (solution s) x * conj (solution s x)).re = 0
+      rw [mul_comm]
+      exact baselineRhs_tangent p kernel (solution s) x
+    change HasDerivAt (fun u => ‖evaluate (solution u)‖ ^ 2) 0 s
+    simpa only [Complex.inner, Function.comp_apply, hradial, mul_zero] using hz.norm_sq
+  have hmem : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨by linarith, hε⟩
+  have hsq := isOpen_Ioo.is_const_of_deriv_eq_zero isPreconnected_Ioo
+    (fun s hs => (hflat s hs).differentiableAt.differentiableWithinAt)
+    (fun s hs => (hflat s hs).deriv) ht hmem
+  exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
+
+/-- A continuous unit phase field evolves locally through continuous unit phase fields. -/
+theorem exists_local_phase_solution (p : Parameters) {kernel : Point → Point → ℝ}
+    (h : TranslationInvariant kernel) (hrow : Integrable (kernel 0) area)
+    (initial : Field) (hunit : ∀ x, ‖initial x‖ = 1) :
+    ∃ ε > (0 : ℝ), ∃ solution : ℝ → Field, solution 0 = initial ∧
+      ∀ t ∈ Ioo (-ε) ε,
+        HasDerivAt solution (continuousRhs p kernel h hrow (solution t)) t ∧
+          ∀ x, ‖solution t x‖ = 1 := by
+  obtain ⟨ε, hε, solution, hinitial, hsol⟩ := exists_local_solution p h hrow initial
+  refine ⟨ε, hε, solution, hinitial, fun t ht => ⟨hsol t ht, fun x => ?_⟩⟩
+  rw [norm_local_solution_eq_initial p h hrow hε hsol x ht, hinitial, hunit x]
 
 end
 
