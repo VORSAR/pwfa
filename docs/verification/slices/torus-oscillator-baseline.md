@@ -111,3 +111,9 @@ On 2026-11-23 the assistant reviewed the following extension in the internal rev
 This clears the continuous mean field and its norm bound for experimental Lean under ADR-109. It leaves the radial row-mass calculations and continuous-time solution theorem as separate proof obligations.
 
 [PWFA.TorusMeanField](../../../PWFA/TorusMeanField.lean) verifies those statements for all three selected kernels. It also represents the mean as a bounded complex-linear operator. The extension audit checks the disk-driven field's continuity, the uniform mean's norm bound, and axiom dependencies. [Extension audit](../../../scripts/audit-extensions.lean)
+
+## Internal review of the velocity bound
+
+On 2026-11-23 the assistant reviewed the Lipschitz estimate in the internal review role. The reviewer is also the author. Let $L$ be the integral of the absolute centered kernel row. The mean operator is linear and has norm at most $L$. For two fields $z,w$ in the sup norm ball of radius $M$, the mean difference is therefore at most $L\lVert z-w\rVert_\infty$. The phase lag has unit norm and taking the imaginary component is contractive. Expanding the difference of the two products in the angular velocity gives a speed difference bound of $2|\kappa|LM\lVert z-w\rVert_\infty$. Each speed has absolute value at most $|\omega|+|\kappa|LM^2$. Expanding the velocity difference gives the final Lipschitz constant $|\omega|+3|\kappa|LM^2$.
+
+The internal review checked three failure cases. The estimate uses absolute row mass, so signed comparison kernels cannot cancel the bound. Disk continuity comes from the established mean-field operator. The ball controls both input fields, including the case $M=0$. This clears formalization of the bound under ADR-109. The bound supports a local existence proof and leaves the solution theorem as a separate obligation.
