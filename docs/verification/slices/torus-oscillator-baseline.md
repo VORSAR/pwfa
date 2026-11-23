@@ -97,3 +97,15 @@ The dispositions clear this smaller scope for experimental Lean under ADR-109. T
 [PWFA.TorusOscillator](../../../PWFA/TorusOscillator.lean) defines normalized torus area, the smooth and disk kernels, the uniform control, and the pointwise right-hand side. Its theorems check area mass one, positivity of the bump integral, nonnegative finite-range kernels and their cutoff, the constant-field rotation law under uniform coupling, and pointwise tangency. The [extension audit](../../../scripts/audit-extensions.lean) checks the public statements and their axiom dependencies.
 
 The next proof obligations are the disk and smooth kernel row integrals, regularity of the integral operator, and existence and uniqueness of the resulting continuous flow. The radius stays configurable.
+
+## Internal review of the continuous mean field
+
+On 2026-11-23 the assistant reviewed the following extension in the internal review role. The reviewer is also the author. This scope covers Euclidean distance continuity, translation invariance and integrability of the three selected kernels, and the passage from the pointwise formula to a continuous vector field.
+
+| Question | Disposition |
+|---|---|
+| Can continuity of the disk mean be inferred from continuity of the kernel? | The disk kernel has a sharp boundary. Translate the integration variable with Haar invariance to write its mean as $\int g(u)z(x+u)\,d\mu(u)$, where $g(u)=G(0,u)$. Then continuity in $x$ follows by dominated convergence with integrable bound $\lvert g(u)\rvert\lVert z\rVert_\infty$. |
+| Could a mean be formed from a nonintegrable row? | The generic operator requires an integrable centered row and exact translation invariance. The smooth row is continuous on the compact torus. The disk row is measurable and bounded, and the uniform row is constant. |
+| Which estimate can the flow proof rely on? | The mean has sup norm bounded by the centered row's absolute integral times the field's sup norm. For a nonnegative row of mass one this is a contraction. The mass condition remains explicit until it is proved for the individual kernels. |
+
+This clears the continuous mean field and its norm bound for experimental Lean under ADR-109. It leaves the radial row-mass calculations and continuous-time solution theorem as separate proof obligations.
