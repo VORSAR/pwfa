@@ -13,11 +13,11 @@ Recovered learned scalar gain under [ADR-093](../decisions/ADR-093.md):
 
 ## Flat torus coupling geometry
 
-- [ADR-104](../decisions/ADR-104.md) selects an **isotropic distance-based baseline**, expressible as `K0(x,y)=k(d_T(x,y))`. The exact 2D profile is pending.
+- [ADR-104](../decisions/ADR-104.md) selects an **isotropic distance-based baseline**, expressible as `K0(x,y)=k(d_T(x,y))`. [ADR-111](../decisions/ADR-111.md) selects the normalized smooth bump and its controls.
 - [ADR-105](../decisions/ADR-105.md) defines `d_T` as shortest periodic Euclidean distance on the unit square flat torus. A radial profile in this metric does **not** imply arbitrary global rotational symmetry of the square torus.
 - The learned pairwise memory term may remain spatially heterogeneous. No radial constraint on learned memory is implied.
 
-The [torus oscillator draft](../verification/slices/torus-oscillator-baseline.md) proposes transfer of the ring phase law to a normalized radial kernel. It specifies a published disk comparator, a candidate smooth profile, a separate uniform control, and analytic checks.
+The [torus oscillator baseline](../verification/slices/torus-oscillator-baseline.md) records the transfer of the ring phase law under [ADR-110](../decisions/ADR-110.md). It specifies the smooth primary profile, a published disk comparator, a separate uniform control, and analytic checks for review.
 
 Negative effective kernels were described as allowed; do not assume positive definiteness or stability. Require explicit existence, uniqueness, regularity, and stability claims with assumptions.
 

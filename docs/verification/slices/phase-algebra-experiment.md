@@ -4,7 +4,7 @@
 - **Decision authority:** [ADR-109](../../decisions/ADR-109.md) (owner-selected two-person role-separated review).
 - **Parent:** [SLICE-001](spatial-phase-foundation.md).
 - **Adversarial source:** [SLICE-001 internal hostile review](spatial-phase-foundation-internal-review.md).
-- **Metric work:** [SLICE-001-METRIC](spatial-metric-remediation.md) remains separately blocked by IR-001 and IR-002.
+- **Metric work:** [SLICE-001-METRIC](spatial-metric-remediation.md) records the written remedies for IR-001 and IR-002.
 
 ## Mathematical contract — bounded to algebra
 

@@ -18,7 +18,7 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 - [State space](mathematics/state-space.md)
 - [Evolution and coupling](mathematics/evolution.md)
 - [Historical ring oscillator reference](mathematics/ring-oscillator-reference.md)
-- [Candidate flat torus oscillator baseline](verification/slices/torus-oscillator-baseline.md)
+- [Flat torus oscillator baseline](verification/slices/torus-oscillator-baseline.md)
 - [Memory and homeostasis](mathematics/memory.md)
 - [Encoding and decoding](mathematics/encoding-decoding.md)
 - [Numerical methods](mathematics/numerical-methods.md)
@@ -38,8 +38,9 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 - [Current experimental and independent review policy](verification/review-gates.md)
 - [Experimental phase algebra slice](verification/slices/phase-algebra-experiment.md)
 - [Phase source audit](verification/slices/phase-algebra-internal-review.md)
+- [Experimental phase conjugation and inverse](verification/slices/phase-inverse-experiment.md)
 - [Phase algebra review packet](verification/slices/phase-algebra-review-packet.md)
-- [Blocked metric remediation](verification/slices/spatial-metric-remediation.md)
+- [Euclidean torus metric remediation](verification/slices/spatial-metric-remediation.md)
 - [Role-separated hostile findings](verification/slices/spatial-phase-foundation-internal-review.md)
 
 ## Project history and governance

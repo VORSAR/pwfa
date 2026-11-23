@@ -22,10 +22,12 @@
 | [ADR-101](ADR-101.md) | Constrained reconstruction of mathematical core (new decision, 2026-11-22) | A | Accepted strategy; Gate 1 open |
 | [ADR-102](ADR-102.md) | Continuous 2D periodic spatial domain (new) | B | Accepted topology; Gate 1 open |
 | [ADR-103](ADR-103.md) | Unit-complex phase representation (new) | A | Accepted representation; Gate 1 open |
-| [ADR-104](ADR-104.md) | Isotropic distance-based baseline coupling (new) | A | Accepted geometry; kernel profile open |
+| [ADR-104](ADR-104.md) | Isotropic distance-based baseline coupling (new) | A | Accepted geometry. [ADR-111](ADR-111.md) defines the profile. |
 | [ADR-105](ADR-105.md) | Shortest periodic Euclidean spatial distance (new) | A | Accepted flat-torus metric; Gate 1 open |
 | [ADR-108](ADR-108.md) | Scope-limited independent Gate 1 per vertical slice (new) | A | Independent requirement superseded for experiments by ADR-109 |
 | [ADR-109](ADR-109.md) | Internal hostile review plus uncertified experimental Lean (new) | A | Accepted experimental governance |
+| [ADR-110](ADR-110.md) | Phase-lag law for the flat torus baseline | 1A | Accepted for written review |
+| [ADR-111](ADR-111.md) | Finite-range structural coupling on the flat torus | 2A | Accepted profile and comparison kernels. Nominal radius open. |
 
 ## What these statuses mean
 

@@ -1,12 +1,12 @@
-# Candidate flat torus oscillator baseline
+# Flat torus oscillator baseline
 
-**Status:** Written candidate for review. The flat torus, unit-complex phase, radial coupling geometry, and periodic Euclidean distance are owner decisions. The phase law, measure, and kernel details below are proposed for the 2D baseline. [ADR-102](../../decisions/ADR-102.md) · [ADR-103](../../decisions/ADR-103.md) · [ADR-104](../../decisions/ADR-104.md) · [ADR-105](../../decisions/ADR-105.md)
+**Status:** The owner selected the phase law and finite-range kernel for the written baseline. Internal review of the oscillator contract and independent Gate 1 are pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 
 Let $D=(\mathbb R/\mathbb Z)^2$, let $d_T$ be the shortest periodic Euclidean distance, and use uniform area measure $\mu(D)=1$. Take any continuous unit-complex initial field $z_0:D\to S^1$, where $S^1=\{w\in\mathbb C:|w|=1\}$. The phase-only baseline uses constant natural frequency $\omega$, coupling strength $\kappa$, and phase lag $\alpha$. Input, learned coupling, homeostasis, encoding, and recall are outside this contract.
 
-For a nonnegative radial profile $k$, set $G(x,y)=k(d_T(x,y))$ and require $\int_D G(x,y)\,d\mu(y)=1$ for each $x$. The candidate phase law is
+For a nonnegative radial profile $k$, set $G(x,y)=k(d_T(x,y))$ and require $\int_D G(x,y)\,d\mu(y)=1$ for each $x$. The selected phase law is
 
 $$
 \begin{aligned}
@@ -21,7 +21,7 @@ The recovered ring settings $\kappa=1,\ \alpha=\pi/2-0.1,\ \omega=0$ give a prop
 
 ## Finite range and comparison kernels
 
-Use $0<R<\tfrac12$ for the finite-range candidates. Each supported disk then lies in a region with unambiguous Euclidean displacement. Its area is $\pi R^2$.
+Use $0<R<\tfrac12$ for the smooth and disk kernels. Each supported disk then lies in a region with unambiguous Euclidean displacement. Its area is $\pi R^2$.
 
 ### Published disk comparator
 
@@ -32,9 +32,9 @@ $$
 
 Omel’chenko and colleagues use circular periodic neighborhoods with equal weights and give the normalized continuum disk average. Their continuum variable describes local coherence, with the disk geometry supplying the comparator here. The sharp support edge gives a comparison at the same radius and total weight as a smooth kernel. [Omel’chenko et al. (2012), Eqs. 1 and 6](https://webdoc.sub.gwdg.de/ebook/serien/e/wias/2012/wias_preprints_1682.pdf)
 
-### Proposed smooth profile
+### Smooth primary kernel
 
-For $s\ge0$, let $b(s)=\exp[-1/(1-s)]$ for $s<1$ and $b(s)=0$ for $s\ge1$. One explicit candidate is
+For $s\ge0$, let $b(s)=\exp[-1/(1-s)]$ for $s<1$ and $b(s)=0$ for $s\ge1$. The primary kernel is
 
 $$
 G_R^{\mathrm{smooth}}(x,y)=
@@ -43,11 +43,11 @@ C_R\,b\!\left(\frac{d_T(x,y)^2}{R^2}\right),
 C_R^{-1}=\pi R^2\int_0^1 b(s)\,ds .
 $$
 
-Translation invariance makes the normalizer independent of $x$. Within the support the squared distance is squared Euclidean displacement, including at zero separation. The bump and all its derivatives vanish at the support edge, and the profile is zero near the torus cut locus. The displayed profile and any nominal radius require a 2D model decision. [Metric remediation](spatial-metric-remediation.md) · [Batch 4 evidence gap](../preliminary-hostile-review.md#findings)
+Translation invariance makes the normalizer independent of $x$. Within the support the squared distance is squared Euclidean displacement, including at zero separation. The bump and all its derivatives vanish at the support edge, and the profile is zero near the torus cut locus. A nominal radius and any sweep require an experimental decision. [Metric remediation](spatial-metric-remediation.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ### Uniform control
 
-Use $G_{\mathrm{uniform}}(x,y)=1$ as the proposed all-to-all control. The historical $a$-sweep belongs to the ring reference. A 2D mixture $(1-a)+aG_R^{\mathrm{smooth}}$ would preserve the uniform endpoint and give all pairs positive background weight when $0\le a<1$. The finite-range candidate and separate uniform control let us test the effect of removing distant interactions. [Historical ring reference](../../mathematics/ring-oscillator-reference.md)
+Use $G_{\mathrm{uniform}}(x,y)=1$ as the separate all-to-all control at equal total coupling strength. The historical $a$-sweep belongs to the ring reference. The disk and smooth profiles differ in how they distribute weight even at the same radius. [Historical ring reference](../../mathematics/ring-oscillator-reference.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## Analytic checks
 
@@ -74,7 +74,7 @@ To obtain this formula, integrate a Euclidean disk of radius $R$ along the direc
 
 ## Review and decisions
 
-1. Confirm the proposed normalized measure, transfer of the phase law, and admissible initial fields. Check the sign, placement of $\kappa$, and preservation of unit modulus and two-dimensional winding.
-2. Reconcile the exact profile and normalization with the unverified Batch 4 record. Select the smooth formula and radius policy, then confirm the same-radius disk and independent uniform controls.
-3. Verify the two outstanding torus metric findings and the kernel arguments, including normalization, representative independence, smoothness at zero separation and at the support edge, and the continuation argument.
+1. Review the normalized measure, phase law, and admissible initial fields. Check the sign, placement of $\kappa$, and preservation of unit modulus and two-dimensional winding.
+2. Verify the primary and comparison kernels and their expected rotation rates. Track the earlier Batch 4 provenance separately from the explicit owner choice in ADR-111.
+3. Check the written torus metric remediation and the kernel arguments, including normalization, representative independence, smoothness at zero separation and at the support edge, and the continuation argument.
 4. Freeze the chosen contract and close every applicable internal adversarial finding before experimental Lean. Independent Gate 1 remains pending. [ADR-109](../../decisions/ADR-109.md) · [Review gates](../review-gates.md)

@@ -67,3 +67,7 @@ The owner approved Option A under [ADR-109](../../decisions/ADR-109.md). This ch
 [SLICE-001-PHASE](phase-algebra-experiment.md) explicitly excludes metric and quotient definitions, so IR-001/IR-002 remain **OPEN** and block only [SLICE-001-METRIC](spatial-metric-remediation.md). The algebraic subset addresses IR-003 (arbitrary phase maps), IR-004 (explicit PH-P01–P06 and pinned toolchain), IR-005 (bounded proof/claim surface), and IR-006 (honest self-review governance). These are **internal, scope-limited remediations**, not external review closures.
 
 [Internal source audit](phase-algebra-internal-review.md) found the six theorem declarations and no simple proof holes; it did **not** compile the Lean code. No independent or system-level approval exists.
+
+## Written metric remediation (2026-11-23)
+
+The [metric record](spatial-metric-remediation.md) supplies the named Euclidean distance, diagonal witness, and lattice-minimum proof for IR-001 and IR-002. The assistant performed a bounded internal closure review of the written distance contract under ADR-109. The original review above records its original findings. Independent Gate 1 and the oscillator review remain pending.
