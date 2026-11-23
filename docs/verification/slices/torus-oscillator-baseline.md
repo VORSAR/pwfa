@@ -127,3 +127,9 @@ On 2026-11-23 the assistant reviewed a local existence and uniqueness scope as t
 For two differentiable solutions with the same initial field, continuity places both in a common bounded ball for a sufficiently small time interval. The local uniqueness theorem applies there with the same Lipschitz constant. The review clears local existence and uniqueness under ADR-109. Pointwise phase preservation along the flow and global continuation remain distinct statements.
 
 [PWFA.TorusLocalFlow](../../../PWFA/TorusLocalFlow.lean) proves existence on an open interval containing the initial time for every continuous initial field. Solutions from the same field agree on a neighborhood of that time. Both results apply to all three selected kernels through their integrability and translation invariance.
+
+## Internal review of phase preservation
+
+On 2026-11-23 the assistant reviewed this extension as the author in the internal review role. Evaluation at any torus point is a continuous real-linear map on the space of fields, so the derivative of the evaluated trajectory is the evaluated velocity. The real and imaginary components give $d|z(t,x)|^2/dt=2\operatorname{Re}(\overline{z(t,x)}\,\dot z(t,x))=0$ by the established tangency identity. The open time interval is connected and contains the initial time, so the squared modulus is constant throughout it. Taking nonnegative square roots works for every initial value, including zero. The proof uses tangency and does not depend on the centered kernel's exact mass. Unit initial fields therefore remain unit on the whole local solution interval.
+
+This clears the local invariant and its use in the existence theorem under ADR-109. The global continuation and winding statements remain separate obligations.
