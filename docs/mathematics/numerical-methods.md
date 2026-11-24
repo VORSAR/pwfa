@@ -18,6 +18,10 @@ The continuum domain is a unit square torus with unit-complex phase. For the fir
 
 At every selected grid, test the smooth and disk kernels at both $R=1/4$ and $R=3/8$ in unit-period coordinates. Each comparison uses the same radius for both kernel shapes. The uniform control supplies a single radius-independent reference on each grid. The decision on a default follows comparison with the exact spatial wave rates. [Radius comparison](../decisions/ADR-113.md) · [Continuum wave rates](../verification/slices/torus-oscillator-baseline.md#analytic-checks)
 
+## Structural quadrature comparison
+
+Use equal cell area $1/N$. Record the raw kernel row mass and its signed departure from one. Evolve paired raw and row-normalized structural operators under identical conditions. The twelve finite-range configurations each have two arms; the three uniform controls are common to both. [Quadrature comparison and expected synchronized rates](../decisions/ADR-114.md)
+
 ## Obligations before execution
 
 Recover formulas and establish tests for event alignment, phase topology/winding, grid/time-step convergence, conservation where applicable, and reported quadrature residuals.
