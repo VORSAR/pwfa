@@ -2,6 +2,8 @@
 
 This repository is the authoritative, version-controlled source for PWFA. No monolithic master document is maintained.
 
+See the [project roadmap](roadmap.md) for pending Lean proofs, independent review, and decisions for simulation and recall.
+
 ## Research scope
 - [Problem statement](vision/problem-statement.md)
 - [Research objectives](vision/objectives.md)
