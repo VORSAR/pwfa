@@ -88,6 +88,18 @@ example (r : Radius) (x : Point) (z : Field) :
   ⟨integral_smoothKernel r x, norm_meanField_smooth_le r z x⟩
 
 open PWFA.TorusOscillator in
+example (p : Parameters) (z : UnitPhase) (r : Radius) (t : ℝ) :
+    HasDerivAt (synchronizedField p z) (continuousRhs p (smoothKernel r)
+      (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0) (synchronizedField p z t)) t ∧
+    HasDerivAt (synchronizedField p z) (continuousRhs p (diskKernel r)
+      (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0) (synchronizedField p z t)) t ∧
+    HasDerivAt (synchronizedField p z) (continuousRhs p uniformKernel
+      uniformKernel_translationInvariant (integrable_uniformKernel_row 0) (synchronizedField p z t)) t :=
+  ⟨synchronizedField_deriv p _ _ (integral_smoothKernel r 0) z t,
+    synchronizedField_deriv p _ _ (integral_diskKernel r 0) z t,
+    synchronizedField_deriv p _ _ (by simp [uniformKernel]) z t⟩
+
+open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
   let declarations := #[
@@ -106,6 +118,7 @@ run_cmd do
     ``smoothKernel_translationInvariant, ``diskKernel_translationInvariant,
     ``uniformKernel_translationInvariant, ``continuous_smoothKernel_row,
     ``integral_smoothBump_radial, ``integral_smoothKernel, ``norm_meanField_smooth_le,
+    ``rotatingValue_deriv, ``rotatingValue_norm, ``synchronizedField_zero, ``synchronizedField_unit, ``meanField_const_of_unit_mass, ``synchronizedField_deriv,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,

@@ -9,3 +9,4 @@ public import PWFA.TorusDiskNormalization
 public import PWFA.TorusVelocityBound
 public import PWFA.TorusLocalFlow
 public import PWFA.TorusSmoothNormalization
+public import PWFA.TorusSynchronized
