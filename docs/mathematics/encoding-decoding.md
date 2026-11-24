@@ -21,4 +21,4 @@ The historical summaries leave the exact bump formula, decoder calibration, mapp
 
 No claim of invertibility, disjointness, retrieval correctness, or robustness is established by these parameter summaries alone.
 
-[ADR-095](../decisions/ADR-095.md) · [ADR-098](../decisions/ADR-098.md) · [Architecture interfaces](../architecture/interfaces.md) · [Benchmark](../experiments/benchmarks.md).
+[Bit-to-phase research and readout margins](../research/bit-to-phase-map.md) · [ADR-095](../decisions/ADR-095.md) · [ADR-098](../decisions/ADR-098.md) · [Architecture interfaces](../architecture/interfaces.md) · [Benchmark](../experiments/benchmarks.md).
