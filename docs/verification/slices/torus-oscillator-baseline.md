@@ -1,6 +1,6 @@
 # Flat torus oscillator baseline
 
-**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Internal review has cleared bounded Lean work through local phase solutions. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
+**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies local phase solutions and exact disk-kernel normalization under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 
@@ -145,7 +145,7 @@ Codex (GPT-6), the author of these changes, checked the implementation against t
 | TORUS-LOCAL-03 | Blocking | A zero velocity bound would invalidate a time window defined by its reciprocal. The local existence proof uses the reciprocal of one plus the bound, and the uniqueness theorem states agreement near the initial time. |
 | TORUS-LOCAL-04 | Blocking | Pointwise tangency alone makes no assertion about a differentiable trajectory. The proof applies continuous linear evaluation to the trajectory and proves the derivative of squared modulus is zero on the entire connected interval. |
 
-These findings are closed for the local slice. On Lean 4.35.0 with the pinned mathlib, the local build passed with warnings treated as errors, the phase and extension audits passed, and the experimental source check found no admitted proofs or custom axioms. The Lean proofs of exact disk and smooth row mass, global continuation, and winding preservation remain open. The radius remains configurable.
+These findings are closed for the local slice. On Lean 4.35.0 with the pinned mathlib, the local build passed with warnings treated as errors, the phase and extension audits passed, and the experimental source check found no admitted proofs or custom axioms. At the end of the local-flow review, exact disk and smooth row mass, global continuation, and winding preservation were still open. The radius remains configurable.
 
 ## Disk normalization review
 
@@ -159,3 +159,9 @@ On 2026-11-24 Codex (GPT-6) reviewed the disk calculation in the internal review
 | DISK-04 | Blocking | A row integral of one requires the exact prefactor. Integrate the existing indicator on its measurable disk and cancel its positive area against the reciprocal in the kernel. |
 
 The stated remedies close the four design findings for experimental implementation under ADR-109. The author and internal reviewer are the same assistant. Smooth-kernel normalization and independent Gate 1 remain open.
+
+### Compiled disk normalization
+
+At proof revision `bcf2320`, the internal post-implementation review checked DISK-01 through DISK-04 against the public theorem statements. For every admissible radius and every center, `area_disk` gives the area of the strict Euclidean torus disk and `integral_diskKernel` gives a row integral of one for the kernel in ADR-111. The disk mean therefore has pointwise norm bounded by the input field's supremum norm. The extension audit checks all three statements. The warning-free local build and both proof audits passed. The two new area and integral theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`. [Disk proof](../../../PWFA/TorusDiskNormalization.lean) · [Extension audit](../../../scripts/audit-extensions.lean)
+
+Exact smooth-kernel row mass, global continuation, and winding preservation remain open.
