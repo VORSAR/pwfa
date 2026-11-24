@@ -14,6 +14,7 @@ public import PWFA.TorusGlobalFlow
 public import PWFA.TorusWinding
 public import PWFA.TorusWaveDisk
 public import PWFA.TorusKernelSmoothness
+public import PWFA.HistoricalRing
 
 /-!
 # Public architecture interface

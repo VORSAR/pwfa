@@ -1,6 +1,6 @@
 # Flat torus oscillator baseline
 
-**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies unique global solutions for continuous unit-phase data, exact synchronized trajectories, and normalization of the disk and smooth kernels under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
+**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Under internal review, Lean verifies unique global unit-phase solutions, winding preservation, exact synchronized and spatial wave trajectories, disk and smooth normalization, and smoothness of the primary kernel. Independent Gate 1 remains open. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 

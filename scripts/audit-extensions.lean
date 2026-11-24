@@ -157,6 +157,20 @@ example (r : Radius) (x y : Fin 2 → ℝ)
     iteratedFDeriv ℝ n (liftedSmoothKernel r) (x,y) = 0 :=
   liftedSmoothKernel_flat_at_edge r (x,y) h n
 
+open PWFA.HistoricalRing AddCircle MeasureTheory in
+example (k a : ℝ) (x : UnitAddCircle) : (∫ y, kernel k a x y ∂haarAddCircle) = k :=
+  integral_kernel k a x
+
+-- The two nonuniform contrasts give different first-harmonic rates, in either direction.
+open PWFA.HistoricalRing in
+example : rate 0 (Real.pi/2 - 1/10) 1 (2/5) 1 = -(1/5) * Real.cos (1/10) ∧
+    rate 0 (Real.pi/2 - 1/10) 1 (4/5) (-1) = -(2/5) * Real.cos (1/10) := by
+  constructor
+  · convert (historical_rates (2/5) (Or.inr (Or.inl rfl))).2.1 using 1
+    ring
+  · convert (historical_rates (4/5) (Or.inr (Or.inr rfl))).2.2 using 1
+    ring
+
 open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
@@ -181,6 +195,7 @@ run_cmd do
     ``coordinateLoop, ``coordinateWinding, ``coordinateWinding_eq_on_interval, ``local_solution_coordinateWinding, ``global_solution_coordinateWinding,
     ``waveCoefficient_real, ``waveCoefficient_zero, ``waveCoefficient_neg, ``waveCoefficient_swap, ``waveCoefficient_uniform_nonzero, ``waveField_zero, ``waveField_unit, ``waveField_deriv, ``setIntegral_disk_coordinates, ``waveCoefficient_disk_chord,
     ``liftedSmoothKernel_periodic, ``contDiff_liftedSmoothKernel, ``liftedSmoothKernel_flat_at_edge, ``liftedSmoothKernel_zero_near_tie,
+    ``PWFA.HistoricalRing.kernel_coordinates, ``PWFA.HistoricalRing.integral_kernel, ``PWFA.HistoricalRing.mean_mode, ``PWFA.HistoricalRing.trajectory_initial, ``PWFA.HistoricalRing.trajectory_unit, ``PWFA.HistoricalRing.trajectory_speed, ``PWFA.HistoricalRing.trajectory_deriv, ``PWFA.HistoricalRing.historical_rates,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
