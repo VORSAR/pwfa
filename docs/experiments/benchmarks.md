@@ -15,6 +15,8 @@
 
 The first 16-bit torus input uses the sixteen centers of a 4×4 tiling. Its 128-site solver grid has dimensions 16×8. [Input geometry](../decisions/ADR-115.md) · [Solver grid](../decisions/ADR-112.md)
 
+For phase-map validation, compare the primary ±90° map with the ±45° map on the same cues. A masked position receives no bit-specific stimulus. Record the cue background initialization and evaluate the masked positions against their held-out target bits at recall. [Bit phases](../decisions/ADR-118.md) · [Masked cues](../decisions/ADR-119.md)
+
 **Sensitivity experiments:** 32-bit patterns, 256/512 samples, loads 1/8/16, phase/radius/orientation, antipodal conditions, reversed order.
 
 [ADR-100](../decisions/ADR-100.md) specifies a **target**, not a result: at least five percentage points exact-recall advantage over a preregistered matched-budget comparator, with clustered 95% confidence interval lower bound above zero.

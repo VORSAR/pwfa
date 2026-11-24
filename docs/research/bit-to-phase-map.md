@@ -1,6 +1,6 @@
 # Bit-to-phase encoding with a moving origin anchor
 
-Research note, 2026-11-24. The first experiment assigns sixteen bits to the centers of a 4×4 tiling. At recall time $t=40$, the score of a complex bit observation $u_j$ is the imaginary part of its value relative to the unit phase $a=z((0,0),t)$ at the origin. The owner has selected the layout and reference. The alphabet, mask semantics, observation operator, and thresholds are open. [Input geometry](../decisions/ADR-115.md) · [Recall anchor](../decisions/ADR-116.md) · [Benchmark](../experiments/benchmarks.md)
+Research note, 2026-11-24. The first experiment assigns sixteen bits to the centers of a 4×4 tiling. At recall time $t=40$, the score of a complex bit observation $u_j$ is the imaginary part of its value relative to the unit phase $a=z((0,0),t)$ at the origin. The owner has selected the layout and reference. The subsequent owner decisions select the primary and comparison bit phases and omission for masks. Spatial observation and thresholds remain open. [Bit phases](../decisions/ADR-118.md) · [Masks](../decisions/ADR-119.md) [Input geometry](../decisions/ADR-115.md) · [Recall anchor](../decisions/ADR-116.md) · [Benchmark](../experiments/benchmarks.md)
 
 ## What the research establishes
 
@@ -46,7 +46,7 @@ The formula illustrates an initial cue. A driven stimulus over a finite interval
 2. Compare the antipodal pair $\pm\pi/2$ with a smaller symmetric offset such as $\pm\pi/4$ under the same mask, grid, bump, and observation rule. Holding the bump fixed, a smaller offset reduces the imposed phase gradients proportionally and also reduces initial readout margin.
 3. At $t=40$, measure exact-word recall, abstentions, and masked-bit recovery on the same held-out cues. Report the anchored score and observation magnitude separately so spatial cancellation can be distinguished from phase drift. The clock-time result requires the learned dynamics and the recall protocol. The literature and these readout identities establish no PWFA recall rate.
 
-These are research candidates for the next architecture discussion. [Encoding contract](../mathematics/encoding-decoding.md) · [Evidence register](evidence-register.md)
+The owner subsequently selected the two-angle comparison and stimulus omission for masked bits. The spatial cue construction and measurement details remain proposals. [Encoding contract](../mathematics/encoding-decoding.md) · [Evidence register](evidence-register.md)
 
 ## Internal review of the point-readout experiment
 

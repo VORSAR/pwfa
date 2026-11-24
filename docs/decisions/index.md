@@ -34,6 +34,8 @@
 | [ADR-115](ADR-115.md) | Torus placement for the first 16-bit recall experiment | A | One bit per cell center on a 4×4 layout. |
 | [ADR-116](ADR-116.md) | Anchor for the torus recall decoder | A | Compare each bit observation with the field phase at (0,0) at the same recall time. |
 | [ADR-117](ADR-117.md) | Lean experiments for research and architecture choices | Owner directive | Accepted. Check formalizable assumptions and publish reproducible evidence before recommendations. |
+| [ADR-118](ADR-118.md) | Bit polarity and relative phase choices | 1A | Primary ±90°, with ±45° as a comparison. |
+| [ADR-119](ADR-119.md) | Masked input stimulation | 2A | Omit the bit-specific stimulus and record background initialization. |
 
 ## What these statuses mean
 
