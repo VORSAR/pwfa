@@ -31,6 +31,7 @@
 | [ADR-112](ADR-112.md) | Total site budgets for the first torus grids | B | Accepted 16×8, 16×16, and 32×16. |
 | [ADR-113](ADR-113.md) | First torus radius comparison | C | Compare 1/4 and 3/8 at every grid size before choosing a default. |
 | [ADR-114](ADR-114.md) | Structural quadrature in torus validation | B | Evolve raw and row-normalized weights as coequal tests. |
+| [ADR-115](ADR-115.md) | Torus placement for the first 16-bit recall experiment | A | One bit per cell center on a 4×4 layout. |
 
 ## What these statuses mean
 
