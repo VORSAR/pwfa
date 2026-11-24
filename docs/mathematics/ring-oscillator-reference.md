@@ -38,3 +38,7 @@ Take $z(x,0)=e^{2\pi i n x}$, using the recovered controls $n\in\{0,+1,-1\}$. Co
 | $0.8$ | $-0.995004$ | $-0.398002$ |
 
 These values follow from the equation and provide numerical regression targets. The [torus oscillator draft](../verification/slices/torus-oscillator-baseline.md) uses the same phase-lag convention with its own radial kernel and two-dimensional test modes.
+
+## Internal review of the historical controls
+
+At revision `764f30d`, Codex (GPT-6) reviewed roadmap item 7 as its author in the internal reviewer role. RING-01 requires the one-dimensional period and the actual cosine of the difference in the recovered kernel. Use Haar probability on the unit circle and check the kernel on arbitrary real representatives. RING-02 requires the row mass to equal the coupling strength for any contrast and any center. Evaluate the three Fourier terms with their exact signs and the factor of one half in the first harmonic. RING-03 requires the rotating modes to solve the historical unforced law with coupling inside the integral. Check the derivative against that integral and specialize windings zero and both first harmonics at all three historical contrasts using exact real values. These dispositions clear the experimental reference calculation under ADR-109.
