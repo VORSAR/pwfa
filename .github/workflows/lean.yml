@@ -12,6 +12,8 @@ on:
       - 'lake-manifest.json'
       - 'scripts/audit-phase.lean'
       - 'scripts/audit-extensions.lean'
+      - 'scripts/experiments/*.lean'
+      - 'scripts/check-lean-experiments.sh'
       - '.github/workflows/lean.yml'
   workflow_dispatch:
 
@@ -30,7 +32,7 @@ jobs:
         shell: bash
         run: |
           status=0
-          git grep -n -w -E 'sorry|admit|axiom' -- PWFA.lean ':(glob)PWFA/**/*.lean' || status=$?
+          git grep -n -w -E 'sorry|admit|axiom' -- PWFA.lean ':(glob)PWFA/**/*.lean' ':(glob)scripts/experiments/*.lean' || status=$?
           if [ "$status" -eq 0 ]; then
             echo "Disallowed proof hole or axiom found in experimental Lean source."
             exit 1
@@ -68,3 +70,6 @@ jobs:
 
       - name: Audit experimental extensions
         run: lake env lean scripts/audit-extensions.lean
+
+      - name: Check research experiments
+        run: bash scripts/check-lean-experiments.sh

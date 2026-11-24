@@ -33,6 +33,7 @@
 | [ADR-114](ADR-114.md) | Structural quadrature in torus validation | B | Evolve raw and row-normalized weights as coequal tests. |
 | [ADR-115](ADR-115.md) | Torus placement for the first 16-bit recall experiment | A | One bit per cell center on a 4×4 layout. |
 | [ADR-116](ADR-116.md) | Anchor for the torus recall decoder | A | Compare each bit observation with the field phase at (0,0) at the same recall time. |
+| [ADR-117](ADR-117.md) | Lean experiments for research and architecture choices | Owner directive | Accepted. Check formalizable assumptions and publish reproducible evidence before recommendations. |
 
 ## What these statuses mean
 

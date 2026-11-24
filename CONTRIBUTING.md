@@ -11,6 +11,18 @@ GitHub `main` is the single source of truth. Chat conversations, local drafts, a
 5. Direct commits **do not** constitute independent technical review or satisfy Gate 1. For **experimental** Lean, ADR-109 permits role-separated internal hostile review with closure of every applicable finding. This is not independent certification.
 6. Preserve append-only historical and decision provenance. Never silently rewrite the immutable recovery snapshot or previously approved decision meaning.
 
+## Lean experiments for research decisions
+
+When comparing approaches, identify a mathematical assumption that could change the ranking. After the bounded internal review under ADR-109, test it in Lean before presenting the options. Include a boundary or counterexample when it distinguishes candidates. Put the evidence beside the recommendation and say what still needs numerical simulation or held-out data. Record the owner's choice separately. [Research decision](docs/decisions/ADR-117.md) · [First worked example](docs/research/bit-to-phase-map.md)
+
+Keep each reproducible check in a standalone file directly under `scripts/experiments/`. Link its module comment to the governing specification or research note; link the note back to the check. Use the repository's pinned toolchain. Run the same collection locally and in CI with:
+
+```sh
+bash scripts/check-lean-experiments.sh
+```
+
+The runner builds each file's imports and treats warnings as errors. Include the hypotheses and the exact checked conclusion in the note. The phase-readout check illustrates the repository's axiom-dependency audit. [Example Lean file](scripts/experiments/bit-phase-readout.lean)
+
 ## Architecture decision records (ADRs)
 
 Use [the ADR template](docs/decisions/template.md). A new decision receives a stable ID. Accepted decisions are historically immutable in *meaning*; supersede through a new ADR. Documentation corrections must cite evidence and retain an amendment trail. Unknown historical choices must remain **NOT RECOVERED**. Preserve the contemporaneous recommendation separately from retrospective commentary.

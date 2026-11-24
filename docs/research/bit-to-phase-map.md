@@ -57,3 +57,15 @@ On 2026-11-24 the author, Codex, reviewed this bounded experiment under ADR-109 
 - BP-03. In the masking example, omission preserves the pre-cue state and an explicit write sets it to the anchor. Check when these preparations coincide and give a unit-phase example with different scores. Driven forcing and time-dependent recovery require a separate model.
 
 These dispositions clear the experimental algebra checks. Numerical grids, spatial observation weights, learned dynamics and benchmark accuracy remain outside this experiment. [Review policy](../verification/review-gates.md)
+
+### Checked results for the decision discussion
+
+The standalone [bit-phase experiment](../../scripts/experiments/bit-phase-readout.lean) passed on Lean 4.35.0. The internal implementation check against review commit `aa4de8a` covered both bit signs at arbitrary unit anchor, exact boundary ties, and a concrete counterexample using a unit-valued background. All eight reported results passed the project's axiom-dependency check.
+
+| Question | Lean result and scope |
+|---|---|
+| How much angular error can the readout tolerate? | For positive observation magnitude, zero threshold, and offsets $\pm\theta$ with $0<\theta\le\pi/2$, both signs survive every relative error strictly smaller than $\theta$. Each symbol can reach a tie at error magnitude exactly $\theta$. This yields $90^\circ$ and $45^\circ$ ideal margins for the two candidates. |
+| Does a shared rotation or spatial pooling change that conclusion? | A shared unit rotation preserves the score for every complex observation. The equal average of two opposite observations has score zero, so a pooled observation can lose its bit signal even with a perfect anchor. |
+| Do an omitted cue and an explicit neutral write mean the same thing? | Under the stated cue-preparation semantics the resulting phases coincide exactly when the pre-cue phase equals the anchor. With anchor $1$ and background $i$, omission gives score $+1$ and writing the anchor gives $0$. A masked site's initial score therefore depends on its background. |
+
+The calculations leave the held-out recall rate at $t=40$ open. [Standing Lean research practice](../decisions/ADR-117.md)

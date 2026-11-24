@@ -11,6 +11,7 @@ At [commit `cafd238`](https://github.com/VORSAR/pwfa/commit/cafd238daa78d872977a
 - [x] **Pin the Lean environment.** The repository pins Lean and mathlib for reproducible builds. The Mac clone reported Lean 4.35.0 and Lake 5.0.0-src+eb6cafb. [Toolchain](../lean-toolchain) · [Dependency manifest](../lake-manifest.json)
 - [x] **Document the proofs in the source.** Module comments link the seven deliverables to their governing specifications. The proof revision passed both GitHub checks. [Proof revision](https://github.com/VORSAR/pwfa/commit/3e9368636fee99cc00b5be0d024e5a95424e6875) · [Lean CI](https://github.com/VORSAR/pwfa/actions/runs/45385868482) · [Documentation CI](https://github.com/VORSAR/pwfa/actions/runs/45385868517)
 - [x] **Add the Lean verification toolkit.** The repository includes review guidance, audit scripts, worked examples, and five evaluation cases. [Verification guide](../.claude/skills/lean-verify/SKILL.md) · [Evaluation cases](../.claude/skills/lean-verify/evals)
+- [x] **Make Lean experiments part of research decisions.** Check formalizable assumptions before recommendations, preserve the results, and rerun the experiments in CI. [Decision](decisions/ADR-117.md) · [Research checks](../scripts/experiments)
 
 ## Seven verified Lean deliverables
 
