@@ -41,11 +41,11 @@ Item 7 verifies the historical ring kernel’s row integral, its action on Fouri
 
 ## Independent Gate 1
 
-Independent Gate 1 is open. Review preparation can run alongside the Lean work. Each packet should identify the exact slice and revision that an outside reviewer is being asked to judge. [Review gates](verification/review-gates.md)
+Independent Gate 1 is open. The oscillator packet can cover the frozen unforced torus contract while work on the encoder and learned memory proceeds. Name the exact claims and revision for the outside reviewer. [Review gates](verification/review-gates.md)
 
 - [ ] **Reconcile the requirements matrix.** Link each accepted claim to its governing ADR, Lean theorem, assumptions, and audit. Update entries that predate the metric, local-flow, and disk proofs. Keep the outstanding mathematical obligations visible. [Requirements matrix](verification/requirements-matrix.md) · [Proof obligations](verification/proof-obligations.md)
 - [ ] **Prepare a commit-pinned torus reviewer packet.** Include the frozen contract, theorem statements, internal findings and remedies, build and audit evidence, and the claims still open. The existing phase-algebra packet covers a narrower scope. [Phase-algebra packet](verification/slices/phase-algebra-review-packet.md) · [Torus contract](verification/slices/torus-oscillator-baseline.md)
-- [ ] **Obtain independent review and record closure.** Have the outside reviewer assess the frozen scope. Record each finding, remedy, revision, and verification outcome, then record the disposition for that scope once every finding is closed. [External review request](https://github.com/VORSAR/pwfa/issues/8) · [Gate policy](verification/review-gates.md)
+- [ ] **Obtain independent review and record closure.** Have the outside reviewer assess the frozen scope. Record each finding, remedy, revision, and verification outcome, then record the disposition for that scope once every finding is closed. [Earlier review request, closed as not planned](https://github.com/VORSAR/pwfa/issues/8) · [Gate policy](verification/review-gates.md)
 
 ## Decisions and contracts needed for later work
 
@@ -54,14 +54,22 @@ The next simulation and recall work requires the following owner decisions.
 - [x] **Choose the 2D grid sizes.** Preserve 128, 256, and 512 total sites on 16×8, 16×16, and 32×16 periodic grids. [Grid decision](decisions/ADR-112.md)
 - [x] **Choose the first radius comparison.** Test $R=1/4$ and $R=3/8$ at each grid size before choosing a default. [Radius comparison](decisions/ADR-113.md)
 - [x] **Choose the structural quadrature comparison.** Evolve raw and row-normalized weights as coequal tests, recording raw mass errors. [Quadrature decision](decisions/ADR-114.md)
-- [ ] **2D simulation protocol.** Specify midpoint stages, event alignment, discrete winding, and error and convergence criteria. Select a default radius after the two-radius comparison. Retain the recovered time-step and grid-refinement settings as reference points. [Numerical methods](mathematics/numerical-methods.md) · [Radius decision](decisions/ADR-111.md)
+- [ ] **Grid registration and time stepping.** Specify the grid offset, midpoint update and stage order, and handling of events between scheduled steps. [Numerics](mathematics/numerical-methods.md)
+- [ ] **Solver diagnostics and validation.** Specify discrete winding, raw-mass and wave-rate residuals, time and space refinement, error norms and tolerances. Compare both approved radii before selecting a default. [Numerics](mathematics/numerical-methods.md) · [Radius study](decisions/ADR-113.md)
 - [x] **Choose the first 16-bit encoder geometry.** Place one bit at each cell center of a 4×4 torus layout. [Encoder geometry](decisions/ADR-115.md)
 - [x] **Choose the recall anchor.** Read each observed phase relative to the field at the spatial origin at the same recall time. [Anchor decision](decisions/ADR-116.md)
 - [x] **Choose the bit phases and polarity.** Use negative offsets for 0 and positive for 1, with ±90° primary and ±45° for comparison. [Bit-phase decision](decisions/ADR-118.md)
 - [x] **Choose the masked-cue behavior.** Omit the bit stimulus, record how the background was initialized, and score masked positions at recall. [Mask decision](decisions/ADR-119.md)
 - [x] **Choose the cue backgrounds.** Use a uniform primary field and a reproducible, target-independent varied field for sensitivity testing. [Background decision](decisions/ADR-120.md)
-- [ ] **Encoding and decoding.** Fix bit index order, varied-background generator and parameters, bump width and normalization, the observation operator, thresholds, and handling of ambiguous outputs. The 32-bit sensitivity layout remains open. [Encoding and decoding](mathematics/encoding-decoding.md)
-- [ ] **Memory, homeostasis, and training.** Specify the pairwise update, the quantity driving homeostasis, state domains and initial values, and the reset or carry behavior at each training and retrieval event. Reconcile these with the recovered gain law and sequential training order. [Memory dynamics](mathematics/memory.md) · [Training protocol](experiments/methodology.md)
-- [ ] **Recall benchmark.** Choose the matched comparator and resource budget. Freeze the deterministic cue generator, seeds, corruption and rounding rules, exact-recall metric, clustering unit, and treatment of failed retrievals before evaluating the five-percentage-point target. [Benchmark](experiments/benchmarks.md) · [Controls](experiments/baselines.md)
+- [ ] **Physical encoder.** Assign bit indices to centers. Specify bump profile, support radius and normalization, and how and when a presented bit sets its phase on a varied background. [Encoder contract](mathematics/encoding-decoding.md)
+- [ ] **Sensitivity inputs.** Define the reproducible varied-background generator, spatial scale and amplitude, and the 32-bit layout. [Background decision](decisions/ADR-120.md) · [Benchmark](experiments/benchmarks.md)
+- [ ] **Observation and decoding.** Choose point sampling or spatial pooling, weights, evaluation at the origin, confidence threshold, tie/abstention behavior and diagnostic quality rules. [Decoder contract](mathematics/encoding-decoding.md) · [Diagnostic controls](decisions/ADR-098.md)
+- [ ] **Pairwise memory and homeostasis.** Define learned coupling and trace updates, the drive $Q$, allowed signs and state bounds, initial values, and how the denominator in the recovered gain law stays valid. [Memory dynamics](mathematics/memory.md)
+- [ ] **Training and retrieval events.** Specify episode durations, stimulus timing, exact reset/carry values, branch behavior and the standardized recall transition. The recovered sequential presentation and carry/reset categories already constrain these choices. [Training protocol](experiments/methodology.md) · [Training decision](decisions/ADR-096.md)
+- [ ] **Matched recall comparison.** Choose the external comparator, equal-resource budget and training/evaluation schedule. [Benchmark](experiments/benchmarks.md) · [Controls](experiments/baselines.md)
+- [ ] **Preregister cues and analysis.** Specify seeds and independent splits, rounding for non-overlapping flips and masks, exact-word scoring including ambiguous outputs, cluster unit, confidence interval and sample-size justification. Measure the five-percentage-point target on held-out cues. [Benchmark](experiments/benchmarks.md)
 
-The [research and recovery register](research/open-questions.md) tracks additional open work, including external-knowledge retrieval and reinjection, missing historical decisions, and source recovery.
+## Further research and historical recovery
+
+- [ ] Specify external knowledge payloads, provenance, retrieval/reinjection timing and error handling, or explicitly defer that component. [Interface inventory](architecture/interfaces.md)
+- [ ] Recover the meanings of historical ADR-057 through ADR-059, original choice matrices, and missing primary sources where available. [Research and recovery register](research/open-questions.md)

@@ -79,3 +79,16 @@ At revision `5eb9f5c`, Codex reviewed the following bounded experiment as author
 - GS-03. Treat positive-support sample counts as a geometry diagnostic. They cannot measure integrated weight, solver accuracy, or learned recall. Use encoder radii independently of the structural coupling radii.
 
 These remedies clear the experimental finite-grid calculation. The owner retains the choice of grid offset, encoder radius, and readout. [Encoder geometry](../decisions/ADR-115.md) · [Solver grids](../decisions/ADR-112.md)
+
+### Checked node registration and support counts
+
+The [finite-grid experiment](../../scripts/experiments/encoder-grid.lean) checked all sixteen bit centers separately with exact integer arithmetic and periodic Euclidean distance. In the table, each entry is the number of nodes strictly inside one bit's circular support; a smooth profile positive throughout its interior and zero at the boundary gives these nodes positive weight.
+
+| Placement | Encoder radius | 16×8 | 16×16 | 32×16 |
+|---|---:|---:|---:|---:|
+| Origin-aligned | 1/10 | 3 | 9 | 17 |
+| Origin-aligned | 1/8 | 3 | 9 | 21 |
+| Half-cell shift in both axes | 1/10 | 4 | 12 | 16 |
+| Half-cell shift in both axes | 1/8 | 8 | 12 | 28 |
+
+All sixteen centers and the origin are nodes on each origin-aligned grid. All seventeen locations fall between nodes on each half-shifted grid. On the origin-aligned 16×8 grid both candidate radii sample just one row through each center. Equal counts can still give different weights and responses. Adjacent centers are 1/4 of the period apart. A radius of 1/10 leaves a gap of 1/20 along their joining line; at 1/8 the boundaries meet and both edge weights are zero. The experiment establishes neither interpolation accuracy nor recall performance. [Grid decision](../decisions/ADR-112.md) · [Encoder layout](../decisions/ADR-115.md)
