@@ -115,6 +115,16 @@ example (p : Parameters) (r : Radius) (initial : Field) (hunit : ∀ x, ‖initi
       (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0) (f t)) t :=
   existsUnique_global_phase_solution p _ _ initial hunit
 
+open PWFA.TorusOscillator MeasureTheory in
+example (p : Parameters) {kernel : Point → Point → ℝ} (h : TranslationInvariant kernel)
+    (hr : Integrable (kernel 0) area) {f : ℝ → Field} (hu : ∀ x, ‖f 0 x‖ = 1)
+    (hf : ∀ s, HasDerivAt f (continuousRhs p kernel h hr (f s)) s) (t : ℝ) :
+    (coordinateWinding (f t) (global_solution_unit p h hr hu hf t) 0,
+      coordinateWinding (f t) (global_solution_unit p h hr hu hf t) 1) =
+    (coordinateWinding (f 0) hu 0, coordinateWinding (f 0) hu 1) :=
+  congrArg₂ Prod.mk (global_solution_coordinateWinding p h hr hu hf t 0)
+    (global_solution_coordinateWinding p h hr hu hf t 1)
+
 open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
@@ -136,6 +146,7 @@ run_cmd do
     ``integral_smoothBump_radial, ``integral_smoothKernel, ``norm_meanField_smooth_le,
     ``rotatingValue_deriv, ``rotatingValue_norm, ``synchronizedField_zero, ``synchronizedField_unit, ``meanField_const_of_unit_mass, ``synchronizedField_deriv,
     ``exists_uniform_local_solution, ``global_solution_unit, ``existsUnique_global_phase_solution,
+    ``coordinateLoop, ``coordinateWinding, ``coordinateWinding_eq_on_interval, ``local_solution_coordinateWinding, ``global_solution_coordinateWinding,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,

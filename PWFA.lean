@@ -11,6 +11,7 @@ public import PWFA.TorusLocalFlow
 public import PWFA.TorusSmoothNormalization
 public import PWFA.TorusSynchronized
 public import PWFA.TorusGlobalFlow
+public import PWFA.TorusWinding
 
 /-!
 # Public architecture interface
