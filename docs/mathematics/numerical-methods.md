@@ -12,7 +12,7 @@ The exact integrator maps, stage ordering, numerical operators, residual/contras
 
 ## New topology and representation implications
 
-[ADR-102](../decisions/ADR-102.md) selects a continuous two-dimensional periodic torus; [ADR-103](../decisions/ADR-103.md) selects an S¹-valued unit-complex phase field. The recovered periodic grid size `N` is not yet assigned a two-dimensional meaning (per axis versus total sites). Historical winding `0/±1` likewise needs two-direction topology conventions. The eventual integrator must maintain unit magnitude, subject to clearly defined numerical tolerances and proof conditions. **No 2D solver or quadrature is approved by these choices alone.**
+The continuum domain is a unit square torus with unit-complex phase. For the first numerical baseline, $N$ counts all sites. The 128-, 256-, and 512-site grids are 16×8, 16×16, and 32×16 respectively. Their adjacent refinements alternate axes. Compare the two axial waves separately against their exact continuum rates, with both spacings recorded. The discrete winding diagnostic and unit-magnitude tolerance still need definitions. [Grid decision](../decisions/ADR-112.md) · [State space](state-space.md) · [Wave checks](../verification/slices/torus-oscillator-baseline.md#analytic-checks)
 
 ## Obligations before execution
 

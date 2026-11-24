@@ -18,7 +18,7 @@
 - GAP-002: ADR-104 selects the isotropic distance-based baseline and ADR-105 supplies the periodic metric. [ADR-110](../decisions/ADR-110.md) transfers the [historical ring phase law](../mathematics/ring-oscillator-reference.md) to continuous torus phases. [ADR-111](../decisions/ADR-111.md) selects the smooth finite-range kernel and controls. A nominal radius, oscillator review, and learned interaction remain open.
 - GAP-001 experimental sub-slices: [phase algebra](../verification/slices/phase-algebra-experiment.md), [phase conjugation](../verification/slices/phase-inverse-experiment.md), and [Euclidean torus distance](../verification/slices/spatial-metric-remediation.md) have bounded internal authorizations. Independent review and the full state-space contract remain open.
 - GAP-005: historical 1D bump placement does not define 2D encoding; must explicitly decide how to reconcile.
-- GAP-007/008: numeric grid size N, quadrature and two-direction winding conventions remain undecided under 2D topology.
+- GAP-007/008: [ADR-112](../decisions/ADR-112.md) fixes the first three grid shapes and total site counts. The quadrature and discrete winding diagnostics still need a numerical contract.
 
 ## Critical dependency register
 

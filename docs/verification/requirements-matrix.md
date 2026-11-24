@@ -14,7 +14,7 @@ This is an initial **mapping of recovered constraints**, not a verified original
 | REC-GATE-02: Close all findings within authorized review scope | [055](../decisions/ADR-055.md), [108](../decisions/ADR-108.md) | [Review gates](review-gates.md) | **NOT VERIFIED** |
 | REC-MEM-01: Gain and homeostasis | [093](../decisions/ADR-093.md), [094](../decisions/ADR-094.md) | [Memory](../mathematics/memory.md) | Formula summaries only |
 | REC-ENC-01: Spatial encoding and decoder | [095](../decisions/ADR-095.md) | [Encoding](../mathematics/encoding-decoding.md) | Exact formula missing |
-| REC-NUM-01: Convergence and quadrature | [097](../decisions/ADR-097.md), [098](../decisions/ADR-098.md) | [Numerics](../mathematics/numerical-methods.md) | Solver details missing |
+| REC-NUM-01: Convergence and quadrature | [097](../decisions/ADR-097.md), [098](../decisions/ADR-098.md), [112](../decisions/ADR-112.md) | [Numerics](../mathematics/numerical-methods.md) | Grid shapes and total site counts selected. Solver stages and numerical convergence criteria pending. |
 | REC-EXP-01: Deterministic benchmark | [099](../decisions/ADR-099.md) | [Benchmark](../experiments/benchmarks.md) | Protocol incomplete |
 | REC-EXP-02: Matched recall target | [100](../decisions/ADR-100.md) | [Hypotheses](../vision/hypotheses.md) | No results |
 
