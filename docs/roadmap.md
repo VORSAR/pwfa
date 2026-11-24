@@ -2,6 +2,8 @@
 
 **Next milestone: reconcile the requirements matrix and freeze the torus reviewer packet for independent Gate 1.**
 
+**Next empirical milestone:** measure exact 16-bit word recall on corrupted cues at $t=40$. The input-margin checks inform the choice of candidate encoders. The first trained recall pilot depends on the memory, training, and decoder contracts listed below. [Recall measurement](experiments/benchmarks.md#first-trained-recall-measurement)
+
 ## Verified starting point
 
 At [commit `cafd238`](https://github.com/VORSAR/pwfa/commit/cafd238daa78d872977a1275dcda13623af4eb0a), Lean checks the phase algebra, shortest periodic Euclidean distance, continuous mean field, and local phase solutions for the smooth, disk, and uniform kernels. Solutions from the same initial field agree near the initial time. Each point keeps its initial modulus throughout the local interval. The disk kernel integrates to one at every center. [Oscillator baseline](verification/slices/torus-oscillator-baseline.md) · [Lean CI](https://github.com/VORSAR/pwfa/actions/runs/45375224871)
@@ -67,6 +69,7 @@ The next simulation and recall work requires the following owner decisions.
 - [ ] **Observation and decoding.** Choose point sampling or spatial pooling, weights, evaluation at the origin, confidence threshold, tie/abstention behavior and diagnostic quality rules. [Decoder contract](mathematics/encoding-decoding.md) · [Diagnostic controls](decisions/ADR-098.md)
 - [ ] **Pairwise memory and homeostasis.** Define learned coupling and trace updates, the drive $Q$, allowed signs and state bounds, initial values, and how the denominator in the recovered gain law stays valid. [Memory dynamics](mathematics/memory.md)
 - [ ] **Training and retrieval events.** Specify episode durations, stimulus timing, exact reset/carry values, branch behavior and the standardized recall transition. The recovered sequential presentation and carry/reset categories already constrain these choices. [Training protocol](experiments/methodology.md) · [Training decision](decisions/ADR-096.md)
+- [ ] **Measure trained recall at $t=40$.** Train on four stored words, present held-out corrupted cues, and record full-word matches and total cues. Record recovery of masked and flipped bits separately. Use development cues for encoder selection and reserve untouched data for the final benchmark. [Recall endpoint and pilot](experiments/benchmarks.md#first-trained-recall-measurement)
 - [ ] **Matched recall comparison.** Choose the external comparator, equal-resource budget and training/evaluation schedule. [Benchmark](experiments/benchmarks.md) · [Controls](experiments/baselines.md)
 - [ ] **Preregister cues and analysis.** Specify seeds and independent splits, rounding for non-overlapping flips and masks, exact-word scoring including ambiguous outputs, cluster unit, confidence interval and sample-size justification. Measure the five-percentage-point target on held-out cues. [Benchmark](experiments/benchmarks.md)
 
