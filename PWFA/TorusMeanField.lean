@@ -49,15 +49,17 @@ theorem integrable_smoothKernel_row (radius : Radius) (x : Point) :
     Integrable (smoothKernel radius x) area :=
   (continuous_smoothKernel_row radius x).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
 
+theorem measurableSet_disk (radius : Radius) (x : Point) :
+    MeasurableSet {y | euclideanDist x y < (radius : ℝ)} :=
+  measurableSet_lt (continuous_euclideanDist (continuous_const (y := x)) continuous_id).measurable
+    measurable_const
+
 theorem integrable_diskKernel_row (radius : Radius) (x : Point) :
     Integrable (diskKernel radius x) area := by
-  have hd := continuous_euclideanDist (continuous_const (y := x)) continuous_id
-  have hset : MeasurableSet {y | euclideanDist x y < (radius : ℝ)} :=
-    measurableSet_lt hd.measurable measurable_const
   have hform : diskKernel radius x =
       Set.indicator {y | euclideanDist x y < (radius : ℝ)} (fun _ => (Real.pi * (radius : ℝ) ^ 2)⁻¹) := rfl
   rw [hform]
-  exact (integrable_const _).indicator hset
+  exact (integrable_const _).indicator (measurableSet_disk radius x)
 
 theorem integrable_uniformKernel_row (x : Point) : Integrable (uniformKernel x) area :=
   integrable_const 1
