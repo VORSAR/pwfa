@@ -29,6 +29,7 @@
 | [ADR-110](ADR-110.md) | Phase-lag law for the flat torus baseline | 1A | Accepted for written review |
 | [ADR-111](ADR-111.md) | Finite-range structural coupling on the flat torus | 2A | Accepted profile and comparison kernels. Nominal radius open. |
 | [ADR-112](ADR-112.md) | Total site budgets for the first torus grids | B | Accepted 16×8, 16×16, and 32×16. |
+| [ADR-113](ADR-113.md) | First torus radius comparison | C | Compare 1/4 and 3/8 at every grid size before choosing a default. |
 
 ## What these statuses mean
 
