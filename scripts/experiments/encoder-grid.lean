@@ -43,10 +43,13 @@ private def periodicGap (a b : Nat) : Nat :=
   let direct := max a b - min a b
   min direct (period - direct)
 
-private def inside (r : Nat) (center sample : Site) : Bool :=
+private def squaredDistance (center sample : Site) : Nat :=
   let dx := periodicGap center.1 sample.1
   let dy := periodicGap center.2 sample.2
-  dx * dx + dy * dy < r * r
+  dx * dx + dy * dy
+
+private def inside (r : Nat) (center sample : Site) : Bool :=
+  squaredDistance center sample < r * r
 
 -- Check membership of both the origin anchor and all sixteen distinct bit centers.
 example : centers.eraseDups.length = 16 ∧ grids.all (fun g =>
@@ -77,5 +80,39 @@ example : countsAgree .halfCell 40 [8, 12, 28] = true := by decide +kernel
 example : centers.all (fun c => ([32, 40] : List Nat).all fun r =>
     ((samples (16, 8) .origin).filter (inside r c)).all fun s => s.2 == c.2) = true := by
   decide +kernel
+
+-- At a physical center or the origin there are four equidistant half-shifted nodes.
+-- Express their coordinates modulo one period, including across both seams.
+private def fourNeighbors (g c : Site) : List Site :=
+  let offsets (n x : Nat) :=
+    let h := period / (2 * n)
+    [(x + period - h) % period, (x + h) % period]
+  product (offsets g.1 c.1) (offsets g.2 c.2)
+
+-- For every bit, the four neighboring values can receive only its own stimulus
+-- at either candidate radius. The squared distances determine the attenuated angle.
+private def bitStencil (g : Site) (d : Nat) : Bool :=
+  centers.all fun c => (fourNeighbors g c).all fun v =>
+    (samples g .halfCell).contains v && squaredDistance c v == d &&
+      centers.all fun other => other == c || squaredDistance other v >= 1600
+
+example : bitStencil (16, 8) 500 && bitStencil (16, 16) 200 && bitStencil (32, 16) 125 := by
+  decide +kernel
+
+-- Each neighbor of the origin has exactly one nearest bit at the specified distance.
+-- All other bits lie outside even the larger candidate support.
+private def anchorStencil (g : Site) (d : Nat) : Bool :=
+  (fourNeighbors g (0, 0)).all fun v =>
+    (samples g .halfCell).contains v &&
+    centers.countP (fun c => squaredDistance c v == d) == 1 &&
+    centers.all fun c => squaredDistance c v == d || squaredDistance c v >= max d 1600
+
+example : anchorStencil (16, 8) 1300 && anchorStencil (16, 16) 1800 &&
+    anchorStencil (32, 16) 2125 := by decide +kernel
+
+-- On the primary grid, a clean point read sees the selected bit's peak and the
+-- origin sees none of the bit bumps. This also covers the narrower trial radius.
+example : centers.all (fun c => squaredDistance c c == 0 && squaredDistance c (0, 0) >= 1600 &&
+    centers.all fun other => other == c || squaredDistance other c >= 1600) := by decide +kernel
 
 end EncoderGridExperiment

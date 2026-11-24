@@ -102,3 +102,21 @@ At revision `8e705dc`, Codex, the author acting as internal reviewer, reviewed t
 - RA-03. Report point reconstruction separately from bump resolution, spatial pooling, nonuniform backgrounds, and accuracy after evolution. Keep the tested profile and interpolation provisional and the owner's width decision open.
 
 These dispositions clear the clean-cue experiment under ADR-109. [Bit phases](../decisions/ADR-118.md) · [Background](../decisions/ADR-120.md) · [Grid placement](../decisions/ADR-121.md)
+
+### Checked clean readout at the candidate radii
+
+The internal implementation check against review revision `0aca518` uses a uniform background, the trial peak-one bump above, complex bilinear interpolation at the physical points, and a zero threshold. A positive **correct signed score** means that the readout classifies a present bit correctly. For bit 1 this is the anchored imaginary score, and for bit 0 it is its negative. On all three origin-aligned grids, the exact clean score is 1 for the primary alphabet and $1/\sqrt{2}$ for the comparison. An omitted bit scores zero. Both candidate radii give those values. [Periodic grid checks](../../scripts/experiments/encoder-grid.lean) · [Readout proofs](../../scripts/experiments/encoder-width-readout.lean)
+
+The table gives the **smallest correct signed score** on each half-cell-shifted grid, rounded to five decimals. It ranges over both bit values and all assignments of positive, negative, or omitted inputs at the four corners surrounding the reconstructed origin. Every entry is positive.
+
+| Shifted grid | 1/8, ±90° | 1/10, ±90° | 1/8, ±45° | 1/10, ±45° |
+|---|---:|---:|---:|---:|
+| 16×8  | 0.82850 | 0.56872 | 0.46905 | 0.29788 |
+| 16×16 | 0.97822 | 0.94325 | 0.62945 | 0.57789 |
+| 32×16 | 0.99187 | 0.97928 | 0.66057 | 0.63147 |
+
+The grid check enumerates all sixteen bit centers. The four samples around each center receive only its own bit stimulus, all at the same distance. In grid order, the resulting bit-angle fractions for radius 1/8 are $e^{-5/11},e^{-1/7},e^{-5/59}$. For radius 1/10 they are $e^{-125/131},e^{-25/103},e^{-125/899}$. The four samples used to reconstruct the origin see zero stimulus except on the shifted 16×8 grid at radius 1/8. There, each can receive a corner bit with angular fraction $e^{-13/3}$.
+
+Let $b$ be the attenuated positive bit angle and $l$ the largest absolute angle among the four possible anchor-node inputs. Lean proves the reconstructed anchor is nonzero and the correct signed score is at least $\sin(b-l)$ under $0\le l<b$ and $b+l\le\pi/2$. Four same-polarity corner bits attain the bound for the corresponding bit sign. Substituting the exact fractions gives the table. An omitted interior bit on that same coarse grid can read $-\sin((\pi/2)e^{-13/3})\approx-0.02061$ when all four corner bits are positive, even though its own stimulus was omitted. At ±45° this example gives $-0.01031$. The exact continuum phase at the origin equals the uniform background in this cue.
+
+Radius 1/8 has the larger clean shifted-grid margin at every tested resolution and angle. Using it alone would remove one width from the experiment matrix. The coarsest aligned grid still samples a bump on only one row, and the shifted coarse origin needs a bias check. Point scores establish neither the accuracy of the sampled bump over space nor held-out recall at $t=40$. The width, production bump, and production readout each require an owner decision. [Open encoder decisions](../roadmap.md#decisions-and-contracts-needed-for-later-work)

@@ -19,7 +19,7 @@ The primary sample grid contains the physical bit centers and origin. A half-cel
 
 A presented 0 uses a negative offset relative to the origin phase, and a presented 1 a positive offset. Use −90° and +90° in the primary map and −45° and +45° in the comparison. For a masked bit, omit its stimulus, record the background phase initialization, and score recovery against the hidden target. A masked site can already have a nonzero signed score. [Phase-map decision](../decisions/ADR-118.md) · [Mask decision](../decisions/ADR-119.md) · [Lean check](../../scripts/experiments/bit-phase-readout.lean)
 
-For the primary validation, initialize the phase field uniformly. An omitted point then has the same phase as the origin and an initial signed point score of zero. Repeat with a recorded, reproducible, target-independent spatial background as a sensitivity check. Its generator and parameters still need specification. [Cue background](../decisions/ADR-120.md)
+For the primary validation, initialize the phase field uniformly. Before applying the cue, every point has the same phase as the origin and its signed score is zero. After applying the cue, reconstructing an off-grid origin from neighboring samples can give an omitted bit a small signed score even when the exact continuum origin and the omitted center retain the background phase. Repeat with a recorded, reproducible, target-independent spatial background as a sensitivity check. Its generator and parameters still need specification. [Cue background](../decisions/ADR-120.md) · [Checked coarse-grid example](../research/bit-to-phase-map.md#checked-clean-readout-at-the-candidate-radii)
 
 ## Recall anchor
 
