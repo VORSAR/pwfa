@@ -17,6 +17,8 @@ Place one bit at each center of a 4×4 tiling of the unit torus. Each coordinate
 
 A presented 0 uses a negative offset relative to the origin phase, and a presented 1 a positive offset. Use −90° and +90° in the primary map and −45° and +45° in the comparison. For a masked bit, omit its stimulus, record the background phase initialization, and score recovery against the hidden target. A masked site can already have a nonzero signed score. [Phase-map decision](../decisions/ADR-118.md) · [Mask decision](../decisions/ADR-119.md) · [Lean check](../../scripts/experiments/bit-phase-readout.lean)
 
+For the primary validation, initialize the phase field uniformly. An omitted point then has the same phase as the origin and an initial signed point score of zero. Repeat with a recorded, reproducible, target-independent spatial background as a sensitivity check. Its generator and parameters still need specification. [Cue background](../decisions/ADR-120.md)
+
 ## Recall anchor
 
 At the historical recall time $t=40$, use the field phase at $(0,0)$ as the common reference. For an observed phase $u_j$ the anchored signal is the imaginary part of the conjugate of this reference times $u_j$. Common rotation of the reference and observations leaves the signal invariant. The spatial observation operator, thresholds, treatment of ambiguous scores, and evaluation of the origin on the numerical grid remain to be specified. [Origin anchor decision](../decisions/ADR-116.md)

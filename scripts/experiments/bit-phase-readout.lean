@@ -81,6 +81,13 @@ private def prepare (background : UnitPhase) (write : Option UnitPhase) : UnitPh
 private theorem mask_preparations_equal (a background : UnitPhase) :
     prepare background none = prepare background (some a) ↔ background = a := Iff.rfl
 
+-- ADR-120 starts the primary condition at one common phase, including the origin.
+-- Omission therefore gives zero signed point score regardless of the common angle.
+private theorem uniform_omission_score (a : UnitPhase) :
+    score a (prepare a none) = 0 := by
+  change (conj (a : ℂ) * (a : ℂ)).im = 0
+  rw [cancel_unit, Complex.one_im]
+
 private theorem different_mask_scores :
     let a := phaseOne
     let background : UnitPhase := ⟨Complex.I, Complex.norm_I⟩
@@ -91,7 +98,7 @@ private theorem different_mask_scores :
 run_cmd do
   let allowed := #[`propext, `Classical.choice, `Quot.sound]
   for name in #[``shared_rotation, ``offset_score, ``ideal_scores, ``signs_inside_margin,
-      ``tie_at_margin, ``pooled_tie, ``mask_preparations_equal, ``different_mask_scores] do
+      ``tie_at_margin, ``pooled_tie, ``mask_preparations_equal, ``uniform_omission_score, ``different_mask_scores] do
     let axioms ← Lean.collectAxioms name
     unless axioms.all (fun ax => allowed.contains ax) do
       throwError "{name} has unexpected dependencies: {axioms}"

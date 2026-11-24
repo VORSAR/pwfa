@@ -60,7 +60,7 @@ These dispositions clear the experimental algebra checks. Numerical grids, spati
 
 ### Checked results for the decision discussion
 
-The standalone [bit-phase experiment](../../scripts/experiments/bit-phase-readout.lean) passed on Lean 4.35.0. The internal implementation check against review commit `aa4de8a` covered both bit signs at arbitrary unit anchor, exact boundary ties, and a concrete counterexample using a unit-valued background. All eight reported results passed the project's axiom-dependency check.
+The standalone [bit-phase experiment](../../scripts/experiments/bit-phase-readout.lean) passed on Lean 4.35.0. The internal implementation check against review commit `aa4de8a` covered both bit signs at arbitrary unit anchor, exact boundary ties, and a concrete counterexample using a unit-valued background. The experiment includes an explicit zero-score check for a uniform background at any unit angle. [Validation backgrounds](../decisions/ADR-120.md)
 
 | Question | Lean result and scope |
 |---|---|

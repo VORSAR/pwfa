@@ -36,6 +36,7 @@
 | [ADR-117](ADR-117.md) | Lean experiments for research and architecture choices | Owner directive | Accepted. Check formalizable assumptions and publish reproducible evidence before recommendations. |
 | [ADR-118](ADR-118.md) | Bit polarity and relative phase choices | 1A | Primary ±90°, with ±45° as a comparison. |
 | [ADR-119](ADR-119.md) | Masked input stimulation | 2A | Omit the bit-specific stimulus and record background initialization. |
+| [ADR-120](ADR-120.md) | Cue background for first encoder validation | A | Uniform primary field and a reproducible, target-independent varied sensitivity condition. |
 
 ## What these statuses mean
 
