@@ -146,6 +146,17 @@ example (r : Radius) (q : WaveIndex) :
         Real.sqrt ((r : ℝ) ^ 2 - x ^ 2) * Real.cos (2 * Real.pi * ‖frequencyVector q‖ * x) :=
   waveCoefficient_disk_chord r q
 
+open PWFA.TorusOscillator ContDiff in
+example (r : Radius) (x : Fin 2 → ℝ) :
+    ContDiffAt ℝ ∞ (liftedSmoothKernel r) (x,x) :=
+  (contDiff_liftedSmoothKernel r).contDiffAt
+
+open PWFA.TorusOscillator in
+example (r : Radius) (x y : Fin 2 → ℝ)
+    (h : euclideanDist (ofCoordinates x) (ofCoordinates y) = (r : ℝ)) (n : ℕ) :
+    iteratedFDeriv ℝ n (liftedSmoothKernel r) (x,y) = 0 :=
+  liftedSmoothKernel_flat_at_edge r (x,y) h n
+
 open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
@@ -169,6 +180,7 @@ run_cmd do
     ``exists_uniform_local_solution, ``global_solution_unit, ``existsUnique_global_phase_solution,
     ``coordinateLoop, ``coordinateWinding, ``coordinateWinding_eq_on_interval, ``local_solution_coordinateWinding, ``global_solution_coordinateWinding,
     ``waveCoefficient_real, ``waveCoefficient_zero, ``waveCoefficient_neg, ``waveCoefficient_swap, ``waveCoefficient_uniform_nonzero, ``waveField_zero, ``waveField_unit, ``waveField_deriv, ``setIntegral_disk_coordinates, ``waveCoefficient_disk_chord,
+    ``liftedSmoothKernel_periodic, ``contDiff_liftedSmoothKernel, ``liftedSmoothKernel_flat_at_edge, ``liftedSmoothKernel_zero_near_tie,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,

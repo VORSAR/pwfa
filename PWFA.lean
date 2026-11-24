@@ -13,6 +13,7 @@ public import PWFA.TorusSynchronized
 public import PWFA.TorusGlobalFlow
 public import PWFA.TorusWinding
 public import PWFA.TorusWaveDisk
+public import PWFA.TorusKernelSmoothness
 
 /-!
 # Public architecture interface
