@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: reviews-ai-written-ledger
+expected_outcome: |
+  A review that separates "is it proved" from "does it mean what it claims" and finds the
+  planted defects: total_split rests on a sorry in total_append; fee_schedule_total uses native
+  evaluation; the LE instance on Account is defined as always true so standing_preserved is
+  meaningless; transfer has an unsatisfiable precondition (amt < 0 on Nat) and a body that
+  transfers nothing; deposit's postcondition is too weak (allows any increase); withdraw_safe
+  relies on truncating subtraction and does not show overdrafts are prevented; interest is
+  replaced at run time by interestFast via implemented_by. It should also note that
+  deposit_withdraw is fine. Verdict: reject or accept only with conditions, with evidence.
+context:
+  scaffold_script: place-files.sh

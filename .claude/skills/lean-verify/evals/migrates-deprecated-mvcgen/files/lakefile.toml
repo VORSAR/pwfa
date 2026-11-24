@@ -1,0 +1,5 @@
+name = "counter"
+defaultTargets = ["Counter"]
+
+[[lean_lib]]
+name = "Counter"

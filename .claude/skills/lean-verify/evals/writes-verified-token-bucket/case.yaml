@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: writes-verified-token-bucket
+expected_outcome: |
+  A buildable Lake project whose Lean file defines the rate limiter with machine-checked
+  specifications written with current idioms (contract clauses or vcgen/Std.WP, or plain
+  theorems for pure functions), no deprecated Std.Do/mvcgen syntax, no sorry or extra axioms,
+  and a final report that states the toolchain version, the commands run, the axioms each
+  result depends on, and a plain-language reading of each specification. The specification
+  of tryConsume pins the result down in both the accepted and the refused case.

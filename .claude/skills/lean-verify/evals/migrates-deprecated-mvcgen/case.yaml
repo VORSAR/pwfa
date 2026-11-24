@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: migrates-deprecated-mvcgen
+expected_outcome: |
+  Counter.lean migrated from the Std.Do proof mode and mvcgen to vcgen on Std.WP (or to
+  contract clauses), with addTo_spec and addAll_spec still stating the same properties
+  (state becomes n + x; state becomes n + xs.sum). `lake build --wfail` succeeds, the loop
+  invariant uses the current prefix/suffix binder form, and the answer says which release
+  introduced the change and how it was verified.
+context:
+  scaffold_script: place-files.sh

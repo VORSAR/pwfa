@@ -6,6 +6,12 @@
 
 At [commit `cafd238`](https://github.com/VORSAR/pwfa/commit/cafd238daa78d872977a1275dcda13623af4eb0a), Lean checks the phase algebra, shortest periodic Euclidean distance, continuous mean field, and local phase solutions for the smooth, disk, and uniform kernels. Solutions from the same initial field agree near the initial time. Each point keeps its initial modulus throughout the local interval. The disk kernel integrates to one at every center. [Oscillator baseline](verification/slices/torus-oscillator-baseline.md) · [Lean CI](https://github.com/VORSAR/pwfa/actions/runs/45375224871)
 
+## Delivered tooling and documentation
+
+- [x] **Pin the Lean environment.** The repository pins Lean and mathlib for reproducible builds. The Mac clone reported Lean 4.35.0 and Lake 5.0.0-src+eb6cafb. [Toolchain](../lean-toolchain) · [Dependency manifest](../lake-manifest.json)
+- [x] **Document the proofs in the source.** Module comments link the seven deliverables to their governing specifications. The proof revision passed both GitHub checks. [Proof revision](https://github.com/VORSAR/pwfa/commit/3e9368636fee99cc00b5be0d024e5a95424e6875) · [Lean CI](https://github.com/VORSAR/pwfa/actions/runs/45385868482) · [Documentation CI](https://github.com/VORSAR/pwfa/actions/runs/45385868517)
+- [x] **Add the Lean verification toolkit.** The repository includes review guidance, audit scripts, worked examples, and five evaluation cases. [Verification guide](../.claude/skills/lean-verify/SKILL.md) · [Evaluation cases](../.claude/skills/lean-verify/evals)
+
 ## Seven verified Lean deliverables
 
 Each checked item has a compiled theorem, a statement and dependency audit, and an internal review. The entries preserve the original scope and order. [Phase-law decision](decisions/ADR-110.md) · [Experimental review policy](decisions/ADR-109.md)

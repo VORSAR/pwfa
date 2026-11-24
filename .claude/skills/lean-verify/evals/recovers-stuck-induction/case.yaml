@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: recovers-stuck-induction
+expected_outcome: |
+  The run recognises the failure class (induction hypothesis too weak because the accumulator is
+  fixed), backtracks to a generalised statement such as `revAcc xs acc = xs.reverse ++ acc`
+  proved by induction generalizing the accumulator, derives the original theorem from it with
+  its statement unchanged, verifies there is no sorry and only standard axioms, and explains
+  the general lesson (generalise the accumulator before inducting).
+context:
+  scaffold_script: place-files.sh
