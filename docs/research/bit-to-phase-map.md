@@ -69,3 +69,13 @@ The standalone [bit-phase experiment](../../scripts/experiments/bit-phase-readou
 | Do an omitted cue and an explicit neutral write mean the same thing? | Under the stated cue-preparation semantics the resulting phases coincide exactly when the pre-cue phase equals the anchor. With anchor $1$ and background $i$, omission gives score $+1$ and writing the anchor gives $0$. A masked site's initial score therefore depends on its background. |
 
 The calculations leave the held-out recall rate at $t=40$ open. [Standing Lean research practice](../decisions/ADR-117.md)
+
+## Internal review of grid placement and encoder support
+
+At revision `5eb9f5c`, Codex reviewed the following bounded experiment as author and internal reviewer under ADR-109. Compare origin-aligned nodes with nodes shifted by half a grid interval in each axis on the three selected periodic grids. Test the sixteen accepted bit centers and the origin. Count grid samples strictly inside candidate circular encoder supports of radii 1/10 and 1/8 of the spatial period.
+
+- GS-01. Work on an integer lattice of 320 ticks per period. This represents both offsets, all centers, and both radii exactly. Use the smaller of direct and wrapped coordinate distance and compare squared Euclidean lengths.
+- GS-02. Enumerate the full periodic grid. Test alignment at every bit center and the anchor. Check support counts separately by grid, placement, and radius. Points at the cutoff carry zero weight for a smooth compact profile.
+- GS-03. Treat positive-support sample counts as a geometry diagnostic. They cannot measure integrated weight, solver accuracy, or learned recall. Use encoder radii independently of the structural coupling radii.
+
+These remedies clear the experimental finite-grid calculation. The owner retains the choice of grid offset, encoder radius, and readout. [Encoder geometry](../decisions/ADR-115.md) · [Solver grids](../decisions/ADR-112.md)
