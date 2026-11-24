@@ -27,14 +27,16 @@ private abbrev Coordinates := Fin 2 → ℝ
 private def centeredSquare : Set Coordinates :=
   univ.pi fun _ => Ioc (-(1 / 2 : ℝ)) (1 / 2)
 
+/-- Normalized torus area is also the product of its unit circle volumes. -/
+theorem area_eq_volume : area = (volume : Measure Point) := by
+  apply (addHaarMeasure_eq_iff _ _).mpr
+  change volume (univ : Set Point) = 1
+  simp [volume_pi, Measure.pi_univ]
+
 /-- The centered unit square, with Lebesgue measure, covers the torus with its chosen area. -/
 private theorem measurePreserving_coordinates :
     MeasurePreserving ofCoordinates (volume.restrict centeredSquare) area := by
-  have harea : area = (volume : Measure Point) := by
-    apply (addHaarMeasure_eq_iff _ _).mpr
-    change volume (univ : Set Point) = 1
-    simp [volume_pi, Measure.pi_univ]
-  rw [harea]
+  rw [area_eq_volume]
   change MeasurePreserving ofCoordinates
     ((Measure.pi fun _ : Fin 2 => (volume : Measure ℝ)).restrict centeredSquare)
     (Measure.pi fun _ : Fin 2 => (volume : Measure UnitAddCircle))
@@ -76,6 +78,20 @@ private theorem disk_preimage_inter_square (radius : Radius) (x : Point) :
         exact (show |u i| ≤ ‖WithLp.toLp 2 u‖ from hle).trans_lt (hd.trans radius.property.2)
       exact ⟨(abs_lt.mp hcoord).1, (abs_lt.mp hcoord).2.le⟩
     exact ⟨by rwa [dist_on_centeredSquare u hu], hu⟩
+
+/-- Transfer a continuous observable on the centered torus disk to the planar open ball. -/
+theorem setIntegral_disk_coordinates (r : Radius) (f : C(Point, ℝ)) :
+    (∫ y in {y | euclideanDist 0 y < (r : ℝ)}, f y ∂area) =
+      ∫ u in Metric.ball (0 : EuclideanSpace ℝ (Fin 2)) r, f (ofCoordinates (WithLp.ofLp u)) := by
+  rw [← measurePreserving_coordinates.map_eq, setIntegral_map (measurableSet_disk r 0)
+    f.continuous.aestronglyMeasurable measurePreserving_coordinates.measurable.aemeasurable,
+    Measure.restrict_restrict (measurePreserving_coordinates.measurable (measurableSet_disk r 0))]
+  have hs := disk_preimage_inter_square r 0
+  simp only [zero_add] at hs
+  rw [hs]
+  exact (PiLp.volume_preserving_toLp (Fin 2)).setIntegral_preimage_emb
+    (MeasurableEquiv.toLp 2 (Fin 2 → ℝ)).measurableEmbedding
+    (fun u : EuclideanSpace ℝ (Fin 2) => f (ofCoordinates (WithLp.ofLp u))) (Metric.ball 0 r)
 
 /-- An open Euclidean torus disk of admissible radius has planar disk area at every center. -/
 theorem area_disk (radius : Radius) (x : Point) :

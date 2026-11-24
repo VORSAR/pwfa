@@ -125,6 +125,27 @@ example (p : Parameters) {kernel : Point → Point → ℝ} (h : TranslationInva
   congrArg₂ Prod.mk (global_solution_coordinateWinding p h hr hu hf t 0)
     (global_solution_coordinateWinding p h hr hu hf t 1)
 
+-- This accepts every integer pair, including negative axes and the (1,1) diagonal.
+open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) (q : WaveIndex) (t : ℝ) :
+    HasDerivAt (waveField p (smoothKernel r) q) (continuousRhs p (smoothKernel r)
+      (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0)
+      (waveField p (smoothKernel r) q t)) t :=
+  waveField_deriv p (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0)
+    (smoothKernel_radial r) q t
+
+open PWFA.TorusOscillator in
+example (p : Parameters) {q : WaveIndex} (hq : q ≠ 0) :
+    waveRate p uniformKernel q = p.frequency := by
+  simp [waveRate, waveCoefficient_uniform_nonzero hq]
+
+open PWFA.TorusOscillator in
+example (r : Radius) (q : WaveIndex) :
+    (waveCoefficient (diskKernel r) q).re =
+      4 / (Real.pi * (r : ℝ) ^ 2) * ∫ x in (0 : ℝ)..(r : ℝ),
+        Real.sqrt ((r : ℝ) ^ 2 - x ^ 2) * Real.cos (2 * Real.pi * ‖frequencyVector q‖ * x) :=
+  waveCoefficient_disk_chord r q
+
 open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
@@ -147,6 +168,7 @@ run_cmd do
     ``rotatingValue_deriv, ``rotatingValue_norm, ``synchronizedField_zero, ``synchronizedField_unit, ``meanField_const_of_unit_mass, ``synchronizedField_deriv,
     ``exists_uniform_local_solution, ``global_solution_unit, ``existsUnique_global_phase_solution,
     ``coordinateLoop, ``coordinateWinding, ``coordinateWinding_eq_on_interval, ``local_solution_coordinateWinding, ``global_solution_coordinateWinding,
+    ``waveCoefficient_real, ``waveCoefficient_zero, ``waveCoefficient_neg, ``waveCoefficient_swap, ``waveCoefficient_uniform_nonzero, ``waveField_zero, ``waveField_unit, ``waveField_deriv, ``setIntegral_disk_coordinates, ``waveCoefficient_disk_chord,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
