@@ -179,3 +179,7 @@ For roadmap item 1, Codex (GPT-6), the author acting in the internal reviewer ro
 These remedies clear this bounded experimental proof under ADR-109. Independent Gate 1 remains open.
 
 The post-implementation check covered SM-01 through SM-03. The Lean proof uses the strict open-disk inequality, handles all real sublevel thresholds, and uses the configured radius for both the radial variable and denominator. The public audit checks unit mass and the resulting mean bound together. [Smooth normalization](../../../PWFA/TorusSmoothNormalization.lean) · [Extension audit](../../../scripts/audit-extensions.lean)
+
+## Synchronized trajectory
+
+At revision `64d2771`, Codex (GPT-6) reviewed roadmap item 2 as its author in the internal reviewer role. The scope is the explicit time-dependent constant field for the normalized oscillator. SY-01 (blocking) requires the row integral at every center so that each local mean equals the same phase. SY-02 (blocking) requires the negative phase-lag sign from the existing angular-velocity identity and applies coupling once. SY-03 (blocking) requires differentiation in the Banach space of fields, checking both time zero and unit modulus at every time. The proposed proof differentiates the scalar exponential, then applies the continuous linear constant-field map. These remedies clear this experimental slice under ADR-109.
