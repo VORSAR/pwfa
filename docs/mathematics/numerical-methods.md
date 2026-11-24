@@ -14,6 +14,8 @@ The exact integrator maps, stage ordering, numerical operators, residual/contras
 
 The continuum domain is a unit square torus with unit-complex phase. For the first numerical baseline, $N$ counts all sites. The 128-, 256-, and 512-site grids are 16×8, 16×16, and 32×16 respectively. Their adjacent refinements alternate axes. Compare the two axial waves separately against their exact continuum rates, with both spacings recorded. The discrete winding diagnostic and unit-magnitude tolerance still need definitions. [Grid decision](../decisions/ADR-112.md) · [State space](state-space.md) · [Wave checks](../verification/slices/torus-oscillator-baseline.md#analytic-checks)
 
+For encoder validation the origin-aligned grid is primary. Repeat with a shift of half a grid interval along each axis, keeping the physical origin and bit centers fixed. [Placement decision](../decisions/ADR-121.md)
+
 ## First radius comparison
 
 At every selected grid, test the smooth and disk kernels at both $R=1/4$ and $R=3/8$ in unit-period coordinates. Each comparison uses the same radius for both kernel shapes. The uniform control supplies a single radius-independent reference on each grid. The decision on a default follows comparison with the exact spatial wave rates. [Radius comparison](../decisions/ADR-113.md) · [Continuum wave rates](../verification/slices/torus-oscillator-baseline.md#analytic-checks)

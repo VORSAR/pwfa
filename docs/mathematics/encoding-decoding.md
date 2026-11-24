@@ -13,6 +13,8 @@
 
 Place one bit at each center of a 4×4 tiling of the unit torus. Each coordinate ranges over $1/8,3/8,5/8,7/8$. The physical centers stay the same on all three solver grids. The bit index order and two-dimensional bump width and normalization remain open. The recovered one-dimensional center and radius above describe the historical ring reference. [Torus encoder decision](../decisions/ADR-115.md) · [Solver grids](../decisions/ADR-112.md)
 
+The primary sample grid contains the physical bit centers and origin. A half-cell shift along both axes supplies a placement sensitivity test. The reconstruction rule for off-grid observations is still open. [Grid placement](../decisions/ADR-121.md)
+
 ## Presented and masked bits
 
 A presented 0 uses a negative offset relative to the origin phase, and a presented 1 a positive offset. Use −90° and +90° in the primary map and −45° and +45° in the comparison. For a masked bit, omit its stimulus, record the background phase initialization, and score recovery against the hidden target. A masked site can already have a nonzero signed score. [Phase-map decision](../decisions/ADR-118.md) · [Mask decision](../decisions/ADR-119.md) · [Lean check](../../scripts/experiments/bit-phase-readout.lean)
