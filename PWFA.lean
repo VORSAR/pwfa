@@ -10,3 +10,4 @@ public import PWFA.TorusVelocityBound
 public import PWFA.TorusLocalFlow
 public import PWFA.TorusSmoothNormalization
 public import PWFA.TorusSynchronized
+public import PWFA.TorusGlobalFlow

@@ -1,6 +1,6 @@
 # Flat torus oscillator baseline
 
-**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies local phase solutions and exact normalization of the disk and smooth kernels under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
+**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies unique global solutions for continuous unit-phase data, exact synchronized trajectories, and normalization of the disk and smooth kernels under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 
@@ -189,3 +189,5 @@ The post-implementation check traced the derivative back to the original field-v
 ## Global unit-phase solutions
 
 At revision `ad8302b`, Codex (GPT-6) reviewed roadmap item 3 as the author acting in the internal reviewer role. GL-01 (blocking) requires a common positive Picard interval for every unit field. Use the existing bounded-ball estimate with an initial norm bound of one. GL-02 (blocking) concerns both signs of time and the seams of extensions. Restart inside the existing open interval in each direction, use unit-modulus preservation at restart, and identify trajectories on open overlaps by uniqueness. GL-03 (blocking) requires uniqueness against every global solution with the given initial field. Pointwise modulus preservation on arbitrary finite intervals bounds those trajectories and permits interval uniqueness. These remedies clear existence and uniqueness for arbitrary continuous unit-phase data under ADR-109.
+
+The post-implementation check confirmed that the common restart time depends only on a norm bound, that every restart uses a unit field, and that overlap uniqueness holds at both ends of an interval. Uniform restarts make the reachable time set both open and closed in the real line. The final uniqueness statement quantifies over all differentiable ambient solutions with the same initial field. [Global solution](../../../PWFA/TorusGlobalFlow.lean) · [Extension audit](../../../scripts/audit-extensions.lean)

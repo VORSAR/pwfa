@@ -19,16 +19,25 @@ private theorem rhs_zero (p : Parameters) (kernel : Point → Point → ℝ)
   ext x
   simp [continuousRhs, baselineRhs, pointVelocity]
 
-/-- The torus oscillator admits a differentiable solution near the initial time. -/
-theorem exists_local_solution (p : Parameters) {kernel : Point → Point → ℝ}
-    (h : TranslationInvariant kernel) (hrow : Integrable (kernel 0) area) (initial : Field) :
-    ∃ ε > (0 : ℝ), ∃ solution : ℝ → Field, solution 0 = initial ∧
-      ∀ t ∈ Ioo (-ε) ε,
+/-- A common local existence interval for all initial fields in a bounded ball. -/
+theorem exists_uniform_local_solution (p : Parameters) {kernel : Point → Point → ℝ}
+    (h : TranslationInvariant kernel) (hrow : Integrable (kernel 0) area) (A : ℝ≥0) :
+    ∃ ε > (0 : ℝ), ∀ initial : Field, ‖initial‖ ≤ A →
+      ∃ solution : ℝ → Field, solution 0 = initial ∧ ∀ t ∈ Ioo (-ε) ε,
         HasDerivAt solution (continuousRhs p kernel h hrow (solution t)) t := by
   let rhs := continuousRhs p kernel h hrow
-  let M : ℝ≥0 := ‖initial‖₊ + 1
+  let M : ℝ≥0 := A + 1
   obtain ⟨K, hK⟩ := lipschitzOnWith_continuousRhs p h hrow (M : ℝ)
   change LipschitzOnWith K rhs (Metric.closedBall 0 (M : ℝ)) at hK
+  let B : ℝ≥0 := K * M
+  let ε : ℝ := (1 + (B : ℝ))⁻¹
+  have hε : 0 < ε := by dsimp [ε]; positivity
+  have htime : (B : ℝ) * ε ≤ 1 := by
+    dsimp [ε]
+    rw [← div_eq_mul_inv, div_le_one (by positivity)]
+    linarith
+  refine ⟨ε, hε, ?_⟩
+  intro initial hA
   have hsub : Metric.closedBall initial 1 ⊆ Metric.closedBall 0 (M : ℝ) := by
     intro x hx
     apply Metric.mem_closedBall.mpr
@@ -36,8 +45,7 @@ theorem exists_local_solution (p : Parameters) {kernel : Point → Point → ℝ
       dist x 0 ≤ dist x initial + dist initial 0 := dist_triangle _ _ _
       _ ≤ (M : ℝ) := by
         simpa [M, dist_zero_right, add_comm] using
-          add_le_add_right (Metric.mem_closedBall.mp hx) (‖initial‖ : ℝ)
-  let B : ℝ≥0 := K * M
+          add_le_add (Metric.mem_closedBall.mp hx) hA
   have hbound : ∀ x ∈ Metric.closedBall initial 1, ‖rhs x‖ ≤ (B : ℝ) := by
     intro x hx
     have hzero : rhs 0 = 0 := rhs_zero p kernel h hrow
@@ -47,12 +55,6 @@ theorem exists_local_solution (p : Parameters) {kernel : Point → Point → ℝ
     simp only [hzero, dist_zero_right] at hdist
     have hxnorm : ‖x‖ ≤ (M : ℝ) := by simpa using Metric.mem_closedBall.mp (hsub hx)
     exact hdist.trans (mul_le_mul_of_nonneg_left hxnorm K.2)
-  let ε : ℝ := (1 + (B : ℝ))⁻¹
-  have hε : 0 < ε := by dsimp [ε]; positivity
-  have htime : (B : ℝ) * ε ≤ 1 := by
-    dsimp [ε]
-    rw [← div_eq_mul_inv, div_le_one (by positivity)]
-    linarith
   let time0 : Icc (-ε) ε := ⟨0, ⟨by linarith, hε.le⟩⟩
   have hPicard : IsPicardLindelof (fun _ => rhs) time0 initial 1 0 B K := by
     constructor
@@ -64,8 +66,17 @@ theorem exists_local_solution (p : Parameters) {kernel : Point → Point → ℝ
       exact hbound x hx
     · simpa [time0] using htime
   obtain ⟨solution, hinit, hsol⟩ := hPicard.exists_eq_forall_mem_Icc_hasDerivWithinAt₀
-  refine ⟨ε, hε, solution, hinit, fun t ht => ?_⟩
+  refine ⟨solution, hinit, fun t ht => ?_⟩
   exact (hsol t ⟨ht.1.le, ht.2.le⟩).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
+
+/-- The torus oscillator admits a differentiable solution near the initial time. -/
+theorem exists_local_solution (p : Parameters) {kernel : Point → Point → ℝ}
+    (h : TranslationInvariant kernel) (hrow : Integrable (kernel 0) area) (initial : Field) :
+    ∃ ε > (0 : ℝ), ∃ solution : ℝ → Field, solution 0 = initial ∧
+      ∀ t ∈ Ioo (-ε) ε,
+        HasDerivAt solution (continuousRhs p kernel h hrow (solution t)) t := by
+  obtain ⟨ε, hε, H⟩ := exists_uniform_local_solution p h hrow ‖initial‖₊
+  exact ⟨ε, hε, H initial le_rfl⟩
 
 /-- Solutions with the same initial field agree near the initial time. -/
 theorem local_solution_unique (p : Parameters) {kernel : Point → Point → ℝ}

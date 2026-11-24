@@ -100,6 +100,12 @@ example (p : Parameters) (z : UnitPhase) (r : Radius) (t : ℝ) :
     synchronizedField_deriv p _ _ (by simp [uniformKernel]) z t⟩
 
 open PWFA.TorusOscillator in
+example (p : Parameters) (r : Radius) (initial : Field) (hunit : ∀ x, ‖initial x‖ = 1) :
+    ∃! f : ℝ → Field, f 0 = initial ∧ ∀ t, HasDerivAt f (continuousRhs p (smoothKernel r)
+      (smoothKernel_translationInvariant r) (integrable_smoothKernel_row r 0) (f t)) t :=
+  existsUnique_global_phase_solution p _ _ initial hunit
+
+open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
   let declarations := #[
@@ -119,6 +125,7 @@ run_cmd do
     ``uniformKernel_translationInvariant, ``continuous_smoothKernel_row,
     ``integral_smoothBump_radial, ``integral_smoothKernel, ``norm_meanField_smooth_le,
     ``rotatingValue_deriv, ``rotatingValue_norm, ``synchronizedField_zero, ``synchronizedField_unit, ``meanField_const_of_unit_mass, ``synchronizedField_deriv,
+    ``exists_uniform_local_solution, ``global_solution_unit, ``existsUnique_global_phase_solution,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
