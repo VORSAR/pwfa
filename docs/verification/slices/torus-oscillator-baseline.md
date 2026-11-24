@@ -146,3 +146,16 @@ Codex (GPT-6), the author of these changes, checked the implementation against t
 | TORUS-LOCAL-04 | Blocking | Pointwise tangency alone makes no assertion about a differentiable trajectory. The proof applies continuous linear evaluation to the trajectory and proves the derivative of squared modulus is zero on the entire connected interval. |
 
 These findings are closed for the local slice. On Lean 4.35.0 with the pinned mathlib, the local build passed with warnings treated as errors, the phase and extension audits passed, and the experimental source check found no admitted proofs or custom axioms. The Lean proofs of exact disk and smooth row mass, global continuation, and winding preservation remain open. The radius remains configurable.
+
+## Disk normalization review
+
+On 2026-11-24 Codex (GPT-6) reviewed the disk calculation in the internal reviewer role before formalization. The contract is to prove that the open disk defined by the selected Euclidean torus distance has area $\pi R^2$ at every center and that the integral of the existing disk kernel equals one for every allowed radius. The definitions under review are frozen at `282ac5e`.
+
+| Finding | Severity | Disposition |
+|---|---|---|
+| DISK-01 | Blocking | Product distance would give a square. In the centered half-open coordinate square, identify each circular distance with absolute coordinate displacement and combine the two by Euclidean length. |
+| DISK-02 | Blocking | A periodic preimage on the entire plane counts infinitely many copies. Restrict Lebesgue measure to one centered half-open square. The coordinate quotient preserves that measure onto product circle volume, which equals normalized torus area by Haar uniqueness and total mass one. |
+| DISK-03 | Blocking | An open disk could cross the chosen square's edge. Each absolute coordinate is at most the Euclidean norm, which is strictly less than the radius and hence less than one half. The complete planar open disk is inside the square. Translate the quotient map for arbitrary centers. |
+| DISK-04 | Blocking | A row integral of one requires the exact prefactor. Integrate the existing indicator on its measurable disk and cancel its positive area against the reciprocal in the kernel. |
+
+The stated remedies close the four design findings for experimental implementation under ADR-109. The author and internal reviewer are the same assistant. Smooth-kernel normalization and independent Gate 1 remain open.
