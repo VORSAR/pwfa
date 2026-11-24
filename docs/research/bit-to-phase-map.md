@@ -47,3 +47,13 @@ The formula illustrates an initial cue. A driven stimulus over a finite interval
 3. At $t=40$, measure exact-word recall, abstentions, and masked-bit recovery on the same held-out cues. Report the anchored score and observation magnitude separately so spatial cancellation can be distinguished from phase drift. The clock-time result requires the learned dynamics and the recall protocol. The literature and these readout identities establish no PWFA recall rate.
 
 These are research candidates for the next architecture discussion. [Encoding contract](../mathematics/encoding-decoding.md) · [Evidence register](evidence-register.md)
+
+## Internal review of the point-readout experiment
+
+On 2026-11-24 the author, Codex, reviewed this bounded experiment under ADR-109 against research revision `6b0c8d7`. The owner requested quick Lean checks to inform design choices. The experiment covers the anchored imaginary score on complex observations, the two proposed angular margins at a zero threshold, and the immediate effects of omitting a stimulus or writing the anchor. It is an internal review.
+
+- BP-01. Use the unit phase at the origin and cancel a shared rotation explicitly. Allow observation magnitude to vary, including zero.
+- BP-02. Check both binary symbols, all interior relative errors, and an exact boundary tie. Measure angular error relative to the anchor. Label the results as point-readout claims.
+- BP-03. In the masking example, omission preserves the pre-cue state and an explicit write sets it to the anchor. Check when these preparations coincide and give a unit-phase example with different scores. Driven forcing and time-dependent recovery require a separate model.
+
+These dispositions clear the experimental algebra checks. Numerical grids, spatial observation weights, learned dynamics and benchmark accuracy remain outside this experiment. [Review policy](../verification/review-gates.md)
