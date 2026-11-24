@@ -1,6 +1,6 @@
 # PWFA roadmap
 
-**Next milestone: prove that the smooth kernel has total weight one at every torus center.** This is the primary kernel selected for the two-dimensional model. Its disk comparator already has a verified area and normalization for every allowed radius. Both proofs can use the same periodic Euclidean geometry. [Kernel decision](decisions/ADR-111.md) · [Disk-area proof](../PWFA/TorusDiskNormalization.lean)
+**Next milestone: prove the synchronized trajectory for all three normalized kernels.**
 
 ## Verified starting point
 
@@ -10,13 +10,15 @@ At [commit `cafd238`](https://github.com/VORSAR/pwfa/commit/cafd238daa78d872977a
 
 The order below is recommended. Each checkbox describes a result that can be verified with the selected phase law and kernels. Before implementing each bounded scope, record its internal review and close the applicable findings. Mark it complete with a link to the compiled theorem and its audit. [Phase-law decision](decisions/ADR-110.md) · [Experimental review policy](decisions/ADR-109.md)
 
-- [ ] **1. Normalize the smooth kernel.** Integrate the chosen radial bump over its support and recover the denominator $\pi R^2\int_0^1 b(s)\,ds$. Prove the kernel row integrates to one for every center and every $0<R<1/2$. Apply the existing mean-field bound to show that smooth averaging cannot increase the supremum norm. [Smooth-kernel specification](verification/slices/torus-oscillator-baseline.md#smooth-primary-kernel) · [Mean-field bounds](../PWFA/TorusMeanField.lean)
+- [x] **1. Normalize the smooth kernel.** Integrate the chosen radial bump over its support and recover the denominator $\pi R^2\int_0^1 b(s)\,ds$. Prove the kernel row integrates to one for every center and every $0<R<1/2$. Apply the existing mean-field bound to show that smooth averaging cannot increase the supremum norm. [Smooth-kernel specification](verification/slices/torus-oscillator-baseline.md#smooth-primary-kernel) · [Mean-field bounds](../PWFA/TorusMeanField.lean)
 - [ ] **2. Prove the exact synchronized trajectory.** Starting from any spatially constant unit phase, prove that the trajectory rotates at angular velocity $\omega-\kappa\sin\alpha$. A single proof for a unit-mass kernel covers the disk and uniform cases now. Item 1 supplies the remaining hypothesis for the smooth case. [Analytic checks](verification/slices/torus-oscillator-baseline.md#analytic-checks)
 - [ ] **3. Extend solutions to all time.** Prove existence and uniqueness for every real time from any continuous unit-phase field. Use modulus preservation to keep the supremum norm bounded and obtain a uniform local restart interval. This can proceed independently of items 1 and 2. [Local flow](../PWFA/TorusLocalFlow.lean) · [Velocity bound](../PWFA/TorusVelocityBound.lean)
 - [ ] **4. Prove both winding numbers are preserved.** Restrict a trajectory to each of the two coordinate loops and prove its integer winding number stays constant over the local solution interval. Item 3 extends the result to all time. [Phase-law obligations](decisions/ADR-110.md) · [State space](mathematics/state-space.md)
 - [ ] **5. Verify spatial wave rotation rates.** For modes $(\pm1,0)$, $(0,\pm1)$, and $(1,1)$, derive $\Omega_q=\omega-\kappa\lambda_q\sin\alpha$. Check reversal and axis-exchange symmetry, the zero coupling contribution for nonzero modes under uniform weights, and the specified one-dimensional chord integral for the disk. These give exact references for a future solver. [Mode and disk formulas](verification/slices/torus-oscillator-baseline.md#analytic-checks)
 - [ ] **6. Prove smoothness of the primary kernel.** Show smoothness at zero separation using squared Euclidean displacement, vanishing of all derivatives at the support edge, and smoothness near the torus cut locus where the kernel vanishes. This can proceed alongside normalization. [Kernel obligations](decisions/ADR-111.md)
 - [ ] **7. Formalize the historical ring reference.** Verify the one-dimensional cosine kernel's row integral and the rotation rates for winding $0,+1,-1$ at contrasts $a=0,0.4,0.8$. This independently checks the sign convention and placement of the coupling strength against the recovered ring equations. [Ring equations and expected rates](mathematics/ring-oscillator-reference.md)
+
+Item 1 verifies exact smooth row mass and the mean bound for every admissible radius and center. [Lean proof](../PWFA/TorusSmoothNormalization.lean) · [Extension audit](../scripts/audit-extensions.lean)
 
 ## Independent Gate 1
 

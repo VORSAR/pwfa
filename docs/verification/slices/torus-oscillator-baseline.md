@@ -1,6 +1,6 @@
 # Flat torus oscillator baseline
 
-**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies local phase solutions and exact disk-kernel normalization under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
+**Status: EXPERIMENTAL / NOT INDEPENDENTLY CERTIFIED.** Lean verifies local phase solutions and exact normalization of the disk and smooth kernels under internal review. Independent Gate 1 and the rest of the oscillator contract remain pending. [ADR-110](../../decisions/ADR-110.md) · [ADR-111](../../decisions/ADR-111.md)
 
 ## State and phase equation
 
@@ -177,3 +177,5 @@ For roadmap item 1, Codex (GPT-6), the author acting in the internal reviewer ro
 | SM-03 | Blocking | Derive the mean bound from the proved unit mass and kernel nonnegativity, with arbitrary center and radius throughout. |
 
 These remedies clear this bounded experimental proof under ADR-109. Independent Gate 1 remains open.
+
+The post-implementation check covered SM-01 through SM-03. The Lean proof uses the strict open-disk inequality, handles all real sublevel thresholds, and uses the configured radius for both the radial variable and denominator. The public audit checks unit mass and the resulting mean bound together. [Smooth normalization](../../../PWFA/TorusSmoothNormalization.lean) · [Extension audit](../../../scripts/audit-extensions.lean)

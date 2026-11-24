@@ -82,6 +82,11 @@ example (r : Radius) (z : Field) (x : Point) : ‖meanField (diskKernel r) z x�
   norm_meanField_le_of_unit_mass (diskKernel_translationInvariant r) (integrable_diskKernel_row r 0)
     (diskKernel_nonneg r 0) (integral_diskKernel r 0) z x
 
+open PWFA.TorusOscillator MeasureTheory in
+example (r : Radius) (x : Point) (z : Field) :
+    (∫ y, smoothKernel r x y ∂area) = 1 ∧ ‖meanField (smoothKernel r) z x‖ ≤ ‖z‖ :=
+  ⟨integral_smoothKernel r x, norm_meanField_smooth_le r z x⟩
+
 open PWFA.TorusOscillator in
 run_cmd do
   let allowedAxioms := #[`propext, `Classical.choice, `Quot.sound]
@@ -100,6 +105,7 @@ run_cmd do
     ``baselineRhs_uniform_const, ``continuous_euclideanDist, ``TranslationInvariant,
     ``smoothKernel_translationInvariant, ``diskKernel_translationInvariant,
     ``uniformKernel_translationInvariant, ``continuous_smoothKernel_row,
+    ``integral_smoothBump_radial, ``integral_smoothKernel, ``norm_meanField_smooth_le,
     ``measurableSet_disk, ``area_disk, ``integral_diskKernel,
     ``integrable_smoothKernel_row, ``integrable_diskKernel_row, ``integrable_uniformKernel_row,
     ``integral_kernel_row_eq_origin, ``meanField_eq_translate, ``continuous_meanField,
