@@ -32,6 +32,7 @@
 | [ADR-113](ADR-113.md) | First torus radius comparison | C | Compare 1/4 and 3/8 at every grid size before choosing a default. |
 | [ADR-114](ADR-114.md) | Structural quadrature in torus validation | B | Evolve raw and row-normalized weights as coequal tests. |
 | [ADR-115](ADR-115.md) | Torus placement for the first 16-bit recall experiment | A | One bit per cell center on a 4×4 layout. |
+| [ADR-116](ADR-116.md) | Anchor for the torus recall decoder | A | Compare each bit observation with the field phase at (0,0) at the same recall time. |
 
 ## What these statuses mean
 
