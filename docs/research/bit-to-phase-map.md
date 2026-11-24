@@ -92,3 +92,13 @@ The [finite-grid experiment](../../scripts/experiments/encoder-grid.lean) checke
 | Half-cell shift in both axes | 1/8 | 8 | 12 | 28 |
 
 All sixteen centers and the origin are nodes on each origin-aligned grid. All seventeen locations fall between nodes on each half-shifted grid. On the origin-aligned 16×8 grid both candidate radii sample just one row through each center. Equal counts can still give different weights and responses. Adjacent centers are 1/4 of the period apart. A radius of 1/10 leaves a gap of 1/20 along their joining line; at 1/8 the boundaries meet and both edge weights are zero. The experiment establishes neither interpolation accuracy nor recall performance. [Grid decision](../decisions/ADR-112.md) · [Encoder layout](../decisions/ADR-115.md)
+
+## Internal review of the provisional 1/8 stimulus width
+
+At revision `8e705dc`, Codex, the author acting as internal reviewer, reviewed the owner's request for a feasibility and accuracy check before selecting 2C. Use the approved uniform pre-cue field, the two bit alphabets, and the two grid placements. As trial assumptions, use the peak-normalized smooth profile $b(s)=\exp[-s/(1-s)]$ for $0\le s<1$ and zero at larger squared relative distance. Interpolate the four nearest complex node values with equal weights at the center of a grid cell. Normalize the reconstructed origin phase when it is nonzero. Study clean point observations before dynamics.
+
+- RA-01. Check the physical distances from the four surrounding shifted nodes to the intended bit center and to the nearest corner bits at the origin. Use exact squared lengths, including the strict support boundary. Compare 1/8 with 1/10 on identical grids.
+- RA-02. A perturbed origin affects all bits. Bound the sign of the anchored score for every combination of present corner polarities and omissions. Include a case attaining the worst clean signal and a masked bit with a nonzero spurious score. Distinguish exact expressions from decimal evaluations.
+- RA-03. Report point reconstruction separately from bump resolution, spatial pooling, nonuniform backgrounds, and accuracy after evolution. Keep the tested profile and interpolation provisional and the owner's width decision open.
+
+These dispositions clear the clean-cue experiment under ADR-109. [Bit phases](../decisions/ADR-118.md) · [Background](../decisions/ADR-120.md) · [Grid placement](../decisions/ADR-121.md)
