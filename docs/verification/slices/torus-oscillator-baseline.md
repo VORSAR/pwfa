@@ -165,3 +165,15 @@ The stated remedies close the four design findings for experimental implementati
 At proof revision `bcf2320`, the internal post-implementation review checked DISK-01 through DISK-04 against the public theorem statements. For every admissible radius and every center, `area_disk` gives the area of the strict Euclidean torus disk and `integral_diskKernel` gives a row integral of one for the kernel in ADR-111. The disk mean therefore has pointwise norm bounded by the input field's supremum norm. The extension audit checks all three statements. The warning-free local build and both proof audits passed. The two new area and integral theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`. [Disk proof](../../../PWFA/TorusDiskNormalization.lean) · [Extension audit](../../../scripts/audit-extensions.lean)
 
 Exact smooth-kernel row mass, global continuation, and winding preservation remain open.
+
+## Smooth normalization review
+
+For roadmap item 1, Codex (GPT-6), the author acting in the internal reviewer role, froze the smooth kernel at commit `8405ea9`. The authorized statements are the bump integral, unit row mass at every center and admissible radius, and its supremum norm estimate.
+
+| Finding | Severity | Remedy accepted before formalization |
+|---|---|---|
+| SM-01 | Blocking | Restrict area to the open disk before pushing it forward by squared distance divided by radius squared. Its sublevel sets are concentric disks. The established disk-area theorem gives constant density equal to the outer disk area on the unit interval. Check thresholds below zero and above one as well as interior thresholds. |
+| SM-02 | Blocking | The bump vanishes on and beyond its support boundary. Recover the full integral from the restricted measure, and cancel only after using positivity of the area and the bump integral. |
+| SM-03 | Blocking | Derive the mean bound from the proved unit mass and kernel nonnegativity, with arbitrary center and radius throughout. |
+
+These remedies clear this bounded experimental proof under ADR-109. Independent Gate 1 remains open.
