@@ -4,6 +4,16 @@ public import PWFA.TorusOscillator
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.Topology.ContinuousMap.Compact
 
+/-!
+# Averaging a continuous field
+
+Translation invariance lets the integral keep the kernel row fixed and translate the
+continuous field. This handles the disk even at its sharp boundary. The estimate first uses
+the absolute row integral and then specializes to one for a normalized nonnegative kernel.
+
+[Specification](../docs/decisions/ADR-111.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#internal-review-of-the-continuous-mean-field)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator

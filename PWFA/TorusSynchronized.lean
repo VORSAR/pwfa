@@ -4,6 +4,16 @@ public import PWFA.TorusSmoothNormalization
 public import Mathlib.Analysis.Complex.RealDeriv
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
+/-!
+# Exact synchronized trajectories
+
+A normalized kernel sends a constant field to its own value. The phase equation then has
+constant angular velocity. Lifting the differentiated complex exponential through the
+constant-field map verifies the full field-valued equation.
+
+[Specification](../docs/decisions/ADR-110.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#synchronized-trajectory)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -55,6 +65,7 @@ theorem synchronizedField_deriv (p : Parameters) {kernel : Point → Point → �
   let rate := p.frequency - p.coupling * Real.sin p.phaseLag
   let z := rotatingValue rate initial t
   let liftConst : ℂ →L[ℝ] Field := ContinuousLinearMap.const ℝ Point
+  -- Normalization makes the mean equal to the current phase at each spatial point.
   have hvel : continuousRhs p kernel h hrow (synchronizedField p initial t) =
       liftConst (Complex.I * z * rate) := by
     ext x

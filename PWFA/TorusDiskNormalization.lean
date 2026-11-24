@@ -3,6 +3,16 @@ module
 public import PWFA.TorusMeanField
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
+/-!
+# Exact area of the disk comparator
+
+A centered half-open square counts each torus point once. The radius bound puts the whole open
+Euclidean disk inside that square. Translating the quotient map transports the planar area
+formula to every center, including centers across a coordinate seam.
+
+[Specification](../docs/decisions/ADR-111.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#disk-normalization-review)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -70,6 +80,7 @@ private theorem disk_preimage_inter_square (radius : Radius) (x : Point) :
 /-- An open Euclidean torus disk of admissible radius has planar disk area at every center. -/
 theorem area_disk (radius : Radius) (x : Point) :
     area {y | euclideanDist x y < (radius : ℝ)} = ENNReal.ofReal (Real.pi * (radius : ℝ) ^ 2) := by
+  -- Translating the covering map keeps Haar area fixed while moving the disk center.
   have hmap := (measurePreserving_add_left area x).comp measurePreserving_coordinates
   have hd := measurableSet_disk radius x
   rw [← hmap.measure_preimage hd.nullMeasurableSet, Measure.restrict_apply (hmap.measurable hd)]

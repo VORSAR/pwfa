@@ -2,6 +2,16 @@ module
 
 public import PWFA.TorusDiskNormalization
 
+/-!
+# Normalization of the smooth primary kernel
+
+Under area restricted to the disk, squared relative radius has constant density on the unit
+interval. Integrating the bump against that density recovers the denominator chosen in the
+specification for every radius and center.
+
+[Specification](../docs/decisions/ADR-111.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#smooth-normalization-review)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -29,6 +39,8 @@ private theorem radial_distribution (r : Radius) (x : Point) :
     rw [Measure.map_apply hm measurableSet_Iio, Measure.restrict_apply (hm measurableSet_Iio),
       Measure.smul_apply, Measure.restrict_apply measurableSet_Iio, Iio_inter_Ioo, Real.volume_Ioo,
       sub_zero, smul_eq_mul]
+    -- For an interior threshold, the sublevel disk has radius R times its square root.
+    -- Clamping at one keeps the full outer disk when the threshold exceeds the support.
     by_cases ht : t ≤ 0
     · have hempty : radialVariable r x ⁻¹' Iio t = ∅ := by
         apply eq_empty_iff_forall_notMem.mpr

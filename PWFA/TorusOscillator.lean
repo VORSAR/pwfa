@@ -8,6 +8,17 @@ public import Mathlib.MeasureTheory.Group.AddCircle
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.Basic
 
+/-!
+# Unforced oscillator
+
+All three structural kernels use the same normalized area. The resulting complex mean enters
+the real angular velocity with a negative phase lag. Coupling strength enters once in that
+angular velocity. Multiplication by the imaginary unit and local phase gives a tangent
+velocity.
+
+[Specification](../docs/decisions/ADR-110.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#state-and-phase-equation)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator

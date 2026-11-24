@@ -2,6 +2,16 @@ module
 
 public import PWFA.TorusLocalFlow
 
+/-!
+# Continuation for all real times
+
+Unit modulus gives a common restart interval. Uniqueness identifies local trajectories on
+their open overlaps, including joins made while extending backwards in time. The reachable
+times are both open and closed, hence fill the real line.
+
+[Specification](../docs/decisions/ADR-110.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#global-unit-phase-solutions)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -54,6 +64,7 @@ private theorem global_of_uniform_restart (rhs : Field → Field) {K : ℝ≥0}
     obtain ⟨f, hf, hsol⟩ := restart 0 initial hunit
     have ht : (0 : ℝ) ∈ Ioo (0 - ε) (0 + ε) := ⟨by linarith, by linarith⟩
     exact ⟨_, _, f, ht, ht, hf, hsol⟩
+  -- Restart inside the old interval so uniqueness applies on an open neighborhood of the join.
   have step {s t : ℝ} (hs : s ∈ S) (hst : dist t s < ε) : t ∈ S := by
     obtain ⟨a, b, f, hzero, hsab, finit, hf⟩ := hs
     let A := Ioo a b
@@ -83,6 +94,7 @@ private theorem global_of_uniform_restart (rhs : Field → Field) {K : ℝ≥0}
     · exact (hg u hb).congr (Filter.mem_of_superset (Ioo_mem_nhds hb.1 hb.2) rightEq)
   have hopen : IsOpen S := Metric.isOpen_iff.mpr fun s hs =>
     ⟨ε, hε, fun _ ht => step hs ht⟩
+  -- A missing time has a whole missing neighborhood: a nearby reachable time could reach it.
   have hclosed : IsClosed S := isOpen_compl_iff.mp <| Metric.isOpen_iff.mpr fun s hs =>
     ⟨ε, hε, fun t ht hmem => hs (step hmem (dist_comm s t ▸ ht))⟩
   have hall := (show IsClopen S from ⟨hclosed, hopen⟩).eq_univ ⟨0, h0⟩

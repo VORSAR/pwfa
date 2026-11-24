@@ -2,6 +2,16 @@ module
 
 public import PWFA.Phase
 
+/-!
+# Phase inversion
+
+Complex conjugation reverses the angle and preserves unit modulus. Left and right inverse laws
+justify canceling phases in products. Conjugation also appears explicitly in the phase-lag
+interaction between a phase and its mean.
+
+[Specification](../docs/decisions/ADR-103.md) · [Scope and evidence](../docs/verification/slices/phase-inverse-experiment.md)
+-/
+
 @[expose] public section
 
 namespace PWFA.Phase

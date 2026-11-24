@@ -11,6 +11,16 @@ module
 
 public import Mathlib.Analysis.Complex.Norm
 
+/-!
+# Unit-complex phase algebra
+
+A phase carries its proof of unit norm. Multiplication therefore returns a phase without
+rescaling. Pointwise multiplication works on arbitrary domains here. The evolution module adds
+the continuity needed for the oscillator field.
+
+[Specification](../docs/decisions/ADR-103.md) · [Scope and evidence](../docs/verification/slices/phase-algebra-experiment.md)
+-/
+
 @[expose] public section
 
 namespace PWFA

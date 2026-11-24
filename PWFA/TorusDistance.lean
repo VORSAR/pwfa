@@ -3,6 +3,17 @@ module
 public import Mathlib.Analysis.Normed.Group.AddCircle
 public import Mathlib.Analysis.Normed.Lp.PiLp
 
+/-!
+# Periodic Euclidean geometry
+
+Each coordinate is a circle of period one. The coupling distance combines the shortest
+displacements in the two coordinates by Euclidean length. The lattice-minimum theorem proves
+representative independence. The diagonal example distinguishes this distance from the product
+metric.
+
+[Specification](../docs/decisions/ADR-105.md) · [Scope and evidence](../docs/verification/slices/spatial-metric-remediation.md)
+-/
+
 @[expose] public section
 
 namespace PWFA.Torus
@@ -97,6 +108,7 @@ theorem euclideanDist_le_latticeLength (x y : Fin 2 → ℝ) (shift : Fin 2 → 
 
 theorem exists_latticeLength_eq_euclideanDist (x y : Fin 2 → ℝ) :
     ∃ shift : Fin 2 → ℤ, latticeLength x y shift = euclideanDist (ofCoordinates x) (ofCoordinates y) := by
+  -- Each coordinate can attain its nearest lattice shift simultaneously on this square torus.
   refine ⟨fun i => -round (x i - y i), ?_⟩
   simp [latticeLength, euclideanDist, ofCoordinates, PiLp.norm_eq_of_L2, Real.norm_eq_abs,
     coordDist_eq, sub_eq_add_neg]

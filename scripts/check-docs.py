@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Validate link targets and stable document filenames without external packages."""
+"""Validate document links and stable filenames under the PWFA change policy.
+
+The [requirements matrix](../docs/verification/requirements-matrix.md) uses relative
+links to connect architecture choices to mathematical contracts and their evidence.
+The [change policy](../CONTRIBUTING.md) keeps document names stable across revisions.
+"""
 from pathlib import Path
 from subprocess import check_output
 from urllib.parse import unquote

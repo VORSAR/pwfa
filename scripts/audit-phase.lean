@@ -4,6 +4,16 @@ import PWFA
 meta import Lean.Elab.BuiltinCommand
 meta import Lean.Util.CollectAxioms
 
+/-!
+# Audit of the phase contract
+
+The examples pin the mathematical carrier, operations and required theorem types. The
+declaration audit examines their proof dependencies. Together these checks cover the semantics
+of the public interface as well as the foundations of its proofs.
+
+[Specification](../docs/verification/slices/phase-algebra-experiment.md) · [Scope and evidence](../docs/verification/review-gates.md)
+-/
+
 open Lean PWFA.Phase
 
 universe u

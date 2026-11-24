@@ -4,6 +4,16 @@ import PWFA
 meta import Lean.Elab.BuiltinCommand
 meta import Lean.Util.CollectAxioms
 
+/-!
+# Audit of the torus architecture
+
+The examples check geometric, kernel and trajectory statements through the public import.
+Concrete kernel instances exercise generic results with the hypotheses of the selected
+architecture. Dependency inspection checks the foundations used to prove those statements.
+
+[Specification](../docs/verification/slices/torus-oscillator-baseline.md) · [Scope and evidence](../docs/verification/review-gates.md)
+-/
+
 open Lean PWFA.Phase PWFA.Torus
 open scoped ComplexConjugate Topology
 open Filter Set

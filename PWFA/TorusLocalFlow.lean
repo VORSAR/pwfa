@@ -4,6 +4,16 @@ public import PWFA.TorusVelocityBound
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Mathlib.Analysis.ODE.ExistUnique
 
+/-!
+# Local trajectories in the space of continuous fields
+
+Picard iteration produces a common time window for initial fields with a given norm bound.
+Evaluating the resulting trajectory at a torus point turns tangency into zero derivative of
+the squared modulus. Unit initial fields therefore remain unit on that interval.
+
+[Specification](../docs/decisions/ADR-110.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#internal-review-of-local-solutions)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -30,6 +40,7 @@ theorem exists_uniform_local_solution (p : Parameters) {kernel : Point → Point
   obtain ⟨K, hK⟩ := lipschitzOnWith_continuousRhs p h hrow (M : ℝ)
   change LipschitzOnWith K rhs (Metric.closedBall 0 (M : ℝ)) at hK
   let B : ℝ≥0 := K * M
+  -- Adding one gives a positive time even for a zero velocity bound and keeps displacement ≤ 1.
   let ε : ℝ := (1 + (B : ℝ))⁻¹
   have hε : 0 < ε := by dsimp [ε]; positivity
   have htime : (B : ℝ) * ε ≤ 1 := by

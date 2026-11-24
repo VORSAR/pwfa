@@ -2,6 +2,16 @@ module
 
 public import PWFA.TorusMeanField
 
+/-!
+# Local Lipschitz bound for the oscillator
+
+The norm estimate follows the computation of velocity. First compare means, then angular
+speeds, then tangent velocities. Bounding both input fields on one ball gives a common
+Lipschitz constant for the local existence theorem.
+
+[Specification](../docs/decisions/ADR-110.md) · [Scope and evidence](../docs/verification/slices/torus-oscillator-baseline.md#internal-review-of-the-velocity-bound)
+-/
+
 @[expose] public section
 
 namespace PWFA.TorusOscillator
@@ -81,6 +91,7 @@ theorem norm_continuousRhs_sub_le (p : Parameters) {kernel : Point → Point →
   have hzwd : ‖z x - w x‖ ≤ ‖z - w‖ := (z - w).norm_coe_le_norm x
   have hm : ‖m‖ ≤ L * M :=
     (norm_meanField_le h hrow z x).trans (mul_le_mul_of_nonneg_left hz hL)
+  -- Compare both mean fields with the same linear operator before bounding the speed difference.
   have hmn : ‖m - n‖ ≤ L * ‖z - w‖ := by
     simpa only [ContinuousMap.sub_apply, meanOperator_apply] using
       (((meanOperator kernel h hrow z) - (meanOperator kernel h hrow w)).norm_coe_le_norm x).trans
