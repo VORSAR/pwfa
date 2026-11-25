@@ -133,3 +133,12 @@ These remedies clear the paired scorer on already-decoded inputs. The simulator 
 The [Lean scorer](../../scripts/experiments/recall-scoring.lean) checks PD-01/02 against review revision `a861761`. On a five-cue fixture, each condition recovers one word, but those successes occur on different cues. The paired table records one success unique to each duration and three misses in both. The difference is zero. Lean also checks empty exports, missing predictions, invalid timestamps and IDs, and reversal of the difference when the two files are swapped. For any paired table the common successes cancel from the difference of the two exact-word counts.
 
 In a separate command-line fixture with four scheduled cues, 25-unit training alone recovered cue `a` and 50-unit training alone recovered `b` and `c`. The signed difference was +1/4 and became −1/4 when the files were swapped. Both fixtures contain synthetic predictions. [Command and file format](../experiments/benchmarks.md#score-a-recall-export)
+
+## Internal review of spatial weighting during retrieval
+
+At `024d60f`, Codex (GPT-6), the author acting as internal reviewer under ADR-109, reviewed a conditional comparison for using stored pair values during retrieval. Both candidates store all trained pairs. For a focal site, one uses uniform cell-area weights for its learned mean, and the other multiplies by the existing structural row. [Full pairwise training input](../decisions/ADR-123.md) · [Structural quadrature](../decisions/ADR-114.md)
+
+- **FB-01.** For a finite row with nonnegative integration weights, stored pair values in $[-1,1]$, and unit-bounded complex phases, prove a learned-mean norm bound using the actual weight sum. Distinguish normalized rows and uniform cell area from raw structural mass. Avoid dividing by the sum of signed learned values, which can vanish.
+- **FB-02.** Use a two-site illustration where the structural weight at the remote site is zero. Preserve the self-entry of one and vary only the remote stored sign. Calculate both complex means for the same two current phases. Check their difference in the existing phase velocity with the same structural mean, lag and a symbolic learned multiplier in both variants. Exclude choices of scalar gain, coupler calibration, learned equation, and target recall accuracy.
+
+These remedies clear the finite-row algebra and example only. Both the spatial weighting and its relation to the recovered scalar gain require an owner decision before use in a trained simulator.
