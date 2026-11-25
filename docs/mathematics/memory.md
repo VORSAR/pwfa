@@ -10,14 +10,14 @@
 
 Before testing or proving, specify a state transition table for each train/retrieve event.
 
-The [pairwise training experiment](../research/recall-pilot-checks.md#pairwise-input-to-the-learning-rule) compares signed real phase alignment and its square for both approved input alphabets. The owner chose signed real alignment as the first training input. The temporal update and its use in the learned interaction remain open. The global scalar gain and its parameters have a separate role. [Pairwise decision](../decisions/ADR-123.md)
+For each pair, average signed real phase alignment over the training window using elapsed time. Give each completed word’s summary equal weight in the stored pairwise mean. The window boundaries and the way this memory enters the phase dynamics remain open. The global scalar gain and its parameters have a separate role. [Pairwise input](../decisions/ADR-123.md) · [Within-word mean](../decisions/ADR-125.md) · [Across-word mean](../decisions/ADR-124.md)
 
 ## Training and recall transitions
 
 | Event | Specified behavior | Still to specify |
 |---|---|---|
 | Start an independently trained library | Start a new accumulated pairwise mean with zero completed episodes. | Initial oscillator, trace, scalar $m$ and homeostat $h$. |
-| Present each of the four words | Present words sequentially. Reset oscillator and trace between episodes. Collect signed pair alignment. | Reset values, stimulus timing and strength, within-episode summary window, feedback from already stored memory. |
+| Present each of the four words | Present words sequentially. Reset oscillator and trace between episodes. Integrate each signed pair alignment over the selected window and divide by its positive duration. | Reset values, stimulus timing and strength, window start and end events, feedback from already stored memory. |
 | Complete an episode | Include its pairwise summary exactly once in the running mean. Carry the learned state and homeostasis between episodes. | Update of the separate scalar $m$, definition of homeostatic drive $Q$, and exact branch handling. |
 | Present a held-out cue and retrieve | Use the corrupted cue. Keep its original target with the evaluator. Read relative to the simultaneous origin phase at the recall endpoint. | Clock origin, cue release, exposure duration, read-only or adaptive retrieval state, and observation threshold. |
 

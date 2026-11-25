@@ -75,3 +75,14 @@ These remedies clear the constant-drive algebra and counterexample for experimen
 The [Lean check](../../scripts/experiments/exponential-stage.lean) addresses ST-01 through ST-03 against review revision `30e63d6`. With drive $q$ held constant and time constant $\tau>0$, the exact stage from $x$ is $q+(x-q)e^{-t/\tau}$. Lean checked its initial value and differential equation. Splitting a constant-drive interval gives the same endpoint. For $t\ge 0$, the result stays in any closed interval containing both $x$ and $q$. In particular, if the initial homeostat and drive are nonnegative, $1+h(t)\ge 1$ throughout a constant-drive stage at the recovered time constant 50. The model still needs a definition of $Q$ and its initialization.
 
 For a zero-start pair trace, take two halves of equal positive duration $T$ with signed alignment $+1$ and $-1$. Their duration-weighted mean is zero in either order. With $r=e^{-T/\tau}$, the terminal trace is $-(1-r)^2$ for positive then negative alignment and $+(1-r)^2$ in reverse. At half retention these values are $-1/4$ and $+1/4$. This example measures temporal weighting within a presentation. ADR-124 already gives the resulting four episode summaries equal weight. A time mean of raw alignment would preserve equal influence per unit of exposure, and a terminal trace would deliberately emphasize late alignment. Comparing them empirically requires paired trained recall runs. [Across-episode decision](../decisions/ADR-124.md)
+
+The owner selected the elapsed-time mean for the first pilot. [Within-episode decision](../decisions/ADR-125.md)
+
+## Internal review of the selected time mean
+
+At `7607fe1`, Codex (GPT-6), the author acting as internal reviewer under ADR-109, scoped an experiment on the selected positive-duration mean of integrable signed alignment.
+
+- **TM-01, high.** Require a positive elapsed duration for every mean. Check constant signals, bounds for signed unit-phase alignment, and composition at an interior cut using duration weights. Include unequal durations to detect an erroneous mean of means.
+- **TM-02, high.** Check a bounded, varying signal by an actual time integral on a full window and on its early and late halves. Identify what the window choice can change without treating an artificial signal as a measured training trajectory.
+
+These remedies clear the averaging identities and counterexamples only. The experiment leaves the training events, quadrature scheme, and recall performance open.

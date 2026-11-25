@@ -41,6 +41,7 @@
 | [ADR-122](ADR-122.md) | Recall scoring denominator | A | All scheduled cues primary, with coverage and answered-only accuracy. |
 | [ADR-123](ADR-123.md) | First pairwise training input | A | Signed real phase alignment with a complement recall check. |
 | [ADR-124](ADR-124.md) | Pairwise memory across training episodes | A | Equal weight per completed episode with the reverse-order ablation retained. |
+| [ADR-125](ADR-125.md) | Pairwise summary within each word | A | Time average of signed alignment over a positive-duration training window. |
 
 ## What these statuses mean
 
