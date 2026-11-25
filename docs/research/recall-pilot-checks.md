@@ -174,3 +174,13 @@ Run this at the repository root to print both exact controls. A simulator can us
 ```sh
 lake env lean --run scripts/experiments/four-word-memory.lean
 ```
+
+## Internal review of the learned phase lag
+
+At `a2e1b54`, Codex (GPT-6), the author in the internal reviewer role, reviewed an isolated two-oscillator control for a candidate additive sine interaction driven by the approved learned mean. The current unforced structural lag is $\alpha=\pi/2-0.1$. For the learned channel, compare the same lag with zero lag. Take equal frequencies, reciprocal off-diagonal memory $m$, unit diagonal, equal cell area $1/2$, and a common learned multiplier $g$. The structural contribution to the phase difference is omitted in this control.
+
+- **LG-01, high.** Derive the pair torque from the signed imaginary part of the complex interaction. Include both self-entries and both directions of the learned pair. Check the sign of the relative phase equation and cancellation of common drift.
+- **LG-02, high.** For $m=1$, $g>0$ and an initial relative phase of $\pi/2$, check the explicit relative trajectory against the differential equation and the initial condition. Evaluate its half-angle tangent at $t=40$ and compare the two lag choices at the same gain.
+- **LG-03, high.** Separate this exact phase-correction control from a trained 16-bit recall rate. The example omits structural forcing, other sites, homeostasis, and decoder behavior. Keep $g$ symbolic to avoid choosing its placement or value.
+
+These remedies clear only the phase-lag comparison and two-site trajectory. The full learned phase law and its gain require owner choices.
