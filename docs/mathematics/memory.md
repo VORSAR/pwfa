@@ -10,4 +10,6 @@
 
 Before testing or proving, specify a state transition table for each train/retrieve event.
 
+The [pairwise training experiment](../research/recall-pilot-checks.md#pairwise-input-to-the-learning-rule) compares signed real phase alignment and its square for both approved input alphabets. The global scalar gain and its parameters have a separate role.
+
 [Architecture components](../architecture/components.md) · [Training protocol](../experiments/methodology.md) · [Proof obligations](../verification/proof-obligations.md).
