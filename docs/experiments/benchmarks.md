@@ -32,6 +32,8 @@ For an encoder-radius comparison, use the same target libraries, training order,
 
 [ADR-100](../decisions/ADR-100.md) specifies a **target**, not a result: at least five percentage points exact-recall advantage over a preregistered matched-budget comparator, with clustered 95% confidence interval lower bound above zero.
 
+The [scoring experiment](../research/recall-pilot-checks.md#counting-exact-words) exercises exact matches, flips, masks, abstentions, missing runs, and both candidate denominators on artificial outputs. The primary denominator and decoder tie rule still require explicit choices.
+
 **Unspecified:** baseline identity, exact recall metric, clustering unit, cue generator, rounding/seed specifics, model schedule, sample-size/power rationale and resource budget.
 
 [Methodology](methodology.md) · [Controls](baselines.md) · [Research hypotheses](../vision/hypotheses.md) · [Verification obligations](../verification/proof-obligations.md).

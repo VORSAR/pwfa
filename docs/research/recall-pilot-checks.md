@@ -12,3 +12,14 @@ At revision `dc039d470d92664523fd8a64b157227c82b3cc99`, Codex (GPT-6), the autho
 | PM-02 | High | Keep the dense pairwise statistic separate from the recovered global scalar gain. State what a pair contributes before temporal averaging. Include a configuration where magnitude discards a distinction. Training updates, interaction with other sites and the origin, storage capacity, and recall accuracy require separate evidence. |
 
 The remedies freeze and internally clear these two experiments only. The model has no trained output in this revision. Gate 1 remains open. [Review policy](../verification/review-gates.md)
+
+## Counting exact words
+
+At the frozen review revision `0e42e37`, SC-01 and SC-02 were checked against the [Lean scoring experiment](../../scripts/experiments/recall-scoring.lean). Its exact-word predicate on a decoded word is equivalent to every one of its sixteen positions being resolved and equal to its original target. A synthetic cue with one flip and one mask illustrates this test. Copying the cue gets 14 of 14 unchanged bits right, zero of one flipped bit corrected, and zero of one masked bit recovered. Correcting only the flip or only the mask can still leave a wrong word. The one-of-each fixture tests the scorer independently of the benchmark’s pending 10% rounding rule.
+
+| Artificial outcomes | Exact words | Denominator | Fraction |
+|---|---:|---:|---:|
+| One exact, one wrong, one abstention, one failed run | 1 | 4 scheduled cues | 1/4 |
+| Same records, conditional on a complete prediction | 1 | 2 complete predictions | 1/2 |
+
+The scorer keeps numerator and denominator counts. An empty denominator gives an undefined rate. Recording both rates with coverage (complete predictions divided by scheduled cues) exposes the change of denominator. It also keeps failures visible. The strict all-cue rate is the recommendation for the primary endpoint. Classifying an outcome with both a wrong bit and a tie as abstained is an experiment convention. The definitive policy and the phase threshold still need owner decisions. None of the artificial outcomes are measured PWFA predictions.
