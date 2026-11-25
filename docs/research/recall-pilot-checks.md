@@ -96,3 +96,12 @@ Splitting a window at an interior time preserves the full mean when each subwind
 Window placement is a separate choice. As an illustration, integrate the bounded signal $C(t)=t$ on $[-1,1]$. Lean gives zero over the full interval, −1/2 over its early half, and +1/2 over its late half. The example gives an exact difference for the same signal under different windows. Actual phase histories and their recall rates require trained runs. [Owner decision](../decisions/ADR-125.md)
 
 The owner chose the full scheduled episode for the first pilot. [Window decision](../decisions/ADR-126.md)
+
+## Internal review of candidate episode durations
+
+At `dbc6441`, Codex (GPT-6), the author acting as internal reviewer under ADR-109, scoped a comparison at 25 and 50 model time units per training word. These are new candidates motivated by half and one recovered homeostat time constant. The recall readout has its own clock. [Homeostat](../decisions/ADR-094.md) · [Scheduled window](../decisions/ADR-126.md)
+
+- **ED-01.** Compare the exact homeostat response with constant drive one and initial value zero, retaining both the exact values and their ordering. State that the actual drive and initial state still need definitions.
+- **ED-02.** Use a bounded varying alignment on the same physical timeline to show how extending a full training episode can change the mean. Compute nominal step counts at all three recovered step sizes. Internal event cuts may add steps. Neither example estimates the trained recall rate.
+
+These remedies clear only the duration arithmetic and illustrative integrals.
