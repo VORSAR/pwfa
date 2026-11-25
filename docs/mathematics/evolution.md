@@ -19,6 +19,8 @@ Recovered learned scalar gain under [ADR-093](../decisions/ADR-093.md):
 
 For retrieval, sum the signed contributions from every stored pair with weight $1/N$ per site. This includes the self-entry and permits direct contributions from distant sites. The coefficient and lag applied to the resulting field still require a contract. [Retrieval decision](../decisions/ADR-128.md) [Learned-mean experiment](../research/recall-pilot-checks.md#which-stored-pairs-reach-the-retrieval-field)
 
+For a candidate sine interaction driven by that learned field, an isolated two-site calculation gives an exact relative phase at $t=40$. It compares zero learned lag and the recovered structural reference lag at identical positive learned gain. [Phase-lag control](../research/recall-pilot-checks.md#two-site-phase-correction-at-t40)
+
 The [torus oscillator baseline](../verification/slices/torus-oscillator-baseline.md) records the transfer of the ring phase law under [ADR-110](../decisions/ADR-110.md). It specifies the smooth primary profile, a published disk comparator, a separate uniform control, and analytic checks for review.
 
 Negative effective kernels were described as allowed; do not assume positive definiteness or stability. Require explicit existence, uniqueness, regularity, and stability claims with assumptions.

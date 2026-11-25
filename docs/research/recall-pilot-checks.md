@@ -184,3 +184,13 @@ At `a2e1b54`, Codex (GPT-6), the author in the internal reviewer role, reviewed 
 - **LG-03, high.** Separate this exact phase-correction control from a trained 16-bit recall rate. The example omits structural forcing, other sites, homeostasis, and decoder behavior. Keep $g$ symbolic to avoid choosing its placement or value.
 
 These remedies clear only the phase-lag comparison and two-site trajectory. The full learned phase law and its gain require owner choices.
+
+### Two-site phase correction at t=40
+
+The [Lean calculation](../../scripts/experiments/learned-phase-lag.lean) checks LG-01 through LG-03 against review revision `999d6ed`. It connects the two signed contributions, including the self-entry, to the existing complex angular-velocity function. Subtracting the velocities of the two sites with phase difference $\delta$ gives
+
+$$\dot\delta=-g\,m\,\cos(\beta)\sin(\delta).$$
+
+In this isolated learned interaction, the equal self-entries cause common rotation and cancel from the relative equation. For a pair stored in agreement ($m=1$) and initially $\pi/2$ apart, the verified trajectory is $\delta(t)=2\arctan(e^{-g\cos(\beta)t})$. Lean checks its initial value, derivative and endpoint. At $t=40$ the half-angle tangent is $e^{-40g}$ with zero learned lag and $e^{-40g\sin(0.1)}$ with the structural reference lag. At the same positive gain both reduce the initial gap, and zero learned lag leaves a strictly smaller gap. The structural lag gives about 9.98% of the zero-lag decay coefficient in this control.
+
+This result motivates zero lag as a candidate for the learned contribution while retaining the specified lag in the structural contribution. Training trajectories, multi-site interference, structural coupling, cue timing and decoding can all affect the actual recall outcome. A comparison across the 25- and 50-unit development runs would measure the effect on exact-word recall. [Structural reference parameters](../mathematics/evolution.md) · [Pilot benchmark](../experiments/benchmarks.md#first-trained-recall-measurement)
