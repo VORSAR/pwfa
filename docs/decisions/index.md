@@ -43,6 +43,7 @@
 | [ADR-124](ADR-124.md) | Pairwise memory across training episodes | A | Equal weight per completed episode with the reverse-order ablation retained. |
 | [ADR-125](ADR-125.md) | Pairwise summary within each word | A | Time average of signed alignment over a positive-duration training window. |
 | [ADR-126](ADR-126.md) | Training window for the first pilot | A | Use the full scheduled episode for each word, including early transients. |
+| [ADR-127](ADR-127.md) | Pilot training durations | A | Compare 25 and 50 time units per word on the same development cues. |
 
 ## What these statuses mean
 

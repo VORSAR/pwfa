@@ -116,3 +116,14 @@ At review revision `b92b309`, the [homeostat check](../../scripts/experiments/ex
 | 50 | 500 | 1000 | 2000 | 0 |
 
 The linear test signal stays within $[-1,1]$ on the entire time interval. Extending the window can therefore change the stored mean even on an identical alignment history. Training-step counts double at every recovered step size before extra internal event cuts. The counts describe training work only. Which duration yields better exact-word recall at the separate $t=40$ endpoint requires paired development runs.
+
+The owner selected both durations on identical development cues. [Paired-duration decision](../decisions/ADR-127.md)
+
+## Internal review of paired duration scoring
+
+At `24cae71`, Codex (GPT-6), the author acting in the internal reviewer role, reviewed the offline comparison of two $t=40$ prediction exports.
+
+- **PD-01.** Use one frozen target and corruption roster for both files, join by cue ID, validate each file, and keep missing, failed, or abstaining results in each denominator. Preserve the existing single-condition command and its metrics.
+- **PD-02.** Count exact words in both runs, only at 25, only at 50, and in neither. Compute the signed difference (50 minus 25) over all scheduled cues and report discordant cue IDs in deterministic order. Check swapped files, equal marginal counts with different hits, and an empty schedule.
+
+These remedies clear the paired scorer on already-decoded inputs. The simulator must supply the specified training conditions and identical realized development cues. The scorer cannot establish their provenance from an ID alone.
