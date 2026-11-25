@@ -59,3 +59,13 @@ The [Lean scoring command](../../scripts/experiments/recall-scoring.lean) implem
 ### Weights across training episodes
 
 The [episode accumulation experiment](../../scripts/experiments/episode-accumulation.lean) checks EP-01/02 at review revision `0e418f5`. Lean verified that the running mean equals the first sample at initialization and gives each of four observations weight one quarter. If the old mean and new sample lie in $[-1,1]$, the result does too. A fixed retention factor in $[0,1]$ also preserves that bound. With four fixed readings $(+1,+1,-1,-1)$ or their reverse, equal weighting gives zero either way. Starting at zero and retaining half the old value gives $-9/16$ and $+9/16$ respectively. Reversal invariance of the mean holds for fixed readings even though training feedback may change the readings an episode generates. The owner selected equal weighting. [Episode weighting decision](../decisions/ADR-124.md)
+
+## Internal review of an exponential stage
+
+At `4c49382`, Codex (GPT-6), the author acting as the internal reviewer, examined the proposed trace $\tau T'=C-T$ and the recovered homeostat $50 h'=Q-h$. For this check only, the drive is constant on each stage and duration is nonnegative. The proposed trace uses an unselected positive time constant. [Historical numerics](../decisions/ADR-097.md) · [Homeostat](../decisions/ADR-094.md)
+
+- **ST-01, high.** Differentiate the exact stage, verify its initial value, and check that adjacent stages combine when the drive is unchanged. A varying drive requires a numerical approximation or its own integral; accuracy of such an approximation is outside scope.
+- **ST-02, high.** Prove interval preservation for a bounded drive and initial value. For nonnegative $h,Q$ show that the recovered denominator $1+h$ is at least one. Preserve the distinction between this sufficient condition and a selected model for $Q$.
+- **ST-03, high.** Start a proposed pair trace at zero. On two equal positive durations, compare opposite drives in both orders against their duration-weighted mean. Derive the terminal responses for arbitrary retention in $(0,1)$ and give an exact half-retention example. Choosing a physical time constant or window requires owner direction.
+
+These remedies clear the constant-drive algebra and counterexample for experimental Lean. They leave the pair trace and its episode summary provisional.
