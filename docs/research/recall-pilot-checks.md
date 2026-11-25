@@ -150,3 +150,15 @@ The [Lean experiment](../../scripts/experiments/learned-spatial-weights.lean) ch
 In a two-site example the current phases are $1,i$. The local stored value is one. For a remote stored value $m=+1$ or $-1$, equal cell-area weights give learned means $(1+i)/2$ and $(1-i)/2$. If the remote site is outside the structural support, the illustrative normalized structural row $(1,0)$ gives the same learned mean of one in both cases. The signed row with entries $(1,-1)$ sums to zero under equal cell weights but has a nonzero learned mean. Normalizing by that signed sum would be undefined.
 
 If a common structural mean and $gL$ are supplied to the existing phase law at local phase 1, flipping the remote stored value from −1 to +1 changes instantaneous angular velocity by $\kappa g\cos\alpha$ in the equal-cell example and by zero in the finite-range example. This result is conditional on the placement of $g$ and can vanish for particular parameters. The learned multiplier, training feedback, behavior over time and held-out recall all remain open. [Current phase law](../mathematics/evolution.md)
+
+The owner selected equal cell-area weights on the entire grid for learned retrieval. [Retrieval weighting decision](../decisions/ADR-128.md)
+
+## Internal review of four-word memory construction
+
+At `cc1c6dc`, Codex (GPT-6), the author acting as internal reviewer under ADR-109, reviewed a bounded reference calculation for the accepted training and retrieval rules. Use positive-duration piecewise-constant phase histories with unit vectors in the complex plane. Signed alignment on each segment is the real dot product of the two phase vectors. This gives exact integrals for these histories and supplies a regression reference for a future numerical solver.
+
+- **MC-01, high.** Check positive segment durations, exact coverage of the scheduled duration, and unit phases. Divide within each episode by its own elapsed duration and average four separate episode summaries. Include a fixture with unequal segment lengths and a fixture with different segment partitions across words.
+- **MC-02, high.** Derive symmetry and unit diagonal from the actual accumulation formula. Use the full signed row including its self-entry, divide by the number of sites exactly once, and validate an example where row-sum normalization would lose the learned field.
+- **MC-03, high.** Run exact arithmetic for both 25- and 50-unit fixtures, reporting matrix entries and a cue response. Deliberately scale the same history in the duration control. The first trained recall result still requires measured oscillator trajectories, learned dynamics, and a decoder.
+
+These remedies clear a standalone training and retrieval reference calculation for the stated input class. They select no trajectory approximation or new dynamical parameters.

@@ -10,7 +10,7 @@
 
 Before testing or proving, specify a state transition table for each train/retrieve event.
 
-For each pair, average signed real phase alignment over the full scheduled training episode using elapsed time. Give each completed word’s summary equal weight in the stored pairwise mean. The development pilot compares 25 and 50 model time units per word on the same cues. The way this memory enters the phase dynamics remains open. [Training durations](../decisions/ADR-127.md) The global scalar gain and its parameters have a separate role. [Pairwise input](../decisions/ADR-123.md) · [Within-word mean](../decisions/ADR-125.md) · [Full window](../decisions/ADR-126.md) · [Across-word mean](../decisions/ADR-124.md)
+For each pair, average signed real phase alignment over the full scheduled training episode using elapsed time. Give each completed word’s summary equal weight in the stored pairwise mean. The development pilot compares 25 and 50 model time units per word on the same cues. During retrieval the learned field is the equal-cell-area sum of stored pair values times the current source phases. The gain, lag, and scalar state dynamics remain open. [Training durations](../decisions/ADR-127.md) · [Retrieval field](../decisions/ADR-128.md) [Pairwise input](../decisions/ADR-123.md) · [Within-word mean](../decisions/ADR-125.md) · [Full window](../decisions/ADR-126.md) · [Across-word mean](../decisions/ADR-124.md)
 
 ## Training and recall transitions
 
@@ -19,7 +19,7 @@ For each pair, average signed real phase alignment over the full scheduled train
 | Start an independently trained library | Start a new accumulated pairwise mean with zero completed episodes. | Initial oscillator, trace, scalar $m$ and homeostat $h$. |
 | Present each of the four words | Present words sequentially. Reset oscillator and trace between episodes. Integrate signed pair alignment from start to end over 25 or 50 time units and divide by that duration. | Reset values, stimulus timing and strength, feedback from already stored memory. |
 | Complete an episode | Include its pairwise summary exactly once in the running mean. Carry the learned state and homeostasis between episodes. | Update of the separate scalar $m$, definition of homeostatic drive $Q$, and exact branch handling. |
-| Present a held-out cue and retrieve | Use the corrupted cue. Keep its original target with the evaluator. Read relative to the simultaneous origin phase at the recall endpoint. | Clock origin, cue release, exposure duration, read-only or adaptive retrieval state, and observation threshold. |
+| Present a held-out cue and retrieve | Use the corrupted cue. Keep its original target with the evaluator. Use all stored pairs with equal cell area in the learned field. Read relative to the simultaneous origin phase at the recall endpoint. | Clock origin, cue release, exposure duration, read-only or adaptive retrieval state, and observation threshold. |
 
 The pairwise mean after four episodes is the sum of their four summaries divided by four. Recording the completed count makes the update well-defined at the first presentation. [Episode weighting](../decisions/ADR-124.md) · [Sequential training](../decisions/ADR-096.md) · [Recall scoring](../decisions/ADR-122.md)
 
