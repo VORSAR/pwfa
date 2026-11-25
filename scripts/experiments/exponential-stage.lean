@@ -79,10 +79,21 @@ private theorem half_retention_example :
     stage 1 (stage 1 0 (-1) (Real.log 2)) 1 (Real.log 2) = 1/4 := by
   norm_num [stage, Real.exp_neg, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
 
+-- The trial training durations are half and one homeostat time constant.
+-- Compare unit constant drive from zero; the physical drive is still open.
+private theorem duration_response :
+    stage 50 0 1 25 = 1 - Real.exp (-(1/2)) ∧
+    stage 50 0 1 50 = 1 - Real.exp (-1) ∧
+    stage 50 0 1 25 < stage 50 0 1 50 := by
+  have ordering : Real.exp (-1) < Real.exp (-(1/2)) := Real.exp_lt_exp.mpr (by norm_num)
+  have at25 : stage 50 0 1 25 = 1 - Real.exp (-(1/2)) := by unfold stage; norm_num; ring
+  have at50 : stage 50 0 1 50 = 1 - Real.exp (-1) := by unfold stage; norm_num; ring
+  exact ⟨at25, at50, by rw [at25, at50]; linarith⟩
+
 run_cmd do
   let allowed := #[`propext, `Classical.choice, `Quot.sound]
   for name in #[``starts_at_initial, ``stage_deriv, ``compose_same_drive, ``stage_bounded,
-      ``gain_denominator, ``equal_duration_mean, ``opposite_halves, ``half_retention_example] do
+      ``gain_denominator, ``equal_duration_mean, ``opposite_halves, ``half_retention_example, ``duration_response] do
     let deps ← Lean.collectAxioms name
     unless deps.all (fun dep => allowed.contains dep) do
       throwError "{name} has unexpected dependencies: {deps}"

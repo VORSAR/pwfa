@@ -75,10 +75,35 @@ private theorem ramp_windows :
     mean id (by norm_num : (0 : ℝ) < 1) = 1/2 := by
   norm_num [mean, id, integral_id]
 
+-- ED-02 in the duration review: keep the signal fixed as a function of
+-- physical time. Extending the episode changes how much of it is observed.
+private theorem ramp_duration {T : ℝ} (ht : 0 < T) :
+    mean (fun t => (1/25 : ℝ)*t-1) ht = T/50-1 := by
+  have lin : IntervalIntegrable (fun t : ℝ => (1/25 : ℝ)*t) volume 0 T :=
+    (continuous_const.mul continuous_id).intervalIntegrable ..
+  rw [mean, intervalIntegral.integral_sub lin intervalIntegrable_const,
+    intervalIntegral.integral_const_mul, integral_id, intervalIntegral.integral_const,
+    div_eq_iff (sub_ne_zero.mpr ht.ne')]
+  simp only [smul_eq_mul]
+  ring
+
+private theorem proposed_durations :
+    mean (fun t => (1/25 : ℝ)*t-1) (by norm_num : (0 : ℝ) < 25) = -1/2 ∧
+    mean (fun t => (1/25 : ℝ)*t-1) (by norm_num : (0 : ℝ) < 50) = 0 ∧
+    (∀ t ∈ Set.Icc (0 : ℝ) 50, (1/25 : ℝ)*t-1 ∈ Set.Icc (-1 : ℝ) 1) := by
+  refine ⟨by rw [ramp_duration]; norm_num, by rw [ramp_duration]; norm_num, ?_⟩
+  intro t ht
+  constructor <;> linarith [ht.1, ht.2]
+
+-- Counts for fixed steps before internal training events split any step.
+private theorem nominal_steps :
+    (250 : ℚ)/10 = 25 ∧ (500 : ℚ)/20 = 25 ∧ (1000 : ℚ)/40 = 25 ∧
+    (500 : ℚ)/10 = 50 ∧ (1000 : ℚ)/20 = 50 ∧ (2000 : ℚ)/40 = 50 := by norm_num
+
 run_cmd do
   let allowed := #[`propext, `Classical.choice, `Quot.sound]
   for name in #[``constant_mean, ``pair_mean_bounded, ``split_mean, ``unequal_durations,
-      ``ramp_windows] do
+      ``ramp_windows, ``ramp_duration, ``proposed_durations, ``nominal_steps] do
     let deps ← Lean.collectAxioms name
     unless deps.all (fun dep => allowed.contains dep) do
       throwError "{name} has unexpected dependencies: {deps}"

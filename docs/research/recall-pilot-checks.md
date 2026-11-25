@@ -105,3 +105,14 @@ At `dbc6441`, Codex (GPT-6), the author acting as internal reviewer under ADR-10
 - **ED-02.** Use a bounded varying alignment on the same physical timeline to show how extending a full training episode can change the mean. Compute nominal step counts at all three recovered step sizes. Internal event cuts may add steps. Neither example estimates the trained recall rate.
 
 These remedies clear only the duration arithmetic and illustrative integrals.
+
+### Checked duration candidates
+
+At review revision `b92b309`, the [homeostat check](../../scripts/experiments/exponential-stage.lean) and [window check](../../scripts/experiments/training-window-mean.lean) address ED-01/02. With constant drive one and zero initial homeostat, the exact responses are $1-e^{-1/2}$ at time 25 and $1-e^{-1}$ at time 50. These are approximately 39.35% and 63.21% of the imposed drive. The times are pilot proposals derived from the homeostat scale. No historical episode length was recovered.
+
+| Training duration per word | Nominal steps at 0.1 | At 0.05 | At 0.025 | Mean for the trial alignment $C(t)=t/25-1$ |
+|---|---:|---:|---:|---:|
+| 25 | 250 | 500 | 1000 | −1/2 |
+| 50 | 500 | 1000 | 2000 | 0 |
+
+The linear test signal stays within $[-1,1]$ on the entire time interval. Extending the window can therefore change the stored mean even on an identical alignment history. Training-step counts double at every recovered step size before extra internal event cuts. The counts describe training work only. Which duration yields better exact-word recall at the separate $t=40$ endpoint requires paired development runs.
