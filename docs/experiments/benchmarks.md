@@ -34,6 +34,21 @@ For an encoder-radius comparison, use the same target libraries, training order,
 
 The [scoring experiment](../research/recall-pilot-checks.md#counting-exact-words) exercises exact matches, flips, masks, abstentions, missing runs, and both candidate denominators on artificial outputs. The owner selected exact matches divided by all scheduled cues as primary. Report coverage and accuracy among fully answered cues alongside it, with raw counts and undefined rates for zero denominators. The decoder confidence threshold remains open. [Counting decision](../decisions/ADR-122.md)
 
+### Score a recall export
+
+From the repository root, score one library and one experimental condition per invocation. Both inputs are tab-separated text with no header. Make the schedule before retrieval and keep the target and corruption labels on the evaluation side.
+
+```sh
+lean --run scripts/experiments/recall-scoring.lean schedule.tsv predictions.tsv
+```
+
+| File | Columns in order |
+|---|---|
+| Schedule | Unique cue ID, original 16-bit word, 16 corruption labels (`.` unchanged, `F` flipped, `M` masked). |
+| Predictions | Cue ID, endpoint label `40`, 16 decoded symbols (`0`, `1`, or `?` for abstention). Use `FAILED` in the last column to report a failed run. |
+
+IDs join the files regardless of row order. An absent scheduled ID counts as missing. A word with any unresolved bit counts as an abstention. The output reports the three ADR-122 fractions with integer counts, failed and missing cues separately, and correctly decoded masked/flipped bits over the corresponding scheduled positions. A missing prediction earns zero correct bits. An empty input group has undefined rates where the denominator is zero. Duplicate IDs, unscheduled predictions, malformed records, and an endpoint other than `40` produce an error. The simulator must supply the actual readout from that time. [Checked command and synthetic example](../research/recall-pilot-checks.md#scoring-command-check)
+
 **Unspecified:** baseline identity, across-library aggregation, clustering unit, cue generator, rounding/seed specifics, model schedule, sample-size/power rationale and resource budget.
 
 [Methodology](methodology.md) · [Controls](baselines.md) · [Research hypotheses](../vision/hypotheses.md) · [Verification obligations](../verification/proof-obligations.md).

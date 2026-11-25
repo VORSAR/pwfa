@@ -51,3 +51,7 @@ At `7da3011`, Codex (GPT-6), the author in the internal reviewer role, reviewed 
 | RS-02 | High | Inspect the declared readout time, require exactly sixteen binary target symbols, allow an explicit abstention symbol in outputs, and distinguish invalid input from a declared failed run. Use integer counts for every fraction; a zero denominator has undefined accuracy. Exercise the command on synthetic complete, wrong, missing, tied, malformed and duplicate records. |
 
 These remedies authorize only the episode-summary algebra and offline scoring of already-decoded endpoint records. A trusted simulator is responsible for the timestamps and outputs it supplies. The scorer cannot establish how a prediction was obtained or whether training took place. Independent Gate 1 remains open.
+
+### Scoring command check
+
+The [Lean scoring command](../../scripts/experiments/recall-scoring.lean) implements ADR-122 using a separately supplied cue schedule. The RS-01/02 post-implementation check used the command on five synthetic cues in a different order from the schedule. There was one exact word, one wrong word, one abstention, one declared failure, and one missing prediction. It reported primary accuracy 1/5, coverage 2/5, and answered-only accuracy 1/2. Duplicate and unknown IDs, a wrong readout time, and invalid words were rejected. Compilation also checks the empty schedule and zero denominator. These counts are a test fixture. [Input format and command](../experiments/benchmarks.md#score-a-recall-export)

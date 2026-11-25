@@ -88,4 +88,135 @@ example :
     allCues trials = (1, 4) ∧ completeOnly trials = (1, 2) ∧
     allCues [] = (0, 0) ∧ completeOnly [.abstained, .failed] = (0, 0) := by decide +kernel
 
+-- Score one condition and library at a time. The separate schedule fixes the
+-- ADR-122 denominator before any model output is read. IDs join the two files.
+private structure Scheduled where
+  target : Word
+  status : Fin 16 → InputStatus
+
+private def parse16 {α : Type} (s : String) (parse : Char → Option α) :
+    Except String (Fin 16 → α) := do
+  let some values := s.toList.mapM parse | throw s!"invalid symbol in '{s}'"
+  let arr := values.toArray
+  if h : arr.size = 16 then
+    return fun i => arr[i.val]'(by simpa only [h] using i.isLt)
+  else
+    throw s!"expected 16 positions, found {arr.size}"
+
+private def parseBit : Char → Option Bool
+  | '0' => some false
+  | '1' => some true
+  | _ => none
+
+private def parseSchedule : List String → Except String Scheduled
+  | [word, labels] => do
+    let target ← parse16 word parseBit
+    let status ← parse16 labels fun
+      | '.' => some .clean
+      | 'F' => some .flipped
+      | 'M' => some .masked
+      | _ => none
+    return ⟨target, status⟩
+  | _ => throw "expected cue ID, target word, and corruption labels"
+
+private def parsePrediction : List String → Except String (Option Decoded)
+  | ["40", "FAILED"] => return none
+  | ["40", word] => do
+    let bits ← parse16 word fun c =>
+      if c == '?' then some none else (parseBit c).map some
+    return some bits
+  | [time, _] => throw s!"expected endpoint 40, found '{time}'"
+  | _ => throw "expected cue ID, endpoint 40, and decoded word or FAILED"
+
+private def readRows {α : Type} (input : String) (parse : List String → Except String α) :
+    Except String (Std.HashMap String α) := do
+  let mut rows := ∅
+  for (line, n) in (input.splitOn "\n").zipIdx do
+    let line := (line.dropSuffix "\r").toString
+    if line.isEmpty then continue
+    let id :: fields := line.splitOn "\t" | throw s!"line {n+1}: expected cue ID"
+    if id.isEmpty || id.trimAscii.toString != id then throw s!"line {n+1}: invalid cue ID"
+    if rows.contains id then throw s!"line {n+1}: duplicate cue ID '{id}'"
+    match parse fields with
+    | .error e => throw s!"line {n+1}, cue '{id}': {e}"
+    | .ok value => rows := rows.insert id value
+  return rows
+
+private structure Report where
+  exact : Nat := 0
+  wrong : Nat := 0
+  abstained : Nat := 0
+  failed : Nat := 0
+  missing : Nat := 0
+  maskedCorrect : Nat := 0
+  maskedTotal : Nat := 0
+  flippedCorrect : Nat := 0
+  flippedTotal : Nat := 0
+  deriving BEq
+
+private def evaluate (schedule predictions : String) : Except String Report := do
+  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+  let returned ← (readRows predictions parsePrediction).mapError ("predictions: " ++ ·)
+  for (id, _) in returned.toList do
+    unless planned.contains id do throw s!"unscheduled cue '{id}'"
+  let mut report : Report := {}
+  for (id, item) in planned.toList do
+    let row := returned.get? id
+    let bits := row.join
+    let scored := bits.getD (fun _ => none)
+    let (mc, mt) := subsetCounts item.target scored item.status .masked
+    let (fc, ft) := subsetCounts item.target scored item.status .flipped
+    report := { report with
+      maskedCorrect := report.maskedCorrect + mc, maskedTotal := report.maskedTotal + mt
+      flippedCorrect := report.flippedCorrect + fc, flippedTotal := report.flippedTotal + ft }
+    match classify item.target bits with
+    | .exact => report := { report with exact := report.exact + 1 }
+    | .wrong => report := { report with wrong := report.wrong + 1 }
+    | .abstained => report := { report with abstained := report.abstained + 1 }
+    | .failed =>
+      if row.isNone then report := { report with missing := report.missing + 1 }
+      else report := { report with failed := report.failed + 1 }
+  return report
+
+private def fraction (n d : Nat) : String :=
+  if d = 0 then s!"undefined ({n}/{d})" else s!"{n}/{d}"
+
+private def formatReport (r : Report) : String :=
+  let answered := r.exact + r.wrong
+  let total := answered + r.abstained + r.failed + r.missing
+  String.intercalate "\n" [
+    s!"Exact words / scheduled cues: {fraction r.exact total}",
+    s!"Coverage: {fraction answered total}",
+    s!"Exact words / fully answered cues: {fraction r.exact answered}",
+    s!"Masked bits correct / scheduled masked bits: {fraction r.maskedCorrect r.maskedTotal}",
+    s!"Flipped bits corrected / scheduled flipped bits: {fraction r.flippedCorrect r.flippedTotal}",
+    s!"Exact {r.exact}, wrong {r.wrong}, abstained {r.abstained}, failed {r.failed}, missing {r.missing}"]
+
+-- The pure file boundary is tested when the research CI compiles this module.
+private def fixtureSchedule := String.intercalate "\n" <|
+  ["a", "b", "c", "d", "e"].map (· ++ "\t0000000000000000\tFM..............")
+private def fixtureResults := "c\t40\t0?00000000000000\na\t40\t0000000000000000\nd\t40\tFAILED\nb\t40\t1000000000000000"
+
+#guard (evaluate fixtureSchedule fixtureResults).toOption == some {
+  exact := 1, wrong := 1, abstained := 1, failed := 1, missing := 1,
+  maskedCorrect := 2, maskedTotal := 5, flippedCorrect := 2, flippedTotal := 5 }
+#guard (evaluate "" "").toOption == some {}
+#guard (evaluate fixtureSchedule (fixtureResults ++ "\na\t40\tFAILED")).isOk == false
+#guard (evaluate (fixtureSchedule ++ "\n" ++ fixtureSchedule) "").isOk == false
+#guard (evaluate fixtureSchedule "unknown\t40\tFAILED").isOk == false
+#guard (evaluate fixtureSchedule "a\t39\t0000000000000000").isOk == false
+#guard (evaluate fixtureSchedule "a\t40\t0x00000000000000").isOk == false
+#guard (evaluate fixtureSchedule "a\t40\t0").isOk == false
+#guard (evaluate "a\t?000000000000000\tFM.............." "").isOk == false
+#guard fraction 0 0 == "undefined (0/0)"
+
 end RecallScoring
+
+/-- Score an exported condition at t=40 using the frozen cue roster. -/
+public def main (args : List String) : IO UInt32 := do
+  let [schedule, predictions] := args | do
+    IO.eprintln "Usage: lean --run scripts/experiments/recall-scoring.lean SCHEDULE.tsv PREDICTIONS.tsv"
+    return 2
+  match RecallScoring.evaluate (← IO.FS.readFile schedule) (← IO.FS.readFile predictions) with
+  | .error e => IO.eprintln e; return 1
+  | .ok report => IO.println (RecallScoring.formatReport report); return 0
