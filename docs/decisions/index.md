@@ -40,6 +40,7 @@
 | [ADR-121](ADR-121.md) | Encoder validation grid placement | 1A | Origin-aligned primary and half-cell-shifted sensitivity in both axes. |
 | [ADR-122](ADR-122.md) | Recall scoring denominator | A | All scheduled cues primary, with coverage and answered-only accuracy. |
 | [ADR-123](ADR-123.md) | First pairwise training input | A | Signed real phase alignment with a complement recall check. |
+| [ADR-124](ADR-124.md) | Pairwise memory across training episodes | A | Equal weight per completed episode with the reverse-order ablation retained. |
 
 ## What these statuses mean
 
