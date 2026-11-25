@@ -23,7 +23,7 @@ The historical [ADR-046](../decisions/ADR-046.md) and [ADR-055](../decisions/ADR
 - [SLICE-001-PHASE](slices/phase-algebra-experiment.md) has six experimental theorems that compiled in CI. Independent Gate 1 is pending. [Review packet](slices/phase-algebra-review-packet.md).
 - [Phase conjugation and inverse](slices/phase-inverse-experiment.md) compiled as a bounded ADR-109 experiment.
 - [SLICE-001-METRIC](slices/spatial-metric-remediation.md) has written remedies for IR-001 and IR-002 and compiled proofs for the named Euclidean distance. Independent review is pending.
-- The flat torus baseline has compiled unique global solutions for unit-phase data, the exact synchronized trajectory, and normalization of both finite-range kernels. The two coordinate winding numbers are preserved along local and global phase solutions. [Oscillator review record](slices/torus-oscillator-baseline.md#compiled-disk-normalization)
+- The flat torus baseline has compiled unique global solutions for unit-phase data, the exact synchronized trajectory, and normalization of both finite-range kernels. The two coordinate winding numbers are preserved along local and global phase solutions. [Frozen independent review packet](slices/torus-oscillator-review-packet.md) · [Internal oscillator record](slices/torus-oscillator-baseline.md#compiled-disk-normalization)
 - [Parent SLICE-001](slices/spatial-phase-foundation.md): full mathematical scope NOT independently reviewed or closed.
 - [Review request #8](https://github.com/VORSAR/pwfa/issues/8): retained as a record of the unmet external-review option; the owner coordinates the two-person project.
 - Whole PWFA: no independent certification, no validated memory/learning behavior, no system-level performance claims.

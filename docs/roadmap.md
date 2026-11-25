@@ -1,6 +1,6 @@
 # PWFA roadmap
 
-**Next milestone: reconcile the requirements matrix and freeze the torus reviewer packet for independent Gate 1.**
+**Next review milestone:** obtain an independent disposition on the [frozen torus oscillator packet](verification/slices/torus-oscillator-review-packet.md).
 
 **Next empirical milestone:** measure exact 16-bit word recall on corrupted cues at $t=40$. The input-margin checks inform the choice of candidate encoders. The first trained recall pilot depends on the memory, training, and decoder contracts listed below. [Recall measurement](experiments/benchmarks.md#first-trained-recall-measurement)
 
@@ -43,10 +43,10 @@ Item 7 verifies the historical ring kernel’s row integral, its action on Fouri
 
 ## Independent Gate 1
 
-Independent Gate 1 is open. The oscillator packet can cover the frozen unforced torus contract while work on the encoder and learned memory proceeds. Name the exact claims and revision for the outside reviewer. [Review gates](verification/review-gates.md)
+Independent Gate 1 is open. The oscillator packet can cover the frozen unforced torus contract while work on the encoder and learned memory proceeds. The packet fixes the claims and revision for the outside reviewer. [Review gates](verification/review-gates.md)
 
-- [ ] **Reconcile the requirements matrix.** Link each accepted claim to its governing ADR, Lean theorem, assumptions, and audit. Update entries that predate the metric, local-flow, and disk proofs. Keep the outstanding mathematical obligations visible. [Requirements matrix](verification/requirements-matrix.md) · [Proof obligations](verification/proof-obligations.md)
-- [ ] **Prepare a commit-pinned torus reviewer packet.** Include the frozen contract, theorem statements, internal findings and remedies, build and audit evidence, and the claims still open. The existing phase-algebra packet covers a narrower scope. [Phase-algebra packet](verification/slices/phase-algebra-review-packet.md) · [Torus contract](verification/slices/torus-oscillator-baseline.md)
+- [x] **Reconcile the oscillator requirements matrix.** The frozen claim table identifies assumptions and public theorems for geometry, kernels, flow, winding, waves, smoothness and the ring reference. The system-level obligations are tracked separately. [Requirements matrix](verification/requirements-matrix.md) · [Proof obligations](verification/proof-obligations.md)
+- [x] **Prepare a commit-pinned torus reviewer packet.** The [packet](verification/slices/torus-oscillator-review-packet.md) pins the contract and proofs, identifies internal remedies and passed build evidence, and provides a procedure to record independent findings and closure. [Phase-algebra packet](verification/slices/phase-algebra-review-packet.md) · [Torus contract](verification/slices/torus-oscillator-baseline.md)
 - [ ] **Obtain independent review and record closure.** Have the outside reviewer assess the frozen scope. Record each finding, remedy, revision, and verification outcome, then record the disposition for that scope once every finding is closed. [Earlier review request, closed as not planned](https://github.com/VORSAR/pwfa/issues/8) · [Gate policy](verification/review-gates.md)
 
 ## Decisions and contracts needed for later work

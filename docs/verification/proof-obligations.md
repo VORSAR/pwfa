@@ -1,6 +1,6 @@
 # Mathematical and experimental proof obligations
 
-**Status:** system-level obligations remain open. The linked slice contracts record individually compiled results.
+**Status:** system-level obligations remain open. The [unforced oscillator claim table](slices/torus-oscillator-review-packet.md#claims-to-check) identifies the compiled geometry, flow, invariant, and wave results and their hypotheses. Numerical and learned dynamics remain open.
 
 | Area | Required evidence | Governing references |
 |---|---|---|
