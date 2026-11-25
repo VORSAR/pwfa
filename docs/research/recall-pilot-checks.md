@@ -38,3 +38,16 @@ Reversing every angle preserves every signed pair reading because cosine is even
 As a related model, Aoki and Aoyagi give a phase-difference-dependent weight update in Eq. (3). Its phase offset can give a signed cosine drive. This is precedent for a candidate training signal. PWFA must still specify its own trace and learning time scales, training boundaries, and how the learned weights enter evolution. [Aoki and Aoyagi, Physical Review Letters (2009)](https://doi.org/10.1103/PhysRevLett.102.034101)
 
 The owner selected signed alignment as the first candidate and requested a recall check for complementary words with the cue and origin present. [Training-input decision](../decisions/ADR-123.md)
+
+## Internal review of episode accumulation and recall scoring inputs
+
+At `7da3011`, Codex (GPT-6), the author in the internal reviewer role, reviewed two bounded next steps under ADR-109. Each pair has a signed observation summary for each presentation. The continuous dynamics producing those summaries remain unspecified. A separate scoring utility may consume predictions from a future simulator.
+
+| Finding | Severity | Remedy specified before implementation |
+|---|---|---|
+| EP-01 | High | Check the running arithmetic mean at an empty start and over all four training episodes. Compare a fixed-retention update on the same bounded summaries. Verify the unit interval in signed coordinates $[-1,1]$ is invariant. Check the effect of reversing conflicting inputs. Claims about order apply only to fixed summaries. |
+| EP-02 | High | Keep the within-episode trace, phase forcing, and the recovered scalar gain separate. Demonstrate the trade-off with a concrete four-episode sequence and its reverse. Avoid predictions of recall accuracy from this algebra. |
+| RS-01 | High | Read the planned cue IDs and targets separately from model outputs. Score one condition and library at a time. Reject duplicate IDs in either file and unknown output IDs. A missing scheduled output and an explicit failed retrieval must both remain in the denominator. |
+| RS-02 | High | Inspect the declared readout time, require exactly sixteen binary target symbols, allow an explicit abstention symbol in outputs, and distinguish invalid input from a declared failed run. Use integer counts for every fraction; a zero denominator has undefined accuracy. Exercise the command on synthetic complete, wrong, missing, tied, malformed and duplicate records. |
+
+These remedies authorize only the episode-summary algebra and offline scoring of already-decoded endpoint records. A trusted simulator is responsible for the timestamps and outputs it supplies. The scorer cannot establish how a prediction was obtained or whether training took place. Independent Gate 1 remains open.
