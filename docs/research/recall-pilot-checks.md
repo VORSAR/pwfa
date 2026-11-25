@@ -162,3 +162,15 @@ At `cc1c6dc`, Codex (GPT-6), the author acting as internal reviewer under ADR-10
 - **MC-03, high.** Run exact arithmetic for both 25- and 50-unit fixtures, reporting matrix entries and a cue response. Deliberately scale the same history in the duration control. The first trained recall result still requires measured oscillator trajectories, learned dynamics, and a decoder.
 
 These remedies clear a standalone training and retrieval reference calculation for the stated input class. They select no trajectory approximation or new dynamical parameters.
+
+### Exact four-word training and retrieval control
+
+The [runnable Lean reference](../../scripts/experiments/four-word-memory.lean) checks MC-01 through MC-03 against review revision `3791c55`. It verifies the prescribed duration for each of four input histories, positive segment durations, and unit phases. Within a piecewise-constant segment it computes the exact signed alignment from rational real and imaginary coordinates. Lean connects that computation to the real part of the complex relative phase and proves that every accepted library produces a symmetric matrix with unit diagonal.
+
+For two sites, the four test words have off-diagonal episode means $1/2,-1,1,0$. The first word spends three quarters of its time in agreement and one quarter in opposition. The stored off-diagonal value is therefore $1/8$. With current phases $(1,i)$ the two learned fields are $1/2+i/16$ and $1/16+i/2$. The 25- and 50-unit controls produce these same values because the latter doubles every segment duration with the same phases. A separate library in opposition throughout produces a zero signed row sum and a nonzero learned field. The checks reject an empty grid, missing or invalid duration, or a nonunit phase.
+
+Run this at the repository root to print both exact controls. A simulator can use the controls to check its training and retrieval arithmetic. The inputs are prescribed phase histories; a trained recall run must generate its own histories.
+
+```sh
+lake env lean --run scripts/experiments/four-word-memory.lean
+```

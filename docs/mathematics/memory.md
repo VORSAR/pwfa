@@ -23,6 +23,8 @@ For each pair, average signed real phase alignment over the full scheduled train
 
 The pairwise mean after four episodes is the sum of their four summaries divided by four. Recording the completed count makes the update well-defined at the first presentation. [Episode weighting](../decisions/ADR-124.md) · [Sequential training](../decisions/ADR-096.md) · [Recall scoring](../decisions/ADR-122.md)
 
+The [four-word reference calculation](../research/recall-pilot-checks.md#exact-four-word-training-and-retrieval-control) builds the accepted pair matrix from exact, piecewise-constant phase histories and applies the dense retrieval field to a specified phase snapshot. It supplies numerical control values at both pilot durations and general symmetry and unit-diagonal checks for these histories.
+
 For the recovered homeostat with $Q$ held constant during one integration stage, the exact solution stays between its start value and $Q$. Nonnegative initial $h$ and nonnegative stage drives therefore suffice for the scalar gain denominator $1+h$ to stay at least one. The definition and admissible range of $Q$ remain open. [Exact stage and trace comparison](../research/recall-pilot-checks.md#what-the-trace-retains-within-one-episode)
 
 [Architecture components](../architecture/components.md) · [Training protocol](../experiments/methodology.md) · [Proof obligations](../verification/proof-obligations.md).
