@@ -154,11 +154,17 @@ private structure Report where
   flippedTotal : Nat := 0
   deriving BEq
 
-private def evaluate (schedule predictions : String) : Except String Report := do
-  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+private abbrev Schedule := Std.HashMap String Scheduled
+private abbrev Predictions := Std.HashMap String (Option Decoded)
+
+private def validatedPredictions (planned : Schedule) (predictions : String) :
+    Except String Predictions := do
   let returned ← (readRows predictions parsePrediction).mapError ("predictions: " ++ ·)
   for (id, _) in returned.toList do
     unless planned.contains id do throw s!"unscheduled cue '{id}'"
+  return returned
+
+private def reportFor (planned : Schedule) (returned : Predictions) : Report := Id.run do
   let mut report : Report := {}
   for (id, item) in planned.toList do
     let row := returned.get? id
@@ -178,6 +184,10 @@ private def evaluate (schedule predictions : String) : Except String Report := d
       else report := { report with failed := report.failed + 1 }
   return report
 
+private def evaluate (schedule predictions : String) : Except String Report := do
+  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+  return reportFor planned (← validatedPredictions planned predictions)
+
 private def fraction (n d : Nat) : String :=
   if d = 0 then s!"undefined ({n}/{d})" else s!"{n}/{d}"
 
@@ -191,6 +201,48 @@ private def formatReport (r : Report) : String :=
     s!"Masked bits correct / scheduled masked bits: {fraction r.maskedCorrect r.maskedTotal}",
     s!"Flipped bits corrected / scheduled flipped bits: {fraction r.flippedCorrect r.flippedTotal}",
     s!"Exact {r.exact}, wrong {r.wrong}, abstained {r.abstained}, failed {r.failed}, missing {r.missing}"]
+
+-- ADR-127 uses the same scheduled cues in two independently trained conditions.
+-- Keep the IDs of the discordant pairs so equal aggregate rates remain interpretable.
+private structure PairedReport where
+  at25 : Report
+  at50 : Report
+  both : Nat := 0
+  neither : Nat := 0
+  only25 : Array String := #[]
+  only50 : Array String := #[]
+
+private def paired (schedule predictions25 predictions50 : String) : Except String PairedReport := do
+  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+  let p25 ← (validatedPredictions planned predictions25).mapError ("25-unit " ++ ·)
+  let p50 ← (validatedPredictions planned predictions50).mapError ("50-unit " ++ ·)
+  let mut result := { at25 := reportFor planned p25, at50 := reportFor planned p50 : PairedReport }
+  for (id, item) in planned.toList do
+    let hit (p : Predictions) := classify item.target (p.get? id).join == .exact
+    match hit p25, hit p50 with
+    | true, true => result := { result with both := result.both + 1 }
+    | false, false => result := { result with neither := result.neither + 1 }
+    | true, false => result := { result with only25 := result.only25.push id }
+    | false, true => result := { result with only50 := result.only50.push id }
+  return { result with only25 := result.only25.qsort, only50 := result.only50.qsort }
+
+private def pairedDifference (r : PairedReport) : String :=
+  let n := r.both + r.only25.size + r.only50.size + r.neither
+  let delta := (r.only50.size : Int) - (r.only25.size : Int)
+  if n = 0 then "undefined (0/0)" else s!"{delta}/{n}"
+
+-- The common successes cancel for any four-cell paired comparison.
+private theorem discordant_difference (both only25 only50 : Nat) :
+    ((both + only50 : Nat) : Int) - ((both + only25 : Nat) : Int) =
+      (only50 : Int) - (only25 : Int) := by omega
+
+private def formatPair (r : PairedReport) : String :=
+  String.intercalate "\n" [
+    "25-unit training", formatReport r.at25, "", "50-unit training", formatReport r.at50, "",
+    s!"Exact in both {r.both}, only at 25 {r.only25.size}, only at 50 {r.only50.size}, neither {r.neither}",
+    s!"Exact recall difference (50 minus 25, all scheduled cues): {pairedDifference r}",
+    "Only at 25 (cue IDs): " ++ String.intercalate ", " r.only25.toList,
+    "Only at 50 (cue IDs): " ++ String.intercalate ", " r.only50.toList]
 
 -- The pure file boundary is tested when the research CI compiles this module.
 private def fixtureSchedule := String.intercalate "\n" <|
@@ -210,13 +262,37 @@ private def fixtureResults := "c\t40\t0?00000000000000\na\t40\t0000000000000000\
 #guard (evaluate "a\t?000000000000000\tFM.............." "").isOk == false
 #guard fraction 0 0 == "undefined (0/0)"
 
+-- Same marginal accuracy on these five cues hides two discordant outcomes.
+private def pairedFixture := "b\t40\t0000000000000000\nd\t40\tFAILED"
+#guard ((paired fixtureSchedule fixtureResults pairedFixture).toOption.map fun p =>
+    (p.at25.exact, p.at50.exact, p.both, p.neither, p.only25, p.only50, pairedDifference p)) ==
+    some (1, 1, 0, 3, #["a"], #["b"], "0/5")
+#guard ((paired fixtureSchedule fixtureResults "").toOption.map pairedDifference) == some "-1/5"
+#guard ((paired fixtureSchedule "" fixtureResults).toOption.map pairedDifference) == some "1/5"
+#guard ((paired fixtureSchedule fixtureResults fixtureResults).toOption.map fun p =>
+    (p.both, p.neither, p.only25.size, p.only50.size)) == some (1, 4, 0, 0)
+#guard ((paired "" "" "").toOption.map pairedDifference) == some "undefined (0/0)"
+#guard ((paired fixtureSchedule "" "e\t40\t0000000000000000\nc\t40\t0000000000000000").toOption.map
+    (·.only50)) == some #["c", "e"]
+#guard (paired fixtureSchedule "" "unknown\t40\tFAILED").isOk == false
+#guard (paired fixtureSchedule "a\t39\tFAILED" "").isOk == false
+
 end RecallScoring
 
 /-- Score an exported condition at t=40 using the frozen cue roster. -/
 public def main (args : List String) : IO UInt32 := do
-  let [schedule, predictions] := args | do
+  let result ← match args with
+  | ["--compare-durations", schedule, p25, p50] => do
+    let result := RecallScoring.paired (← IO.FS.readFile schedule) (← IO.FS.readFile p25)
+      (← IO.FS.readFile p50)
+    pure (result.map RecallScoring.formatPair)
+  | [schedule, predictions] => do
+    let result := RecallScoring.evaluate (← IO.FS.readFile schedule) (← IO.FS.readFile predictions)
+    pure (result.map RecallScoring.formatReport)
+  | _ => do
     IO.eprintln "Usage: lean --run scripts/experiments/recall-scoring.lean SCHEDULE.tsv PREDICTIONS.tsv"
+    IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --compare-durations SCHEDULE.tsv PRED25.tsv PRED50.tsv"
     return 2
-  match RecallScoring.evaluate (← IO.FS.readFile schedule) (← IO.FS.readFile predictions) with
+  match result with
   | .error e => IO.eprintln e; return 1
-  | .ok report => IO.println (RecallScoring.formatReport report); return 0
+  | .ok report => IO.println report; return 0

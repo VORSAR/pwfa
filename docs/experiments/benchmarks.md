@@ -51,6 +51,14 @@ lean --run scripts/experiments/recall-scoring.lean schedule.tsv predictions.tsv
 
 IDs join the files regardless of row order. An absent scheduled ID counts as missing. A word with any unresolved bit counts as an abstention. The output reports the three ADR-122 fractions with integer counts, failed and missing cues separately, and correctly decoded masked/flipped bits over the corresponding scheduled positions. A missing prediction earns zero correct bits. An empty input group has undefined rates where the denominator is zero. Duplicate IDs, unscheduled predictions, malformed records, and an endpoint other than `40` produce an error. The simulator must supply the actual readout from that time. [Checked command and synthetic example](../research/recall-pilot-checks.md#scoring-command-check)
 
+For the two duration conditions in one development library, pass one common roster and the two exports in training-duration order. Each export has the same three columns as above, including the retrieval endpoint label `40`.
+
+```sh
+lean --run scripts/experiments/recall-scoring.lean --compare-durations schedule.tsv predictions25.tsv predictions50.tsv
+```
+
+The command shows both individual reports and counts cues recovered in both conditions, only at 25, only at 50, and in neither. It lists cue IDs recovered in just one condition and gives the signed all-cue rate difference, 50 minus 25. Failed or missing predictions stay in the common denominator. The experiment runner must record the actual training conditions and pair the underlying libraries, seeds, and cues. [Paired scoring check](../research/recall-pilot-checks.md#paired-command-check)
+
 **Unspecified:** baseline identity, across-library aggregation, clustering unit, cue generator, rounding/seed specifics, model schedule, sample-size/power rationale and resource budget.
 
 [Methodology](methodology.md) · [Controls](baselines.md) · [Research hypotheses](../vision/hypotheses.md) · [Verification obligations](../verification/proof-obligations.md).

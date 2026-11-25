@@ -127,3 +127,9 @@ At `24cae71`, Codex (GPT-6), the author acting in the internal reviewer role, re
 - **PD-02.** Count exact words in both runs, only at 25, only at 50, and in neither. Compute the signed difference (50 minus 25) over all scheduled cues and report discordant cue IDs in deterministic order. Check swapped files, equal marginal counts with different hits, and an empty schedule.
 
 These remedies clear the paired scorer on already-decoded inputs. The simulator must supply the specified training conditions and identical realized development cues. The scorer cannot establish their provenance from an ID alone.
+
+### Paired command check
+
+The [Lean scorer](../../scripts/experiments/recall-scoring.lean) checks PD-01/02 against review revision `a861761`. On a five-cue fixture, each condition recovers one word, but those successes occur on different cues. The paired table records one success unique to each duration and three misses in both. The difference is zero. Lean also checks empty exports, missing predictions, invalid timestamps and IDs, and reversal of the difference when the two files are swapped. For any paired table the common successes cancel from the difference of the two exact-word counts.
+
+In a separate command-line fixture with four scheduled cues, 25-unit training alone recovered cue `a` and 50-unit training alone recovered `b` and `c`. The signed difference was +1/4 and became −1/4 when the files were swapped. Both fixtures contain synthetic predictions. [Command and file format](../experiments/benchmarks.md#score-a-recall-export)
