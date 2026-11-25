@@ -1,8 +1,10 @@
 # Experimental methodology
 
-**Status:** recovered settings only; protocol not yet preregistered or independently reviewed.
+**Status:** recovered settings and subsequent pilot decisions. Preregistration and independent review are pending.
 
 Training from [ADR-096](../decisions/ADR-096.md): patterns presented sequentially, learned memory and homeostasis carried, oscillator/trace reset, deterministic order, reverse-order ablation.
+
+For each presented word, average signed pair alignment from the scheduled episode start to its end. Normalize by that episode’s elapsed duration, then give its summary the same weight as each other completed word. Training duration and stimulus timing still need specification. [Time average](../decisions/ADR-125.md) · [Full episode](../decisions/ADR-126.md) · [Across-word mean](../decisions/ADR-124.md)
 
 Broad sweeps from [ADR-076b](../decisions/ADR-076b.md): grid sizes 128/256/512, 16/32-bit patterns, loads up to 16, and 100 libraries.
 

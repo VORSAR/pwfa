@@ -94,3 +94,5 @@ The [Lean check](../../scripts/experiments/training-window-mean.lean) implements
 Splitting a window at an interior time preserves the full mean when each subwindow mean is weighted by elapsed duration. For subwindows of lengths three and one with respective means +1 and −1, the full mean is +1/2. Counting the two subwindows equally would give zero. This identity uses exact subwindow means; using one sampled value to estimate a varying subwindow mean still requires a quadrature rule.
 
 Window placement is a separate choice. As an illustration, integrate the bounded signal $C(t)=t$ on $[-1,1]$. Lean gives zero over the full interval, −1/2 over its early half, and +1/2 over its late half. The example gives an exact difference for the same signal under different windows. Actual phase histories and their recall rates require trained runs. [Owner decision](../decisions/ADR-125.md)
+
+The owner chose the full scheduled episode for the first pilot. [Window decision](../decisions/ADR-126.md)
