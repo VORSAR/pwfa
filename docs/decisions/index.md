@@ -38,6 +38,8 @@
 | [ADR-119](ADR-119.md) | Masked input stimulation | 2A | Omit the bit-specific stimulus and record background initialization. |
 | [ADR-120](ADR-120.md) | Cue background for first encoder validation | A | Uniform primary field and a reproducible, target-independent varied sensitivity condition. |
 | [ADR-121](ADR-121.md) | Encoder validation grid placement | 1A | Origin-aligned primary and half-cell-shifted sensitivity in both axes. |
+| [ADR-122](ADR-122.md) | Recall scoring denominator | A | All scheduled cues primary, with coverage and answered-only accuracy. |
+| [ADR-123](ADR-123.md) | First pairwise training input | A | Signed real phase alignment with a complement recall check. |
 
 ## What these statuses mean
 

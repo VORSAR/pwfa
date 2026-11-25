@@ -10,6 +10,6 @@
 
 Before testing or proving, specify a state transition table for each train/retrieve event.
 
-The [pairwise training experiment](../research/recall-pilot-checks.md#pairwise-input-to-the-learning-rule) compares signed real phase alignment and its square for both approved input alphabets. The global scalar gain and its parameters have a separate role.
+The [pairwise training experiment](../research/recall-pilot-checks.md#pairwise-input-to-the-learning-rule) compares signed real phase alignment and its square for both approved input alphabets. The owner chose signed real alignment as the first training input. The temporal update and its use in the learned interaction remain open. The global scalar gain and its parameters have a separate role. [Pairwise decision](../decisions/ADR-123.md)
 
 [Architecture components](../architecture/components.md) · [Training protocol](../experiments/methodology.md) · [Proof obligations](../verification/proof-obligations.md).

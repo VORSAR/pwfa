@@ -22,7 +22,7 @@ At the frozen review revision `0e42e37`, SC-01 and SC-02 were checked against th
 | One exact, one wrong, one abstention, one failed run | 1 | 4 scheduled cues | 1/4 |
 | Same records, conditional on a complete prediction | 1 | 2 complete predictions | 1/2 |
 
-The scorer keeps numerator and denominator counts. An empty denominator gives an undefined rate. Recording both rates with coverage (complete predictions divided by scheduled cues) exposes the change of denominator. It also keeps failures visible. The strict all-cue rate is the recommendation for the primary endpoint. Classifying an outcome with both a wrong bit and a tie as abstained is an experiment convention. The definitive policy and the phase threshold still need owner decisions. None of the artificial outcomes are measured PWFA predictions.
+The scorer keeps numerator and denominator counts. An empty denominator gives an undefined rate. Recording both rates with coverage (complete predictions divided by scheduled cues) exposes the change of denominator. It also keeps failures visible. The strict all-cue rate is the recommendation for the primary endpoint. Classifying an outcome with both a wrong bit and a tie as abstained is an experiment convention. The owner subsequently selected the all-cue primary rate and both companion metrics. The phase threshold remains open. [Denominator decision](../decisions/ADR-122.md) None of the artificial outcomes are measured PWFA predictions.
 
 ## Pairwise input to the learning rule
 
@@ -36,3 +36,5 @@ The [pairwise Lean experiment](../../scripts/experiments/pairwise-phase-statisti
 Reversing every angle preserves every signed pair reading because cosine is even. Consequently a word and its complement give identical matrices of these readings at the ideal bit centers. This also holds for a reflected prepared phase field wherever the angle profile changes sign relative to its uniform background. A partial cue and the signed imaginary decoder can still distinguish orientations in a dynamical run. Use complement pairs when testing trained recall.
 
 As a related model, Aoki and Aoyagi give a phase-difference-dependent weight update in Eq. (3). Its phase offset can give a signed cosine drive. This is precedent for a candidate training signal. PWFA must still specify its own trace and learning time scales, training boundaries, and how the learned weights enter evolution. [Aoki and Aoyagi, Physical Review Letters (2009)](https://doi.org/10.1103/PhysRevLett.102.034101)
+
+The owner selected signed alignment as the first candidate and requested a recall check for complementary words with the cue and origin present. [Training-input decision](../decisions/ADR-123.md)
