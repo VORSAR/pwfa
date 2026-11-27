@@ -39,6 +39,16 @@ The held, structural-off combination preserved the cue wherever a bit was presen
 
 ## Reproduce the comparison
 
+### Follow-up protocol for intermediate strengths
+
+On 2026-11-27 the owner selected a sweep at $s=1/4,1/2,3/4$ after inspecting the strength-zero and strength-one results above. Use held training with the same four clean words, all 16 corrupted cues, the four clean probes and both time steps. The retrieval velocity is $s$ times the original structural contribution plus the full zero-lag learned contribution at gain $1/4$. The multiplier applies after structural row normalization. Reuse the same held matrix at every strength. Retain the previous zero and one as reference arms. [Held memory](held-word-training.md#protocol-fixed-before-running-the-held-arm)
+
+At `e88ad09`, Codex (GPT-6) in the internal reviewer role closed two findings under ADR-109. **IS-01.** Check at each intermediate strength that the instantaneous phase velocity equals the learned-only velocity plus the specified fraction of the structural velocity; renormalizing the scaled row would erase the intervention. Match the strength-zero and strength-one outputs to the prior archives. **IS-02.** Report exact words, complete answers, masked, flipped and initially correct positions, clean retention and refinement differences for every strength. Score all cues against their original targets. Archive the three new arms regardless of outcome.
+
+For the development screen, call a strength promising if at least one *same* corrupted cue is exact at both time steps. Replicate every such strength on one fresh development library alongside zero and one. Use the original four-word generation and disjoint two-flip/two-mask procedure with word seed 129042 and corruption seed 129043. Keep the held-out mission benchmark untouched. If no strength passes the screen, retain the negative result and leave those seeds unused. This rule prioritizes reproducible whole-word recovery over bit-level changes.
+
+### Commands for the on/off comparison
+
 Build the current [Lean simulator](../../scripts/experiments/first-trained-recall.lean) and export the visible cues using the [original commands](first-trained-recall.md#reproduce-the-measurement). In that shell, run the following. Each output directory contains corrupted and clean predictions for each matrix. The outer loop reruns both training and retrieval at the stated resolution.
 
 ```sh
