@@ -64,14 +64,16 @@ private abbrev Coupling := Array (Array Entry)
 
 -- Structural weights carry exp(-iα); the frozen learned matrix has zero lag
 -- and a single source-area factor 1/N (ADR-128/129). Both include the diagonal.
-private def coupling (weights : FloatArray) (learned : Option FloatArray) (gain : Float) :
+private def coupling (weights : FloatArray) (learned : Option FloatArray) (gain : Float)
+    (structuralStrength : Float := 1) :
     Coupling := Id.run do
   let mut rows := #[]
   for i in [:sites] do
     let mut row := #[]
     for j in [:sites] do
       let k := i*sites+j
-      let w := weights[k]!
+      -- IS-01 scales a normalized structural row without scaling the learned field.
+      let w := structuralStrength * weights[k]!
       let l := match learned with
         | some m => gain * m[k]! / sites.toFloat
         | none => 0
@@ -202,6 +204,11 @@ private def controls : IO Unit := do
   let structural := velocity op two
   check ((List.range sites).all fun i => Float.abs (combined[i]! - v[i]! - structural[i]!) < 1e-12)
     "retrieval contributions add"
+  for strength in ([0.0, 0.25, 0.5, 0.75] : List Float) do
+    let scaled := velocity (coupling structuralWeights (some memory) 0.25 strength) two
+    check ((List.range sites).all fun i =>
+      Float.abs (scaled[i]! - (v[i]! + strength*structural[i]!)) < 1e-12)
+      s!"structural strength {strength} must preserve the full learned torque"
   let noInteraction := coupling (vector (sites*sites) fun _ => 0) none 0
   let initial := prepare mixed
   check ((step noInteraction initial 0.05).1 == initial) "zero-coupling cue retention"
@@ -277,6 +284,12 @@ private def run (resolution : Nat) (words : List String) (cues : List (String ×
 private def cleanProbes (words : List String) : List (String × String) :=
   words.zipIdx.map fun (w, i) => (s!"word-{i+1}", w)
 
+private def writeProbes (directory : System.FilePath) (label : String) (op : Coupling)
+    (words : List String) (cues : List (String × String)) (resolution : Nat) : IO Unit := do
+  IO.FS.createDirAll directory
+  writeArm (directory / s!"{label}.tsv") op cues resolution
+  writeArm (directory / s!"{label}-clean.tsv") op (cleanProbes words) resolution
+
 -- HT-02 changes only the trained matrix. Both the damaged and clean cues
 -- are released normally, with structural coupling active all the way to t=40.
 private def runHeld (resolution : Nat) (words : List String) (cues : List (String × String))
@@ -285,10 +298,7 @@ private def runHeld (resolution : Nat) (words : List String) (cues : List (Strin
   let held := trainHeld words
   check (validMemory held) "invalid held training memory"
   let op := coupling structuralWeights (some held) 0.25
-  let dest : System.FilePath := directory
-  IO.FS.createDirAll dest
-  writeArm (dest / "held.tsv") op cues resolution
-  writeArm (dest / "held-clean.tsv") op (cleanProbes words) resolution
+  writeProbes directory "held" op words cues resolution
 
 -- SR-01: train each matrix once, then pass that very matrix to both
 -- retrieval operators. The free training trajectories always use structure.
@@ -306,10 +316,20 @@ private def compareRetrieval (resolution : Nat) (words : List String)
     check (validMemory memory) s!"invalid {label} training memory"
     for (arm, spatial) in [("structural-on", weights), ("structural-off", zeroWeights)] do
       let op := coupling spatial (some memory) 0.25
-      let out := dest / arm
-      IO.FS.createDirAll out
-      writeArm (out / s!"{label}.tsv") op cues resolution
-      writeArm (out / s!"{label}-clean.tsv") op (cleanProbes words) resolution
+      writeProbes (dest / arm) label op words cues resolution
+
+-- The predeclared strength screen keeps the same held matrix and gain at
+-- every point. Zero and one reproduce the paired comparison as controls.
+private def compareHeldStrengths (resolution : Nat) (words : List String)
+    (cues : List (String × String)) (directory : System.FilePath) : IO Unit := do
+  controls
+  let held := trainHeld words
+  check (validMemory held) "invalid held training memory"
+  let weights := structuralWeights
+  for (arm, strength) in [("zero", 0.0), ("quarter", 0.25), ("half", 0.5),
+                           ("three-quarters", 0.75), ("one", 1.0)] do
+    let op := coupling weights (some held) 0.25 strength
+    writeProbes (directory / arm) "held" op words cues resolution
 
 private def resolution (arg : String) : IO Nat := do
   let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
@@ -334,6 +354,9 @@ def main (args : List String) : IO UInt32 := do
   | ["--compare-structure", steps, words, cues, output] =>
     FirstRecall.compareRetrieval (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
+  | ["--held-strengths", steps, words, cues, output] =>
+    FirstRecall.compareHeldStrengths (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
@@ -341,6 +364,7 @@ def main (args : List String) : IO UInt32 := do
     IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --held (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --compare-structure (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --held-strengths (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0
