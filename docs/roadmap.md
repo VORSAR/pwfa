@@ -1,5 +1,7 @@
 # PWFA roadmap
 
+**Measure progress by whole-word recall.** Use exact 16-bit recovery on every scheduled cue at $t=40$ to rank development choices. The project’s success criterion is at least a five-percentage-point advantage on held-out cues over a matched-budget comparator, with the lower bound of the clustered 95% confidence interval above zero. [Mission criterion](decisions/ADR-100.md) · [Scoring denominator](decisions/ADR-122.md)
+
 **Next review milestone:** obtain an independent disposition on the [frozen torus oscillator packet](verification/slices/torus-oscillator-review-packet.md).
 
 **Next empirical milestone.** Improve exact 16-bit recall at $t=40$ and evaluate on untouched libraries. The first fixed-gain development run recovered 0/16 at both training durations. [Measured results](experiments/first-trained-recall.md#measured-exact-recall)
