@@ -212,6 +212,52 @@ private def evaluate (schedule predictions : String) : Except String Report := d
 private def fraction (n d : Nat) : String :=
   if d = 0 then s!"undefined ({n}/{d})" else s!"{n}/{d}"
 
+-- Evaluator-only diagnostic for ADR-122's all-cue denominator. Hold a
+-- trained library, retrieval initialization, and all other inputs fixed.
+-- Any deterministic answer to one visible cue is shared by its entire group.
+private def groupCeiling (targets : List String) : Nat :=
+  ((targets.eraseDups.map fun t => targets.count t).max?).getD 0
+
+private def groupHits (targets : List String) : Option String → Nat
+  | none => 0
+  | some answer => targets.count answer
+
+private theorem hits_le_groupCeiling (targets : List String) (answer : Option String) :
+    groupHits targets answer ≤ groupCeiling targets := by
+  cases answer with
+  | none => exact Nat.zero_le _
+  | some a =>
+    by_cases h : a ∈ targets
+    · exact List.le_max?_getD_of_mem (List.mem_map.mpr ⟨a, List.mem_eraseDups.mpr h, rfl⟩)
+    · simp [groupHits, List.count_eq_zero.mpr h]
+
+private abbrev CueGroup := String × List String
+
+private def rosterCeiling (groups : List CueGroup) : Nat :=
+  (groups.map fun g => groupCeiling g.2).sum
+
+private theorem hits_le_rosterCeiling (groups : List CueGroup) (predict : String → Option String) :
+    (groups.map fun g => groupHits g.2 (predict g.1)).sum ≤ rosterCeiling groups := by
+  induction groups with
+  | nil => exact Nat.le_refl 0
+  | cons g rest ih => exact Nat.add_le_add (hits_le_groupCeiling _ _) ih
+
+-- Group by the exact string sent to the simulator. IDs identify trials only.
+-- Count each scheduled repetition, even if the visible input and target recur.
+private def cueAmbiguity (schedule : String) : Except String String := do
+  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+  let mut byCue : Std.HashMap String (List String) := ∅
+  for (_, item) in planned.toList do
+    let targetWord := String.ofList <| (List.finRange 16).map fun i =>
+      if item.target i then '1' else '0'
+    byCue := byCue.alter (visibleWord item) fun old => some (targetWord :: old.getD [])
+  let groups := byCue.toList
+  let conflicts := groups.countP fun (_, targets) => targets.eraseDups.length > 1
+  return String.intercalate "\n" [
+    s!"Distinct visible cues: {groups.length}",
+    s!"Visible cues with multiple targets: {conflicts}",
+    s!"Deterministic exact-word ceiling / scheduled cues: {fraction (rosterCeiling groups) planned.size}"]
+
 private def formatReport (r : Report) : String :=
   let answered := r.exact + r.wrong
   let total := answered + r.abstained + r.failed + r.missing
@@ -279,6 +325,19 @@ private def visibleFixture := "a\t????????????????\nb\t10??010101010101"
 #guard (exportCues (mixedCue ++ "\n" ++ mixedCue)).isOk == false
 #guard (exportCues (mixedCue ++ "\nx\t0101010101010101\tF!MM............")).isOk == false
 
+-- The first three rows yield one visible cue with two different targets
+-- (counts two and one). The fourth cue can be answered perfectly on its own.
+private def collisionFixture := String.intercalate "\n" [
+  "a\t0000000000000000\tMF..............", "b\t0000000000000000\tMF..............",
+  "c\t1000000000000000\tMF..............", "d\t0100000000000000\tMF.............."]
+#guard (cueAmbiguity collisionFixture).toOption == some
+  "Distinct visible cues: 2\nVisible cues with multiple targets: 1\nDeterministic exact-word ceiling / scheduled cues: 3/4"
+#guard (cueAmbiguity fixtureSchedule).toOption == some
+  "Distinct visible cues: 1\nVisible cues with multiple targets: 0\nDeterministic exact-word ceiling / scheduled cues: 5/5"
+#guard (cueAmbiguity "").toOption == some
+  "Distinct visible cues: 0\nVisible cues with multiple targets: 0\nDeterministic exact-word ceiling / scheduled cues: undefined (0/0)"
+#guard (cueAmbiguity (collisionFixture ++ "\n" ++ collisionFixture)).isOk == false
+
 #guard (evaluate fixtureSchedule fixtureResults).toOption == some {
   exact := 1, wrong := 1, abstained := 1, failed := 1, missing := 1,
   maskedCorrect := 2, maskedTotal := 5, flippedCorrect := 2, flippedTotal := 5 }
@@ -314,6 +373,8 @@ public def main (args : List String) : IO UInt32 := do
   let result ← match args with
   | ["--export-cues", schedule] => do
     pure (RecallScoring.exportCues (← IO.FS.readFile schedule))
+  | ["--cue-ambiguity", schedule] => do
+    pure (RecallScoring.cueAmbiguity (← IO.FS.readFile schedule))
   | ["--compare-durations", schedule, p25, p50] => do
     let result := RecallScoring.paired (← IO.FS.readFile schedule) (← IO.FS.readFile p25)
       (← IO.FS.readFile p50)
@@ -324,6 +385,7 @@ public def main (args : List String) : IO UInt32 := do
   | _ => do
     IO.eprintln "Usage: lean --run scripts/experiments/recall-scoring.lean SCHEDULE.tsv PREDICTIONS.tsv"
     IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --export-cues SCHEDULE.tsv"
+    IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --cue-ambiguity SCHEDULE.tsv"
     IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --compare-durations SCHEDULE.tsv PRED25.tsv PRED50.tsv"
     return 2
   match result with

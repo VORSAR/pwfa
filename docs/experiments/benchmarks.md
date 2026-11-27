@@ -59,6 +59,14 @@ lean --run scripts/experiments/recall-scoring.lean --export-cues schedule.tsv > 
 
 Each output row contains an opaque cue ID and 16 presented symbols. A flip presents the opposite bit. A mask produces `?` and the encoder omits that stimulus. Give the encoder only the symbols. Choose target-independent IDs, use them to match results, and keep the targets and corruption labels with the evaluator. Rows are sorted by ID for reproducible exports. This file order carries no scheduling semantics. [Cue export checks](../research/recall-pilot-checks.md#visible-cue-export)
 
+Before running a development library, the evaluator can check whether different target words appear under identical presented cues.
+
+```sh
+lean --run scripts/experiments/recall-scoring.lean --cue-ambiguity schedule.tsv
+```
+
+The report counts distinct visible cues, visible cues paired with multiple targets, and the largest possible exact-word count for a deterministic predictor on that roster. It assumes a fixed library, background, initial retrieval state and other inputs. Apply it separately within each such condition. Keep all scheduled rows in the pilot, including collisions. The ceiling uses target frequencies and belongs on the evaluation side. A ceiling of 100% simply means each distinct cue in that roster has one target. [Proof and worked example](../research/recall-pilot-checks.md#identical-cues-with-different-targets)
+
 For the two duration conditions in one development library, pass one common roster and the two exports in training-duration order. Each export has the same three columns as above, including the retrieval endpoint label `40`.
 
 ```sh
