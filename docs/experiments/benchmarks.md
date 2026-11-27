@@ -51,6 +51,14 @@ lean --run scripts/experiments/recall-scoring.lean schedule.tsv predictions.tsv
 
 IDs join the files regardless of row order. An absent scheduled ID counts as missing. A word with any unresolved bit counts as an abstention. The output reports the three ADR-122 fractions with integer counts, failed and missing cues separately, and correctly decoded masked/flipped bits over the corresponding scheduled positions. A missing prediction earns zero correct bits. An empty input group has undefined rates where the denominator is zero. Duplicate IDs, unscheduled predictions, malformed records, and an endpoint other than `40` produce an error. The simulator must supply the actual readout from that time. [Checked command and synthetic example](../research/recall-pilot-checks.md#scoring-command-check)
 
+To prepare the identical retrieval inputs for both duration arms, export one visible-cue file on the evaluator’s side. Use distinct paths for the schedule and output.
+
+```sh
+lean --run scripts/experiments/recall-scoring.lean --export-cues schedule.tsv > cues.tsv
+```
+
+Each output row contains an opaque cue ID and 16 presented symbols. A flip presents the opposite bit. A mask produces `?` and the encoder omits that stimulus. Give the encoder only the symbols. Choose target-independent IDs, use them to match results, and keep the targets and corruption labels with the evaluator. Rows are sorted by ID for reproducible exports. This file order carries no scheduling semantics. [Cue export checks](../research/recall-pilot-checks.md#visible-cue-export)
+
 For the two duration conditions in one development library, pass one common roster and the two exports in training-duration order. Each export has the same three columns as above, including the retrieval endpoint label `40`.
 
 ```sh

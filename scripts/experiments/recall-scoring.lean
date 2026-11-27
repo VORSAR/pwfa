@@ -157,6 +157,27 @@ private structure Report where
 private abbrev Schedule := Std.HashMap String Scheduled
 private abbrev Predictions := Std.HashMap String (Option Decoded)
 
+-- ADR-119 omits a masked stimulus. A change to the hidden target at any set
+-- of masked positions therefore cannot change what the model receives.
+private theorem cue_eq_of_agree_on_presented (a b : Word) (status : Fin 16 → InputStatus)
+    (h : ∀ i, status i ≠ .masked → a i = b i) : cue a status = cue b status := by
+  funext i
+  cases hs : status i <;> simp [cue, hs, h]
+
+private def visibleWord (item : Scheduled) : String :=
+  String.ofList <| (List.finRange 16).map fun i =>
+    match cue item.target item.status i with
+    | none => '?'
+    | some false => '0'
+    | some true => '1'
+
+-- Both arms of ADR-127 can consume the very same export. Sort only for a
+-- reproducible file. IDs are join keys and must stay outside the oscillator.
+private def exportCues (schedule : String) : Except String String := do
+  let planned ← (readRows schedule parseSchedule).mapError ("schedule: " ++ ·)
+  let rows := planned.toList.mergeSort fun a b => a.1 ≤ b.1
+  return String.intercalate "\n" (rows.map fun (id, item) => id ++ "\t" ++ visibleWord item)
+
 private def validatedPredictions (planned : Schedule) (predictions : String) :
     Except String Predictions := do
   let returned ← (readRows predictions parsePrediction).mapError ("predictions: " ++ ·)
@@ -249,6 +270,15 @@ private def fixtureSchedule := String.intercalate "\n" <|
   ["a", "b", "c", "d", "e"].map (· ++ "\t0000000000000000\tFM..............")
 private def fixtureResults := "c\t40\t0?00000000000000\na\t40\t0000000000000000\nd\t40\tFAILED\nb\t40\t1000000000000000"
 
+private def mixedCue := "b\t0101010101010101\tFFMM............"
+private def maskedCue := "a\t1111111111111111\tMMMMMMMMMMMMMMMM"
+private def visibleFixture := "a\t????????????????\nb\t10??010101010101"
+#guard (exportCues (mixedCue ++ "\n" ++ maskedCue)).toOption == some visibleFixture
+#guard (exportCues (maskedCue ++ "\r\n" ++ mixedCue)).toOption == some visibleFixture
+#guard (exportCues "").toOption == some ""
+#guard (exportCues (mixedCue ++ "\n" ++ mixedCue)).isOk == false
+#guard (exportCues (mixedCue ++ "\nx\t0101010101010101\tF!MM............")).isOk == false
+
 #guard (evaluate fixtureSchedule fixtureResults).toOption == some {
   exact := 1, wrong := 1, abstained := 1, failed := 1, missing := 1,
   maskedCorrect := 2, maskedTotal := 5, flippedCorrect := 2, flippedTotal := 5 }
@@ -282,6 +312,8 @@ end RecallScoring
 /-- Score an exported condition at t=40 using the frozen cue roster. -/
 public def main (args : List String) : IO UInt32 := do
   let result ← match args with
+  | ["--export-cues", schedule] => do
+    pure (RecallScoring.exportCues (← IO.FS.readFile schedule))
   | ["--compare-durations", schedule, p25, p50] => do
     let result := RecallScoring.paired (← IO.FS.readFile schedule) (← IO.FS.readFile p25)
       (← IO.FS.readFile p50)
@@ -291,8 +323,11 @@ public def main (args : List String) : IO UInt32 := do
     pure (result.map RecallScoring.formatReport)
   | _ => do
     IO.eprintln "Usage: lean --run scripts/experiments/recall-scoring.lean SCHEDULE.tsv PREDICTIONS.tsv"
+    IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --export-cues SCHEDULE.tsv"
     IO.eprintln "   or: lean --run scripts/experiments/recall-scoring.lean --compare-durations SCHEDULE.tsv PRED25.tsv PRED50.tsv"
     return 2
   match result with
   | .error e => IO.eprintln e; return 1
-  | .ok report => IO.println report; return 0
+  | .ok report =>
+    unless report.isEmpty do IO.println report
+    return 0
