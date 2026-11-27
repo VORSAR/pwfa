@@ -4,7 +4,7 @@
 
 **Next review milestone:** obtain an independent disposition on the [frozen torus oscillator packet](verification/slices/torus-oscillator-review-packet.md).
 
-**Next empirical milestone.** Improve exact 16-bit recall at $t=40$ and evaluate on untouched libraries. The first fixed-gain development run recovered 0/16 at both training durations. [Measured results](experiments/first-trained-recall.md#measured-exact-recall)
+**Next empirical milestone.** Improve exact 16-bit recall at $t=40$ and evaluate on untouched libraries. Free and held training each recovered 0/16 corrupted cues and retained 0/4 clean words with the same retrieval dynamics. [Training comparison](experiments/held-word-training.md#results-at-retrieval-time-40)
 
 ## Verified starting point
 
@@ -83,7 +83,8 @@ The next simulation and recall work requires the following owner decisions.
 - [ ] **Training and retrieval events.** Specify stimulus timing, exact reset/carry values, branch behavior and the standardized recall transition. The recovered sequential presentation and carry/reset categories already constrain these choices. [Training protocol](experiments/methodology.md) · [Training decision](decisions/ADR-096.md)
 - [x] **Measure first trained recall at $t=40$.** On one development library with four stored words and 16 corrupted cues, run paired 25/50 training and a disabled-learning control at two time steps. Archive complete predictions and masked and flipped recovery. [Protocol and results](experiments/first-trained-recall.md)
 - [x] **Distinguish clean-word retention from information loss in the cues.** The model retained 0/4 clean words at the endpoint, while a static lookup identified 16/16 targets from the corrupted cues. [Diagnostic results](experiments/first-trained-recall.md#diagnostic-results)
-- [ ] **Improve and confirm recall on untouched libraries.** Separate the effects of training and retrieval on clean retention, then test changes on corrupted development cues. Finalize and freeze the selected protocol before the held-out benchmark. [Recall endpoint](experiments/benchmarks.md#first-trained-recall-measurement)
+- [x] **Compare held and freely evolving training words.** Paired runs at both time steps measured exact recall and clean retention with structural retrieval active. [Results and predictions](experiments/held-word-training.md#results-at-retrieval-time-40)
+- [ ] **Improve and confirm recall on untouched libraries.** Isolate the effect of structural coupling during retrieval on the existing trained memories. Evaluate changes on corrupted development cues, then freeze the chosen protocol before the held-out benchmark. [Recall endpoint](experiments/benchmarks.md#first-trained-recall-measurement)
 - [x] **Choose the primary recall denominator and check the scorer.** Use all scheduled cues, with coverage and answered-only accuracy. [Decision](decisions/ADR-122.md) Lean checks flipped and masked positions, incomplete predictions, failed runs, and the effect of the reporting denominator. [Scoring checks](research/recall-pilot-checks.md#counting-exact-words)
 - [x] **Score exported recall results against a predeclared schedule.** The [Lean scoring command](experiments/benchmarks.md#score-a-recall-export) counts missing cues, verifies IDs and endpoint labels, and reports all three fractions and corruption diagnostics.
 - [x] **Compare paired training durations by cue.** The scorer reports each duration’s metrics, the four paired exact-word counts, IDs recovered in only one condition, and the signed accuracy difference. [Checked command](research/recall-pilot-checks.md#paired-command-check)

@@ -51,6 +51,8 @@ These checks use the original library after seeing its primary results. They do 
 
 **Information in the corrupted cues.** A static lookup that chooses the stored word with fewest mismatches on visible positions identified **16/16** targets with no ties. It had access to the four stored words. It read the presented bits and the locations of the omissions. It received neither the targets nor the identities of flipped bits for each cue. On this library the corruptions left enough information for exact retrieval. The next accuracy experiment should distinguish loss of the pattern during free training from loss during retrieval under structural coupling. [Lookup outputs](first-recall/visible-lookup.tsv)
 
+The subsequent [held versus free training experiment](held-word-training.md#results-at-retrieval-time-40) tested full-episode clamping with the retrieval dynamics specified here.
+
 ## Reproduce the measurement
 
 From the repository root, use the pinned Lean compiler to build the [simulator](../../scripts/experiments/first-trained-recall.lean) in a temporary directory. The schedule enters the evaluator; the simulator receives the same exported cues for all arms. Each output contains one decoded word per cue in the [scorer’s format](benchmarks.md#score-a-recall-export).
