@@ -18,6 +18,25 @@ Against `c07c2f3`, Codex (GPT-6), author in the internal reviewer role, closed t
 
 This review authorizes the comparison only. The results will inform the choice of retrieval dynamics. [Experimental review policy](../decisions/ADR-109.md)
 
+## Paired results at t=40
+
+**Exact recovery of corrupted cues was 0/16 in every condition.** The structural-off arm retained all four clean words for every matrix, up from 0/4 with structural coupling on. On the corrupted cues it retained all 192 initially correct bits and corrected zero of the 32 flips. Thus every visible input bit kept its presented sign, including the two wrong bits in each cue. Held training recovered 30/32 masked bits under structural-off retrieval, compared with 22/32 for each free training duration. [Frozen protocol](https://github.com/VORSAR/pwfa/commit/e94aa8c) · [Lean simulator revision](https://github.com/VORSAR/pwfa/commit/9781153)
+
+| Training memory | Structural retrieval | Exact corrupted words | Exact clean words | Initially correct bits retained | Masked bits recovered | Flips corrected |
+|---|---|---:|---:|---:|---:|---:|
+| Free, 25 units | On | 0/16 | 0/4 | 99/192 | 17/32 | 14/32 |
+| Free, 25 units | Off | 0/16 | 4/4 | 192/192 | 22/32 | 0/32 |
+| Free, 50 units | On | 0/16 | 0/4 | 93/192 | 18/32 | 16/32 |
+| Free, 50 units | Off | 0/16 | 4/4 | 192/192 | 22/32 | 0/32 |
+| Held, either duration | On | 0/16 | 0/4 | 107/192 | 17/32 | 17/32 |
+| Held, either duration | Off | 0/16 | 4/4 | 192/192 | 30/32 | 0/32 |
+
+The table uses step 0.05. Every condition returned 16/16 complete corrupted-cue predictions and 4/4 complete clean predictions. In each paired comparison the same four clean probe IDs (`word-1` through `word-4`) gained exact retention when structural coupling was removed. No corrupted cue gained or lost an exact match. At step 0.025 all structural-off predictions repeated bit for bit and all structural-on predictions reproduced the previous archive at that step. [Structural-off predictions, step 0.05](first-recall/steps-20/structural-off) · [Structural-off predictions, step 0.025](first-recall/steps-40/structural-off) · [Earlier structural-on results and refinement details](held-word-training.md#results-at-retrieval-time-40)
+
+The held, structural-off combination preserved the cue wherever a bit was presented and filled 30 of 32 omissions correctly on this one library. At zero intrinsic frequency an interaction-free trajectory would retain the input too, but an omitted bit starts with zero anchored score and would abstain on a stationary cue. Issuing definite answers to the masks here required evolution. Correcting wrong visible bits while retaining the correct ones is the remaining obstacle on these cues.
+
+**Verification.** The Lean scorer checked all 24 prediction files (three matrices, two retrieval arms, two step sizes, clean and corrupted inputs). A separate complex-matrix calculation agreed with all 1,920 structural-off bit outputs. The executable checks the signed learned pair torque, additivity of the two contributions and stationarity when both are removed. This single previously inspected development library supplies no matched-budget or held-out performance estimate.
+
 ## Reproduce the comparison
 
 Build the current [Lean simulator](../../scripts/experiments/first-trained-recall.lean) and export the visible cues using the [original commands](first-trained-recall.md#reproduce-the-measurement). In that shell, run the following. Each output directory contains corrupted and clean predictions for each matrix. The outer loop reruns both training and retrieval at the stated resolution.

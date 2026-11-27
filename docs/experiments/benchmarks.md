@@ -2,6 +2,8 @@
 
 **Status.** The first single-library trained development run is [recorded](first-trained-recall.md#measured-exact-recall). The 100-library held-out benchmark and matched-comparator comparison are pending.
 
+The [paired structural retrieval experiment](structural-coupling-at-retrieval.md#paired-results-at-t40) reports full-word recovery, clean retention and flipped versus masked recovery for both free and held training.
+
 [ADR-099](../decisions/ADR-099.md) identifies the *primary* benchmark:
 
 | Parameter | Recovered selection |

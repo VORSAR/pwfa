@@ -36,6 +36,8 @@ The largest bit-count difference came from retaining more of the initially corre
 
 ## Reproduce the comparison
 
+The subsequent [retrieval comparison](structural-coupling-at-retrieval.md#paired-results-at-t40) tested each of these same memories with structural coupling on and off.
+
 Use the [original build and free-run commands](first-trained-recall.md#reproduce-the-measurement) with the current simulator. In the same shell, run the held arm on the identical exported cues. The clean schedule below contains one row per stored word, with every position marked clean. Each prediction file has the usual ID, endpoint and decoded symbols.
 
 ```sh
