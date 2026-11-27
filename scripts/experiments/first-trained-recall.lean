@@ -9,6 +9,8 @@ This executable reads training words and **visible** cues. The separate Lean
 scorer has the evaluation targets and corruption labels. Angles are in radians.
 The [held-training comparison](../../docs/experiments/held-word-training.md)
 changes the phase history during training and reuses the original retrieval path.
+The [structural retrieval comparison](../../docs/experiments/structural-coupling-at-retrieval.md)
+uses each trained matrix in both retrieval conditions.
 -/
 
 namespace FirstRecall
@@ -194,6 +196,16 @@ private def controls : IO Unit := do
   let sample := accumulate (vector (sites*sites) fun _ => 0) two
   check (validMemory sample && Float.abs sample[1]! < 1e-12 && sample[2]! == 1) "sample alignment"
 
+  -- SR-02 isolates the structural contribution, with a nonzero learned
+  -- torque. Removing both interactions must leave an arbitrary cue still.
+  let combined := velocity (coupling structuralWeights (some memory) 0.25) two
+  let structural := velocity op two
+  check ((List.range sites).all fun i => Float.abs (combined[i]! - v[i]! - structural[i]!) < 1e-12)
+    "retrieval contributions add"
+  let noInteraction := coupling (vector (sites*sites) fun _ => 0) none 0
+  let initial := prepare mixed
+  check ((step noInteraction initial 0.05).1 == initial) "zero-coupling cue retention"
+
   -- HT-01 checks four distinct words. At the first three centers their
   -- signed agreements give +1/2, -1/2 and 0 for the three different pairs.
   -- The neighboring bump site also contributes at its actual prepared phase.
@@ -278,6 +290,27 @@ private def runHeld (resolution : Nat) (words : List String) (cues : List (Strin
   writeArm (dest / "held.tsv") op cues resolution
   writeArm (dest / "held-clean.tsv") op (cleanProbes words) resolution
 
+-- SR-01: train each matrix once, then pass that very matrix to both
+-- retrieval operators. The free training trajectories always use structure.
+private def compareRetrieval (resolution : Nat) (words : List String)
+    (cues : List (String × String)) (directory : String) : IO Unit := do
+  controls
+  let weights := structuralWeights
+  let trainingOp := coupling weights none 0
+  let zeroWeights := vector (sites*sites) fun _ => 0
+  let matrices := [("free-25", train words trainingOp 25 resolution),
+                   ("free-50", train words trainingOp 50 resolution),
+                   ("held", trainHeld words)]
+  let dest : System.FilePath := directory
+  for (label, memory) in matrices do
+    check (validMemory memory) s!"invalid {label} training memory"
+    for (arm, spatial) in [("structural-on", weights), ("structural-off", zeroWeights)] do
+      let op := coupling spatial (some memory) 0.25
+      let out := dest / arm
+      IO.FS.createDirAll out
+      writeArm (out / s!"{label}.tsv") op cues resolution
+      writeArm (out / s!"{label}-clean.tsv") op (cleanProbes words) resolution
+
 private def resolution (arg : String) : IO Nat := do
   let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
   unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
@@ -298,12 +331,16 @@ def main (args : List String) : IO UInt32 := do
   | ["--held", steps, words, cues, output] =>
     FirstRecall.runHeld (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
+  | ["--compare-structure", steps, words, cues, output] =>
+    FirstRecall.compareRetrieval (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
   | _ =>
     IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --held (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --compare-structure (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0

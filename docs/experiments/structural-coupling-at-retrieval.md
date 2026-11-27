@@ -17,3 +17,21 @@ Against `c07c2f3`, Codex (GPT-6), author in the internal reviewer role, closed t
 - **SR-03.** Pair every scheduled cue and clean probe by ID, preserving unresolved predictions. Report the two step sizes and check the structural-off outputs using the complex equation. Keep the disabled structural interaction distinct in the filenames from the original disabled learned interaction.
 
 This review authorizes the comparison only. The results will inform the choice of retrieval dynamics. [Experimental review policy](../decisions/ADR-109.md)
+
+## Reproduce the comparison
+
+Build the current [Lean simulator](../../scripts/experiments/first-trained-recall.lean) and export the visible cues using the [original commands](first-trained-recall.md#reproduce-the-measurement). In that shell, run the following. Each output directory contains corrupted and clean predictions for each matrix. The outer loop reruns both training and retrieval at the stated resolution.
+
+```sh
+awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$data/words.txt" > "$run_dir/clean-schedule.tsv"
+for resolution in 20 40; do
+  out="$run_dir/retrieval-$resolution"
+  "$run_dir/pilot" --compare-structure "$resolution" "$data/words.txt" "$run_dir/cues.tsv" "$out"
+  for arm in structural-on structural-off; do
+    for memory in free-25 free-50 held; do
+      lean --run "$scorer" "$data/schedule.tsv" "$out/$arm/$memory.tsv"
+      lean --run "$scorer" "$run_dir/clean-schedule.tsv" "$out/$arm/$memory-clean.tsv"
+    done
+  done
+done
+```
