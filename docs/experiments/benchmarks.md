@@ -4,6 +4,8 @@
 
 The [paired structural retrieval experiment](structural-coupling-at-retrieval.md#paired-results-at-t40) reports full-word recovery, clean retention and flipped versus masked recovery for both free and held training.
 
+The subsequent [held-training strength sweep](structural-coupling-at-retrieval.md#intermediate-strength-results) measures how intermediate structural weights affect those same endpoints.
+
 [ADR-099](../decisions/ADR-099.md) identifies the *primary* benchmark:
 
 | Parameter | Recovered selection |
