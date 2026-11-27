@@ -45,6 +45,12 @@ The first runs lost roughly half of the 192 bits that were supplied correctly. A
 
 These checks use the original library after seeing its primary results. They do not select a decoder, revise the first-run result, or test the matched-comparator mission criterion.
 
+### Diagnostic results
+
+**Clean retention.** The decoder correctly reads each of the four clean words immediately after preparation. After evolution to $t=40$ it retained **0/4 whole clean words** for each training duration and with learning disabled. At step 0.05, 25-unit training returned 32/64 clean bits correctly, 50-unit training returned 37/64, and the disabled interaction returned 20/64. These counts repeated at step 0.025. A separate complex-matrix calculation during verification reproduced every archived decoded bit for both the clean and corrupted inputs at each step size. [Clean predictions](first-recall/clean-retention.tsv)
+
+**Information in the corrupted cues.** A static lookup that chooses the stored word with fewest mismatches on visible positions identified **16/16** targets with no ties. It had access to the four stored words. It read the presented bits and the locations of the omissions. It received neither the targets nor the identities of flipped bits for each cue. On this library the corruptions left enough information for exact retrieval. The next accuracy experiment should distinguish loss of the pattern during free training from loss during retrieval under structural coupling. [Lookup outputs](first-recall/visible-lookup.tsv)
+
 ## Reproduce the measurement
 
 From the repository root, use the pinned Lean compiler to build the [simulator](../../scripts/experiments/first-trained-recall.lean) in a temporary directory. The schedule enters the evaluator; the simulator receives the same exported cues for all arms. Each output contains one decoded word per cue in the [scorer’s format](benchmarks.md#score-a-recall-export).
@@ -62,5 +68,14 @@ for resolution in 20 40; do
   "$run_dir/pilot" "$resolution" "$data/words.txt" "$run_dir/cues.tsv" "$out"
   lean --run "$scorer" --compare-durations "$data/schedule.tsv" "$out/trained-25.tsv" "$out/trained-50.tsv"
   lean --run "$scorer" "$data/schedule.tsv" "$out/off.tsv"
+done
+```
+
+To reproduce the post-measurement diagnostics using the same binary and files, run:
+
+```sh
+"$run_dir/pilot" --visible-lookup "$data/words.txt" "$run_dir/cues.tsv"
+for resolution in 20 40; do
+  "$run_dir/pilot" --clean "$resolution" "$data/words.txt" "$run_dir/clean-$resolution"
 done
 ```

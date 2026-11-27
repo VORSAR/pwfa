@@ -196,11 +196,13 @@ private def writeArm (output : System.FilePath) (op : Coupling) (cues : List (St
   IO.FS.writeFile output (String.intercalate "\n" rows ++ "\n")
   IO.eprintln s!"Wrote {output}"
 
-private def run (resolution : Nat) (wordsFile cuesFile directory : String) : IO Unit := do
-  controls
+private def readWords (wordsFile : String) : IO (List String) := do
   let words ← readLines wordsFile
   check (words.length == 4 && words.eraseDups.length == 4 && words.all (wordOK · false))
     "expected four distinct 16-bit training words"
+  return words
+
+private def readCues (cuesFile : String) : IO (List (String × String)) := do
   let mut cues := #[]
   for row in ← readLines cuesFile do
     let [id, symbols] := row.splitOn "\t" | throw (IO.userError "expected ID and visible cue")
@@ -208,24 +210,59 @@ private def run (resolution : Nat) (wordsFile cuesFile directory : String) : IO 
     cues := cues.push (id, symbols)
   let ids := cues.toList.map Prod.fst
   check (ids.length == 16 && ids.eraseDups.length == 16) "expected 16 distinct development cue IDs"
+  return cues.toList
+
+-- DI-02 is a static information check. It sees only a visible cue and the
+-- four training words. An equal best distance is an unresolved prediction.
+private def visibleDistance (cue word : String) : Nat :=
+  (cue.toList.zip word.toList).countP fun (c, b) => c != '?' && c != b
+
+private def nearest (words : List String) (cue : String) : Option String := do
+  let distances := words.map fun w => (w, visibleDistance cue w)
+  let best ← (distances.map Prod.snd).min?
+  let [(w, _)] := distances.filter (·.2 == best) | none
+  return w
+
+#guard nearest ["0000", "1111"] "?010" == some "0000"
+#guard nearest ["0000", "1111"] "?01?" == none
+#guard nearest ["0000", "1111"] "????" == none
+
+private def run (resolution : Nat) (words : List String) (cues : List (String × String))
+    (directory : String) : IO Unit := do
+  controls
   let dest : System.FilePath := directory
   IO.FS.createDirAll dest
   let weights := structuralWeights
   let structural := coupling weights none 0
-  writeArm (dest / "off.tsv") structural cues.toList resolution
+  writeArm (dest / "off.tsv") structural cues resolution
   for duration in [25, 50] do
     let m := train words structural duration resolution
     check (validMemory m) s!"invalid {duration}-unit trained memory"
-    writeArm (dest / s!"trained-{duration}.tsv") (coupling weights (some m) 0.25) cues.toList resolution
+    writeArm (dest / s!"trained-{duration}.tsv") (coupling weights (some m) 0.25) cues resolution
+
+private def resolution (arg : String) : IO Nat := do
+  let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
+  unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
+  return r
 
 end FirstRecall
 
 def main (args : List String) : IO UInt32 := do
   match args with
   | ["--check"] => FirstRecall.controls
+  | ["--visible-lookup", library, cues] =>
+    let words ← FirstRecall.readWords library
+    for (id, cue) in ← FirstRecall.readCues cues do
+      IO.println (id ++ "\t" ++ (FirstRecall.nearest words cue).getD "????????????????")
+  | ["--clean", steps, library, output] =>
+    let words ← FirstRecall.readWords library
+    let cues := words.zipIdx.map fun (w, i) => (s!"word-{i+1}", w)
+    FirstRecall.run (← FirstRecall.resolution steps) words cues output
   | [steps, words, cues, output] =>
-    let some r := steps.toNat? | throw (IO.userError "expected steps per unit")
-    unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
-    FirstRecall.run r words cues output
-  | _ => IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"; return 2
+    FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
+  | _ =>
+    IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
+    return 2
   return 0
