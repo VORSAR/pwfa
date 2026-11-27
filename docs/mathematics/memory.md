@@ -10,7 +10,7 @@
 
 Before testing or proving, specify a state transition table for each train/retrieve event.
 
-For each pair, average signed real phase alignment over the full scheduled training episode using elapsed time. Give each completed word’s summary equal weight in the stored pairwise mean. The development pilot compares 25 and 50 model time units per word on the same cues. During retrieval the learned field is the equal-cell-area sum of stored pair values times the current source phases. The gain, lag, and scalar state dynamics remain open. [Training durations](../decisions/ADR-127.md) · [Retrieval field](../decisions/ADR-128.md) [Pairwise input](../decisions/ADR-123.md) · [Within-word mean](../decisions/ADR-125.md) · [Full window](../decisions/ADR-126.md) · [Across-word mean](../decisions/ADR-124.md)
+For each pair, average signed real phase alignment over the full scheduled training episode using elapsed time. Give each completed word’s summary equal weight in the stored pairwise mean. The development pilot compares 25 and 50 model time units per word on the same cues. During retrieval the learned field is the equal-cell-area sum of stored pair values times the current source phases. The pilot uses [zero learned lag](../decisions/ADR-129.md). The gain and scalar state dynamics remain open. [Training durations](../decisions/ADR-127.md) · [Retrieval field](../decisions/ADR-128.md) [Pairwise input](../decisions/ADR-123.md) · [Within-word mean](../decisions/ADR-125.md) · [Full window](../decisions/ADR-126.md) · [Across-word mean](../decisions/ADR-124.md)
 
 ## Training and recall transitions
 

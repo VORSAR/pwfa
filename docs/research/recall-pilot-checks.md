@@ -195,6 +195,8 @@ In this isolated learned interaction, the equal self-entries cause common rotati
 
 This result motivates zero lag as a candidate for the learned contribution while retaining the specified lag in the structural contribution. Training trajectories, multi-site interference, structural coupling, cue timing and decoding can all affect the actual recall outcome. A comparison across the 25- and 50-unit development runs would measure the effect on exact-word recall. [Structural reference parameters](../mathematics/evolution.md) · [Pilot benchmark](../experiments/benchmarks.md#first-trained-recall-measurement)
 
+The owner selected zero learned lag for both training durations. [Phase-lag decision](../decisions/ADR-129.md)
+
 ## Internal review of the visible retrieval cues
 
 At `286185f`, Codex (GPT-6), the author acting as internal reviewer under ADR-109, reviewed the boundary between the evaluator’s frozen schedule and the simulator’s input. Both duration arms should be able to use exactly the same visible words. A second, evaluator-only calculation can detect ambiguous cues before running the dynamics. This scope uses one library and one fixed retrieval condition. [Mask decision](../decisions/ADR-119.md) · [Paired durations](../decisions/ADR-127.md) · [Scoring contract](../experiments/benchmarks.md#score-a-recall-export)

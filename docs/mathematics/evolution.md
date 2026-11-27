@@ -17,9 +17,9 @@ Recovered learned scalar gain under [ADR-093](../decisions/ADR-093.md):
 - [ADR-105](../decisions/ADR-105.md) defines `d_T` as shortest periodic Euclidean distance on the unit square flat torus. A radial profile in this metric does **not** imply arbitrary global rotational symmetry of the square torus.
 - The learned pairwise memory term may remain spatially heterogeneous. No radial constraint on learned memory is implied.
 
-For retrieval, sum the signed contributions from every stored pair with weight $1/N$ per site. This includes the self-entry and permits direct contributions from distant sites. The coefficient and lag applied to the resulting field still require a contract. [Retrieval decision](../decisions/ADR-128.md) [Learned-mean experiment](../research/recall-pilot-checks.md#which-stored-pairs-reach-the-retrieval-field)
+For retrieval, sum the signed contributions from every stored pair with weight $1/N$ per site. This includes the self-entry and permits direct contributions from distant sites. Use zero phase lag for this field in the pilot. Its contribution per unit learned gain is $\operatorname{Im}(\overline{z_i} L_i)$. The learned gain still needs a contract. [Learned lag](../decisions/ADR-129.md) [Retrieval decision](../decisions/ADR-128.md) [Learned-mean experiment](../research/recall-pilot-checks.md#which-stored-pairs-reach-the-retrieval-field)
 
-For a candidate sine interaction driven by that learned field, an isolated two-site calculation gives an exact relative phase at $t=40$. It compares zero learned lag and the recovered structural reference lag at identical positive learned gain. [Phase-lag control](../research/recall-pilot-checks.md#two-site-phase-correction-at-t40)
+For the sine interaction driven by that learned field, an isolated two-site calculation gives an exact relative phase at $t=40$. It compares zero learned lag and the recovered structural reference lag at identical positive learned gain. [Phase-lag control](../research/recall-pilot-checks.md#two-site-phase-correction-at-t40)
 
 The [torus oscillator baseline](../verification/slices/torus-oscillator-baseline.md) records the transfer of the ring phase law under [ADR-110](../decisions/ADR-110.md). It specifies the smooth primary profile, a published disk comparator, a separate uniform control, and analytic checks for review.
 
