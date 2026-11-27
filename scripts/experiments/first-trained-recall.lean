@@ -7,6 +7,8 @@ The [frozen protocol](../../docs/experiments/first-trained-recall.md) specifies
 the one library, equations, inputs and scoring boundary for this experiment.
 This executable reads training words and **visible** cues. The separate Lean
 scorer has the evaluation targets and corruption labels. Angles are in radians.
+The [held-training comparison](../../docs/experiments/held-word-training.md)
+changes the phase history during training and reuses the original retrieval path.
 -/
 
 namespace FirstRecall
@@ -133,6 +135,15 @@ private def train (words : List String) (op : Coupling) (duration resolution : N
       a := next
   return vector sum.size fun k => sum[k]! / (words.length*steps).toFloat
 
+-- In a held episode every midpoint has exactly the prepared phases. Its
+-- elapsed-time mean is that one pair-alignment matrix at either duration.
+-- ADR-124 then averages the four completed words, including the background.
+private def trainHeld (words : List String) : FloatArray := Id.run do
+  let mut sum := vector (sites*sites) fun _ => 0
+  for word in words do
+    sum := accumulate sum (phases (prepare word))
+  return vector sum.size fun k => sum[k]! / words.length.toFloat
+
 private def validMemory (m : FloatArray) : Bool := Id.run do
   for i in [:sites] do
     if Float.abs (m[i*sites+i]! - 1) > 1e-10 then return false
@@ -182,6 +193,17 @@ private def controls : IO Unit := do
   check (Float.abs (v[0]!-rate) < 1e-12 && Float.abs (v[1]!+rate) < 1e-12) "isolated pair"
   let sample := accumulate (vector (sites*sites) fun _ => 0) two
   check (validMemory sample && Float.abs sample[1]! < 1e-12 && sample[2]! == 1) "sample alignment"
+
+  -- HT-01 checks four distinct words. At the first three centers their
+  -- signed agreements give +1/2, -1/2 and 0 for the three different pairs.
+  -- The neighboring bump site also contributes at its actual prepared phase.
+  let held := trainHeld ["0000000000000000", "0010000000000000",
+                         "1100000000000000", "0100000000000000"]
+  let pairAt (a b : Nat) := held[center a * sites + center b]!
+  check (validMemory held && Float.abs (pairAt 0 1 - 0.5) < 1e-12 &&
+    Float.abs (pairAt 1 2 + 0.5) < 1e-12 && Float.abs (pairAt 0 2) < 1e-12 &&
+    Float.abs (held[center 0 + 1]! - Float.cos (pi/2 * bump 0.25)) < 1e-12)
+    "held full-field training mean"
 
 private def wordOK (s : String) (allowMask : Bool) : Bool :=
   s.length == 16 && s.toList.all fun c => c == '0' || c == '1' || (allowMask && c == '?')
@@ -240,6 +262,22 @@ private def run (resolution : Nat) (words : List String) (cues : List (String ×
     check (validMemory m) s!"invalid {duration}-unit trained memory"
     writeArm (dest / s!"trained-{duration}.tsv") (coupling weights (some m) 0.25) cues resolution
 
+private def cleanProbes (words : List String) : List (String × String) :=
+  words.zipIdx.map fun (w, i) => (s!"word-{i+1}", w)
+
+-- HT-02 changes only the trained matrix. Both the damaged and clean cues
+-- are released normally, with structural coupling active all the way to t=40.
+private def runHeld (resolution : Nat) (words : List String) (cues : List (String × String))
+    (directory : String) : IO Unit := do
+  controls
+  let held := trainHeld words
+  check (validMemory held) "invalid held training memory"
+  let op := coupling structuralWeights (some held) 0.25
+  let dest : System.FilePath := directory
+  IO.FS.createDirAll dest
+  writeArm (dest / "held.tsv") op cues resolution
+  writeArm (dest / "held-clean.tsv") op (cleanProbes words) resolution
+
 private def resolution (arg : String) : IO Nat := do
   let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
   unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
@@ -256,13 +294,16 @@ def main (args : List String) : IO UInt32 := do
       IO.println (id ++ "\t" ++ (FirstRecall.nearest words cue).getD "????????????????")
   | ["--clean", steps, library, output] =>
     let words ← FirstRecall.readWords library
-    let cues := words.zipIdx.map fun (w, i) => (s!"word-{i+1}", w)
-    FirstRecall.run (← FirstRecall.resolution steps) words cues output
+    FirstRecall.run (← FirstRecall.resolution steps) words (FirstRecall.cleanProbes words) output
+  | ["--held", steps, words, cues, output] =>
+    FirstRecall.runHeld (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
   | _ =>
     IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --held (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0

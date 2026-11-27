@@ -17,3 +17,17 @@ At `1657d8e`, Codex (GPT-6), the author in the internal reviewer role, closed th
 - **HT-03.** Preserve per-cue outputs at both time steps. Count incomplete or missing responses in their scheduled denominator. Report bit changes separately from exact recall and distinguish four clean probes from the sixteen damaged cues.
 
 This scope authorizes the controlled comparison. Selection of a permanent training rule and evaluation on untouched libraries remain open. [Experimental review policy](../decisions/ADR-109.md)
+
+## Reproduce the comparison
+
+Use the [original build and free-run commands](first-trained-recall.md#reproduce-the-measurement) with the current simulator. In the same shell, run the held arm on the identical exported cues. The clean schedule below contains one row per stored word, with every position marked clean. Each prediction file has the usual ID, endpoint and decoded symbols.
+
+```sh
+awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$data/words.txt" > "$run_dir/clean-schedule.tsv"
+for resolution in 20 40; do
+  out="$run_dir/held-$resolution"
+  "$run_dir/pilot" --held "$resolution" "$data/words.txt" "$run_dir/cues.tsv" "$out"
+  lean --run "$scorer" "$data/schedule.tsv" "$out/held.tsv"
+  lean --run "$scorer" "$run_dir/clean-schedule.tsv" "$out/held-clean.tsv"
+done
+```
