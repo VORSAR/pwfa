@@ -1,6 +1,6 @@
 # Exact-recall benchmark
 
-**Status:** proposed/selected configuration; **no recorded results**.
+**Status.** The first single-library trained development run is [recorded](first-trained-recall.md#measured-exact-recall). The 100-library held-out benchmark and matched-comparator comparison are pending.
 
 [ADR-099](../decisions/ADR-099.md) identifies the *primary* benchmark:
 
@@ -26,7 +26,7 @@ Run the primary encoder validation on a uniform unit-phase background. Repeat on
 
 ## First trained recall measurement
 
-The first end-to-end pilot needs a specified learned-memory and trace update, training schedule and reset/carry values, cue-to-recall transition and clock origin, runnable evolution through $t=40$, and a decoder with an explicit ambiguity rule. The current Lean checks cover the unforced oscillator and cue geometry. The repository has no trained recall runs to score. [Memory contract](../mathematics/memory.md) · [Training protocol](methodology.md) · [Decoder](../mathematics/encoding-decoding.md)
+The [first development experiment](first-trained-recall.md) trains a dense pair matrix from evolving phases and measures recall at $t=40$ with a fixed gain, a provisional cue transition and a point decoder. The adaptive model still needs scalar and homeostat dynamics, training events, and a finalized decoder. [Memory contract](../mathematics/memory.md) · [Training protocol](methodology.md) · [Decoder](../mathematics/encoding-decoding.md)
 
 For the paired duration pilot, use 25 and 50 model time units per stored word on the same development libraries and cue roster. The retrieval endpoint is $t=40$ for both conditions. [Training durations](../decisions/ADR-127.md)
 

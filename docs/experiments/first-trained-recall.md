@@ -24,6 +24,27 @@ On 2026-11-27, against `b9006f7`, Codex (GPT-6), the author in the internal revi
 
 The scope covers this one diagnostic experiment and its reproducibility checks. [Experimental authorization policy](../decisions/ADR-109.md)
 
+## Measured exact recall
+
+On the frozen roster at `301439d`, the Lean simulator at `6c25f7c` produced the following counts at $t=40$ and step 0.05. All 16 scheduled cues in each condition returned complete words. The evaluator found 16 distinct visible cues.
+
+| Retrieval condition | Exact words | Correct initially clean bits | Correct masked bits | Correct flipped bits |
+|---|---:|---:|---:|---:|
+| 25 units per word | 0/16 | 99/192 | 17/32 | 14/32 |
+| 50 units per word | 0/16 | 93/192 | 18/32 | 16/32 |
+| Learned interaction off | 0/16 | 99/192 | 17/32 | 17/32 |
+
+Halving the step to 0.025 preserved all three exact-word counts and all masked and flipped counts. It changed one decoded symbol in the 25-unit run and two in the 50-unit run. All three changes were at initially clean positions. The disabled arm gave identical symbols in both runs. The learned interaction therefore showed zero percentage-point improvement in exact-word recall over the disabled control on this development library. [Predictions at step 0.05](first-recall/steps-20) · [Predictions at step 0.025](first-recall/steps-40)
+
+### Diagnostics selected after the measurement
+
+The first runs lost roughly half of the 192 bits that were supplied correctly. At `6c25f7c`, the author in the internal reviewer role scoped two checks to distinguish loss during retrieval from ambiguity in the corrupted inputs.
+
+- **DI-01, closed for experiment.** Present the four clean stored words separately using the identical trained simulator, gain, clock and decoder. Count unique words once and report both time steps. The diagnostic reuses training words intentionally to test retention at $t=40$.
+- **DI-02, closed for experiment.** Compare each corrupted cue to all four stored words by counting mismatches on visible positions only. Treat ties as abstentions. Join target-free predictions to the existing schedule for scoring only after inference. This diagnostic measures information in the presented cue and library. It has no time evolution or resource match.
+
+These checks use the original library after seeing its primary results. They do not select a decoder, revise the first-run result, or test the matched-comparator mission criterion.
+
 ## Reproduce the measurement
 
 From the repository root, use the pinned Lean compiler to build the [simulator](../../scripts/experiments/first-trained-recall.lean) in a temporary directory. The schedule enters the evaluator; the simulator receives the same exported cues for all arms. Each output contains one decoded word per cue in the [scorer’s format](benchmarks.md#score-a-recall-export).
