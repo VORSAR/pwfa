@@ -1,0 +1,231 @@
+import Std
+
+/-!
+# First trained 16-bit recall development run
+
+The [frozen protocol](../../docs/experiments/first-trained-recall.md) specifies
+the one library, equations, inputs and scoring boundary for this experiment.
+This executable reads training words and **visible** cues. The separate Lean
+scorer has the evaluation targets and corruption labels. Angles are in radians.
+-/
+
+namespace FirstRecall
+
+private def nx := 16
+private def ny := 8
+private def sites := nx * ny
+private def pi := 3.14159265358979323846
+private def structuralLag := pi / 2 - 0.1
+private def vector (n : Nat) (f : Nat → Float) : FloatArray := Id.run do
+  let mut a := FloatArray.emptyWithCapacity n
+  for i in [:n] do a := a.push (f i)
+  return a
+
+-- Grid nodes and bit centers coincide on the origin-aligned 16×8 grid.
+private def center (bit : Nat) := 2 + 4 * (bit % 4) + nx * (1 + 2 * (bit / 4))
+
+private def axisDistance (n a b : Nat) : Float :=
+  let d := max a b - min a b
+  (min d (n-d)).toFloat / n.toFloat
+
+private def distanceSq (a b : Nat) : Float :=
+  let x := axisDistance nx (a % nx) (b % nx)
+  let y := axisDistance ny (a / nx) (b / nx)
+  x*x + y*y
+
+-- The factor e converting the structural bump to a peak-one bump cancels
+-- under row normalization. For the encoder the value at the peak matters.
+private def bump (s : Float) : Float :=
+  if s < 1 then Float.exp (-s / (1-s)) else 0
+
+private def prepare (symbols : String) : FloatArray := Id.run do
+  let mut a := vector sites fun _ => 0
+  for (c, bit) in symbols.toList.zipIdx do
+    if c != '?' then
+      let angle := if c == '1' then pi/2 else -pi/2
+      for i in [:sites] do
+        a := a.set! i (a[i]! + angle * bump (64 * distanceSq i (center bit)))
+  return a
+
+private def structuralWeights : FloatArray := Id.run do
+  let raw i j := bump (16 * distanceSq i j)
+  let mass := (vector sites (raw 0)).foldl (· + ·) 0
+  return vector (sites*sites) fun k => raw (k / sites) (k % sites) / mass
+
+private structure Entry where
+  site : Nat
+  re : Float
+  im : Float
+private abbrev Coupling := Array (Array Entry)
+
+-- Structural weights carry exp(-iα); the frozen learned matrix has zero lag
+-- and a single source-area factor 1/N (ADR-128/129). Both include the diagonal.
+private def coupling (weights : FloatArray) (learned : Option FloatArray) (gain : Float) :
+    Coupling := Id.run do
+  let mut rows := #[]
+  for i in [:sites] do
+    let mut row := #[]
+    for j in [:sites] do
+      let k := i*sites+j
+      let w := weights[k]!
+      let l := match learned with
+        | some m => gain * m[k]! / sites.toFloat
+        | none => 0
+      if w != 0 || l != 0 then
+        row := row.push ⟨j, w*Float.cos structuralLag + l, -w*Float.sin structuralLag⟩
+    rows := rows.push row
+  return rows
+
+private structure Phases where
+  co : FloatArray
+  si : FloatArray
+
+private def phases (a : FloatArray) : Phases :=
+  ⟨vector sites (fun i => Float.cos a[i]!), vector sites (fun i => Float.sin a[i]!)⟩
+
+-- Imaginary part of conjugate(z_i) times the combined structural and
+-- learned mean. The resulting real number is the angular velocity.
+private def velocity (op : Coupling) (z : Phases) : FloatArray := Id.run do
+  let mut speeds := FloatArray.emptyWithCapacity sites
+  for row in op do
+    let i := speeds.size
+    let mut re := 0.0
+    let mut im := 0.0
+    for e in row do
+      let c := z.co[e.site]!
+      let s := z.si[e.site]!
+      re := re + e.re*c - e.im*s
+      im := im + e.re*s + e.im*c
+    speeds := speeds.push (z.co[i]! * im - z.si[i]! * re)
+  return speeds
+
+private def advance (a v : FloatArray) (dt : Float) : FloatArray :=
+  vector sites fun i => a[i]! + dt*v[i]!
+
+-- The same midpoint snapshot supplies both the final update and the pair
+-- statistic. Every new phase is represented on the unit circle via sin/cos.
+private def step (op : Coupling) (a : FloatArray) (dt : Float) : FloatArray × Phases :=
+  let mid := phases (advance a (velocity op (phases a)) (dt/2))
+  (advance a (velocity op mid) dt, mid)
+
+private def accumulate (sum : FloatArray) (mid : Phases) : FloatArray := Id.run do
+  let mut sum := sum
+  for i in [:sites] do
+    let c := mid.co[i]!
+    let s := mid.si[i]!
+    for j in [:sites] do
+      let k := i*sites+j
+      sum := sum.set! k (sum[k]! + (c*mid.co[j]! + s*mid.si[j]!))
+  return sum
+
+-- ADR-124 through ADR-127 give each of four full windows equal weight.
+-- All four have the same duration and constant dt in a single condition.
+private def train (words : List String) (op : Coupling) (duration resolution : Nat) :
+    FloatArray := Id.run do
+  let steps := duration*resolution
+  let dt := 1 / resolution.toFloat
+  let mut sum := vector (sites*sites) fun _ => 0
+  for w in words do
+    let mut a := prepare w
+    for _ in [:steps] do
+      let (next, mid) := step op a dt
+      sum := accumulate sum mid
+      a := next
+  return vector sum.size fun k => sum[k]! / (words.length*steps).toFloat
+
+private def validMemory (m : FloatArray) : Bool := Id.run do
+  for i in [:sites] do
+    if Float.abs (m[i*sites+i]! - 1) > 1e-10 then return false
+    for j in [:sites] do
+      let v := m[i*sites+j]!
+      if !v.isFinite || Float.abs v > 1+1e-10 || Float.abs (v-m[j*sites+i]!) > 1e-10 then
+        return false
+  return true
+
+private def decode (a : FloatArray) : String := Id.run do
+  if !(a.foldl (fun ok t => ok && t.isFinite) true) then return "FAILED"
+  let mut bits := ""
+  for b in [:16] do
+    let score := Float.sin (a[center b]! - a[0]!)
+    bits := bits.push (if score > 0.000001 then '1' else if score < -0.000001 then '0' else '?')
+  return bits
+
+private def retrieve (op : Coupling) (symbols : String) (resolution : Nat) : String := Id.run do
+  let mut a := prepare symbols
+  let dt := 1 / resolution.toFloat
+  for _ in [:40*resolution] do a := (step op a dt).1
+  return decode a
+
+private def check (p : Bool) (msg : String) : IO Unit :=
+  unless p do throw (IO.userError msg)
+
+-- The synchronized trajectory and isolated positive pair torque catch sign,
+-- area, phase lag, and angular-update errors before running a whole library.
+private def controls : IO Unit := do
+  let clean := "0011010011110001"
+  let mixed := "?01101001111000?"
+  check (decode (prepare clean) == clean && decode (prepare mixed) == mixed &&
+    (prepare clean)[0]! == 0) "encoding / anchored sign"
+  let uniform := vector sites fun _ => 0
+  let op := coupling structuralWeights none 0
+  let expected := -Float.sin structuralLag
+  let (a, mid) := step op uniform 0.05
+  check ((velocity op (phases uniform)).foldl (fun ok x => ok && Float.abs (x-expected) < 1e-12) true &&
+    Float.abs (a[0]! - 0.05*expected) < 1e-12 &&
+    Float.abs (mid.si[0]! - Float.sin (0.025*expected)) < 1e-12) "synchronized midpoint"
+  let memory := vector (sites*sites) fun k =>
+    if k == 1 || k == sites || k / sites == k % sites then 1 else 0
+  let two := phases (uniform.set! 1 (pi/2))
+  let pair := coupling (vector (sites*sites) fun _ => 0) (some memory) 0.25
+  let v := velocity pair two
+  let rate := 0.25 / sites.toFloat
+  check (Float.abs (v[0]!-rate) < 1e-12 && Float.abs (v[1]!+rate) < 1e-12) "isolated pair"
+  let sample := accumulate (vector (sites*sites) fun _ => 0) two
+  check (validMemory sample && Float.abs sample[1]! < 1e-12 && sample[2]! == 1) "sample alignment"
+
+private def wordOK (s : String) (allowMask : Bool) : Bool :=
+  s.length == 16 && s.toList.all fun c => c == '0' || c == '1' || (allowMask && c == '?')
+
+private def readLines (path : String) : IO (List String) := do
+  return ((← IO.FS.readFile path).splitOn "\n").map (·.dropSuffix "\r" |>.toString)
+    |>.filter (!·.isEmpty)
+
+private def writeArm (output : System.FilePath) (op : Coupling) (cues : List (String × String))
+    (resolution : Nat) : IO Unit := do
+  let rows := cues.map fun (id, symbols) => id ++ "\t40\t" ++ retrieve op symbols resolution
+  IO.FS.writeFile output (String.intercalate "\n" rows ++ "\n")
+  IO.eprintln s!"Wrote {output}"
+
+private def run (resolution : Nat) (wordsFile cuesFile directory : String) : IO Unit := do
+  controls
+  let words ← readLines wordsFile
+  check (words.length == 4 && words.eraseDups.length == 4 && words.all (wordOK · false))
+    "expected four distinct 16-bit training words"
+  let mut cues := #[]
+  for row in ← readLines cuesFile do
+    let [id, symbols] := row.splitOn "\t" | throw (IO.userError "expected ID and visible cue")
+    check (!id.isEmpty && wordOK symbols true) "invalid visible cue"
+    cues := cues.push (id, symbols)
+  let ids := cues.toList.map Prod.fst
+  check (ids.length == 16 && ids.eraseDups.length == 16) "expected 16 distinct development cue IDs"
+  let dest : System.FilePath := directory
+  IO.FS.createDirAll dest
+  let weights := structuralWeights
+  let structural := coupling weights none 0
+  writeArm (dest / "off.tsv") structural cues.toList resolution
+  for duration in [25, 50] do
+    let m := train words structural duration resolution
+    check (validMemory m) s!"invalid {duration}-unit trained memory"
+    writeArm (dest / s!"trained-{duration}.tsv") (coupling weights (some m) 0.25) cues.toList resolution
+
+end FirstRecall
+
+def main (args : List String) : IO UInt32 := do
+  match args with
+  | ["--check"] => FirstRecall.controls
+  | [steps, words, cues, output] =>
+    let some r := steps.toNat? | throw (IO.userError "expected steps per unit")
+    unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
+    FirstRecall.run r words cues output
+  | _ => IO.eprintln "Usage: first-recall --check | (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"; return 2
+  return 0

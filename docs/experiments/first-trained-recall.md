@@ -23,3 +23,23 @@ On 2026-11-27, against `b9006f7`, Codex (GPT-6), the author in the internal revi
 - **RUN-03, measurement.** Keep both duration arms and the learned-off control on identical cues. Preserve raw per-cue predictions at both step sizes, check with the existing Lean scorer, and disclose any refinement disagreement. Inputs and settings are frozen in Git before implementation and collection. The first library supplies a development result. Independent Gate 1 and benchmark certification remain open.
 
 The scope covers this one diagnostic experiment and its reproducibility checks. [Experimental authorization policy](../decisions/ADR-109.md)
+
+## Reproduce the measurement
+
+From the repository root, use the pinned Lean compiler to build the [simulator](../../scripts/experiments/first-trained-recall.lean) in a temporary directory. The schedule enters the evaluator; the simulator receives the same exported cues for all arms. Each output contains one decoded word per cue in the [scorer’s format](benchmarks.md#score-a-recall-export).
+
+```sh
+run_dir=$(mktemp -d)
+data=docs/experiments/first-recall
+scorer=scripts/experiments/recall-scoring.lean
+lean -c "$run_dir/pilot.c" scripts/experiments/first-trained-recall.lean
+leanc -O3 -o "$run_dir/pilot" "$run_dir/pilot.c"
+"$run_dir/pilot" --check
+lean --run "$scorer" --export-cues "$data/schedule.tsv" > "$run_dir/cues.tsv"
+for resolution in 20 40; do
+  out="$run_dir/steps-$resolution"
+  "$run_dir/pilot" "$resolution" "$data/words.txt" "$run_dir/cues.tsv" "$out"
+  lean --run "$scorer" --compare-durations "$data/schedule.tsv" "$out/trained-25.tsv" "$out/trained-50.tsv"
+  lean --run "$scorer" "$data/schedule.tsv" "$out/off.tsv"
+done
+```
