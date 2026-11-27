@@ -17,6 +17,10 @@ The [internal review](../../docs/research/recall-pilot-checks.md#internal-review
 isolates a learned sine interaction. [ADR-128](../../docs/decisions/ADR-128.md)
 fixes each cell area to one half for two sites. The symmetric memory has diagonal
 one and off-diagonal m. The common gain g and learned lag β remain symbolic.
+For [ADR-129](../../docs/decisions/ADR-129.md) we also specialize to zero lag
+and compare fixed and scalar-dependent gains on a stored pair of value +1.
+The [gain review](../../docs/research/recall-pilot-checks.md#internal-review-of-the-learned-gain-comparison)
+specifies the constant-state assumptions for that comparison.
 -/
 
 namespace LearnedPhaseLag
@@ -116,10 +120,51 @@ private theorem smaller_phase_gap (g : ℝ) (hg : 0 < g) :
     rw [recover, Real.arctan_one] at late
     linarith
 
+-- ADR-093 supplies the scalar increment. Its use as the gain multiplying the
+-- ADR-128 matrix field is a proposed placement. The scalar memory is not the
+-- off-diagonal pair value, which stays at +1 throughout this endpoint test.
+private def scalarGain (scalarMemory homeostat : ℝ) : ℝ :=
+  scalarMemory / (4 * (1 + homeostat))
+
+private theorem scalar_gain_sign (s h : ℝ) (hh : 0 ≤ h) :
+    (0 < scalarGain s h ↔ 0 < s) ∧ (scalarGain s h < 0 ↔ s < 0) ∧
+      (scalarGain s h = 0 ↔ s = 0) := by
+  have hd : 0 < 4 * (1+h) := by linarith
+  simp [scalarGain, lt_div_iff₀ hd, div_lt_iff₀ hd, hd.ne']
+
+private theorem scalar_gain_eq_quarter (s h : ℝ) (hh : 0 ≤ h) :
+    scalarGain s h = 1/4 ↔ s = 1+h := by
+  rw [scalarGain, div_eq_iff (by linarith : 4 * (1+h) ≠ 0)]
+  constructor <;> intro he <;> linarith
+
+private theorem scalar_gain_range (s h : ℝ) (hs : 0 ≤ s) (hs' : s ≤ 1) (hh : 0 ≤ h) :
+    0 ≤ scalarGain s h ∧ scalarGain s h ≤ 1/4 := by
+  have hd : 0 < 4 * (1+h) := by linarith
+  exact ⟨div_nonneg hs hd.le, (div_le_iff₀ hd).mpr (by linarith)⟩
+
+-- Freeze the scalars for the full 40 units. At zero lag the half-angle
+-- tangent begins at 1, making values below and above 1 easy to interpret.
+private def endpointTangent (g : ℝ) := Real.tan (gap (g * Real.cos 0) 40 / 2)
+
+private theorem frozen_gain_endpoints :
+    endpointTangent (1/4) = Real.exp (-10) ∧
+    endpointTangent (scalarGain 1 0) = Real.exp (-10) ∧
+    endpointTangent (scalarGain 1 1) = Real.exp (-5) ∧
+    endpointTangent (scalarGain 0 1) = 1 ∧ endpointTangent 0 = 1 ∧
+    endpointTangent (scalarGain (-1) 1) = Real.exp 5 := by
+  simp only [endpointTangent, half_angle_at_forty]
+  norm_num [scalarGain]
+
+private theorem frozen_gain_order :
+    Real.exp (-10) < Real.exp (-5) ∧ Real.exp (-5) < 1 ∧ 1 < Real.exp 5 := by
+  norm_num [Real.exp_lt_one_iff, Real.one_lt_exp_iff]
+
 run_cmd do
   let allowed := #[`propext, `Classical.choice, `Quot.sound]
   for name in #[``torque_sine, ``speed_from_learned_mean, ``relative_speed, ``quarter_turn,
-      ``gap_deriv, ``half_angle_at_forty, ``same_lag_vs_zero, ``smaller_phase_gap] do
+      ``gap_deriv, ``half_angle_at_forty, ``same_lag_vs_zero, ``smaller_phase_gap,
+      ``scalar_gain_sign, ``scalar_gain_eq_quarter, ``scalar_gain_range, ``frozen_gain_endpoints,
+      ``frozen_gain_order] do
     let deps ← Lean.collectAxioms name
     unless deps.all (fun dep => allowed.contains dep) do
       throwError "{name} has unexpected dependencies: {deps}"

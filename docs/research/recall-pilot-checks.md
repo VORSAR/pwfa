@@ -224,3 +224,7 @@ At `f480944`, Codex (GPT-6), the author reviewing the proposed experiment under 
 - **GN-02, high, closed for the control.** Reuse the verified two-site trajectory from an initial quarter turn. Compare the half-angle tangent at $t=40$ for fixed $g=1/4$, the frozen scalar examples $(m,h)=(1,0),(1,1),(0,1),(-1,1)$, and learned gain zero. State what a zero or negative gain does to this isolated pair. The formula for a constant gain does not model changing $m,h$, structural forcing, or multi-site recall.
 
 These dispositions authorize the gain comparison and its endpoint checks. The research example freezes scalar states for its calculation. It leaves state dynamics, gain placement and pilot arm selection to the owner.
+
+### Fixed gain for the first development control
+
+Against `b9006f7`, [Lean](../../scripts/experiments/learned-phase-lag.lean) verifies that for $h\ge0$, the increment $m/(4(1+h))$ has the sign of $m$. It equals $1/4$ exactly when $m=1+h$. For $0\le m\le1$ it lies in $[0,1/4]$. In the isolated pair trained to agree, the half-angle tangent starts at one. At $t=40$ it is $e^{-10}$ for fixed gain $1/4$, $e^{-5}$ for frozen $(m,h)=(1,1)$, one for zero gain and $e^5$ for $(-1,1)$. The [first trained recall control](../experiments/first-trained-recall.md) uses fixed $1/4$ and compares it with turning the learned interaction off. The scalar-state law for an adaptive trained run remains open.
