@@ -13,3 +13,5 @@ lake env lean --run scripts/experiments/four-word-memory.lean
 # Exercise the grid encoder, structural sign, dense pair torque, and training
 # statistic used by the first trained t=40 measurement on every Lean CI run.
 lake env lean --run scripts/experiments/first-trained-recall.lean --check
+# Check the coding-theory reference on the frozen word library.
+lake env lean --run scripts/experiments/error-erasure-distance.lean docs/experiments/first-recall/words.txt
