@@ -1,5 +1,6 @@
 # Glossary
 
+- **PWFA — Persistent Wave-Field Architecture:** The research architecture this repository specifies. Its aim and exclusions are in the [vision statement](vision/vision-statement.md).
 - **ADR — Architectural Decision Record:** Stable, reviewable record of a design choice, alternatives, rationale, consequences, and provenance.
 - **CI — Continuous Integration:** Automated checks on changes; a passing check does not replace independent architectural review.
 - **PR — Pull Request:** Proposed set of Git changes for review and merge.

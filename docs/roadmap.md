@@ -1,6 +1,6 @@
 # PWFA roadmap
 
-**Measure progress by whole-word recall.** Use exact 16-bit recovery on every scheduled cue at $t=40$ to rank development choices. The project’s success criterion is at least a five-percentage-point advantage on held-out cues over a matched-budget comparator, with the lower bound of the clustered 95% confidence interval above zero. [Mission criterion](decisions/ADR-100.md) · [Scoring denominator](decisions/ADR-122.md)
+**Measure progress by whole-word recall.** Use exact 16-bit recovery on every scheduled cue at $t=40$ to rank development choices. The project’s success criterion is at least a five-percentage-point advantage on held-out cues over a matched-budget comparator, with the lower bound of the clustered 95% confidence interval above zero. This criterion is the measurable form of the advantage against established baselines that the vision statement requires. [Mission criterion](decisions/ADR-100.md) · [Scoring denominator](decisions/ADR-122.md) · [Vision statement](vision/vision-statement.md)
 
 **Next review milestone:** obtain an independent disposition on the [frozen torus oscillator packet](verification/slices/torus-oscillator-review-packet.md).
 

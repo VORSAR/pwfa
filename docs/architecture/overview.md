@@ -2,6 +2,8 @@
 
 The recovered system is a computational reference model with continuous circle-valued phase fields, distributed coupled oscillators, internal memory, a knowledge-facing input/output path, learned coupling, and observation.
 
+The [vision statement](../vision/vision-statement.md) describes the intended architecture: persistent internal state, integration of external knowledge, adaptation through experience, and computation arising from the dynamics. This reference model is the current instrument for testing it.
+
 **Recovery-only conceptual flow:**
 
 1. Encode an input into spatial/phase stimulation.

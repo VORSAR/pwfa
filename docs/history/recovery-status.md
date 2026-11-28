@@ -4,6 +4,8 @@
 
 The previous master ChatGPT WritingBlock ID **57318** was partially recovered. Excerpts available on 2026-11-23 establish the historical ring kernel, structural phase law, and meanings of its oscillator parameters. The full master, original option matrices, and bibliography remain outstanding. [Historical ring reference](../mathematics/ring-oscillator-reference.md) · [Evidence register](../research/evidence-register.md)
 
+On 2026-11-28 the owner supplied the project's vision statement and its full name, Persistent Wave-Field Architecture. It is recorded verbatim as an owner statement and has not been compared with the unrecovered master. [Vision statement](../vision/vision-statement.md)
+
 ## Recovered items
 
 - Fifteen partial [ADRs](../decisions/index.md) have been extracted with known selection letters.

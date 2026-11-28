@@ -5,6 +5,7 @@ This repository is the authoritative, version-controlled source for PWFA. No mon
 See the [project roadmap](roadmap.md) for pending Lean proofs, independent review, and decisions for simulation and recall.
 
 ## Research scope
+- [Vision statement](vision/vision-statement.md)
 - [Problem statement](vision/problem-statement.md)
 - [Research objectives](vision/objectives.md)
 - [Testable hypotheses](vision/hypotheses.md)

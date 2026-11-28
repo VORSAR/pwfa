@@ -1,5 +1,7 @@
 # Research objectives
 
+The [vision statement](vision-statement.md) sets the aim these objectives serve and the standard for judging them: mathematical consistency, reproducible experiments, and measurable advantages against established computational baselines.
+
 ## Recovered objectives
 
 1. Specify an explicit continuous state space for phase-coupled spatial dynamics.
