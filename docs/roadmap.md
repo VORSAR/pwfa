@@ -97,5 +97,7 @@ The next simulation and recall work requires the following owner decisions.
 
 ## Further research and historical recovery
 
+- [x] **Review error correction for whole-word recall.** Compare distance-based decoding, constraint-based repair and oscillator attraction basins. Check community Lean results and the exact geometry of the four-word library. [Literature and Lean review](research/error-correction-and-recall.md)
+
 - [ ] Specify external knowledge payloads, provenance, retrieval/reinjection timing and error handling, or explicitly defer that component. [Interface inventory](architecture/interfaces.md)
 - [ ] Recover the meanings of historical ADR-057 through ADR-059, original choice matrices, and missing primary sources where available. [Research and recovery register](research/open-questions.md)

@@ -63,6 +63,8 @@ At step 0.025 the ¼ and ½ predictions repeated exactly. At ¾ one initially co
 
 ## Reproduce the comparison
 
+The [error-correction review](../research/error-correction-and-recall.md#what-survives-to-the-readout) checks whether the intended word was still the nearest stored word to each archived output and distinguishes this diagnostic from the primary exact-word score.
+
 Build the current [Lean simulator](../../scripts/experiments/first-trained-recall.lean) and export the visible cues using the [original commands](first-trained-recall.md#reproduce-the-measurement). In that shell, run the following. Each output directory contains corrupted and clean predictions for each matrix. The outer loop reruns both training and retrieval at the stated resolution.
 
 ```sh
