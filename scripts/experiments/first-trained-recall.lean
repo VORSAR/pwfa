@@ -13,6 +13,8 @@ The [structural retrieval comparison](../../docs/experiments/structural-coupling
 uses each trained matrix in both retrieval conditions.
 The [queried-bit experiment](../../docs/experiments/recall-with-queried-bit-hidden.md)
 uses the same oscillator to reconstruct each position from a separately prepared cue.
+The [complement-weight comparison](../../docs/experiments/complement-balanced-training.md)
+changes only the coefficients of the four held episode matrices.
 -/
 
 namespace FirstRecall
@@ -141,14 +143,36 @@ private def train (words : List String) (op : Coupling) (duration resolution : N
       a := next
   return vector sum.size fun k => sum[k]! / (words.length*steps).toFloat
 
--- In a held episode every midpoint has exactly the prepared phases. Its
--- elapsed-time mean is that one pair-alignment matrix at either duration.
--- ADR-124 then averages the four completed words, including the background.
-private def trainHeld (words : List String) : FloatArray := Id.run do
+-- In a held episode every midpoint has the same prepared phases. Integer
+-- numerators weight each complete matrix, including background sites.
+-- The denominator is their sum, so the learned gain has the same scale.
+private def heldMean (terms : List (String × Nat)) : FloatArray := Id.run do
   let mut sum := vector (sites*sites) fun _ => 0
-  for word in words do
-    sum := accumulate sum (phases (prepare word))
-  return vector sum.size fun k => sum[k]! / words.length.toFloat
+  let mut total := 0
+  for (word, count) in terms do
+    let field := phases (prepare word)
+    for _ in [:count] do sum := accumulate sum field
+    total := total + count
+  return vector sum.size fun k => sum[k]! / total.toFloat
+
+-- ADR-124 gives each held episode one vote in the original control.
+private def trainHeld (words : List String) : FloatArray :=
+  heldMean (words.map fun w => (w, 1))
+
+-- BW-01: readWords supplies four distinct binary words. For the experimental
+-- arm only, both members of the unique complementary pair get one sixth.
+-- Each remaining word gets two sixths, regardless of training-file order.
+private def balancedTerms (words : List String) : Option (List (String × Nat)) := do
+  let terms := words.map fun w =>
+    let opposite := w.map fun c => if c == '0' then '1' else '0'
+    (w, if words.contains opposite then 1 else 2)
+  guard (terms.countP (fun t => t.2 == 1) == 2)
+  return terms
+
+#guard balancedTerms ["010", "000", "011", "111"] ==
+  some [("010", 2), ("000", 1), ("011", 2), ("111", 1)]
+#guard (balancedTerms ["000", "001", "010", "011"]).isNone
+#guard (balancedTerms ["000", "111", "010", "101"]).isNone
 
 private def validMemory (m : FloatArray) : Bool := Id.run do
   for i in [:sites] do
@@ -246,6 +270,18 @@ private def controls : IO Unit := do
     Float.abs (pairAt 1 2 + 0.5) < 1e-12 && Float.abs (pairAt 0 2) < 1e-12 &&
     Float.abs (held[center 0 + 1]! - Float.cos (pi/2 * bump 0.25)) < 1e-12)
     "held full-field training mean"
+
+  -- BW-02: for these four words, the two first bit centers agree in
+  -- both complementary fields and disagree in both others. Equal weighting
+  -- gives zero there; the selected coefficients give (1+1-2-2)/6.
+  let library := ["0000000000000000", "1111111111111111", "1000000000000000", "0100000000000000"]
+  let some terms := balancedTerms library | throw (IO.userError "expected one complement pair")
+  let some reversed := balancedTerms library.reverse | throw (IO.userError "lost complement on reversal")
+  let weighted := heldMean terms
+  let k := center 0 * sites + center 1
+  check (validMemory weighted && Float.abs ((trainHeld library)[k]!) < 1e-12 &&
+    Float.abs (weighted[k]! + 1/3) < 1e-12 && reversed == terms.reverse)
+    "complement weights, normalization and ordering"
 
 private def wordOK (s : String) (allowMask : Bool) : Bool :=
   s.length == 16 && s.toList.all fun c => c == '0' || c == '1' || (allowMask && c == '?')
@@ -362,9 +398,13 @@ private def compareHeldStrengths (resolution : Nat) (words : List String)
 -- cue and which bit is taken from each trajectory. Neither predictor sees
 -- the target or the positions that were deliberately flipped.
 private def compareContext (resolution : Nat) (words : List String)
-    (cues : List (String × String)) (directory : System.FilePath) : IO Unit := do
+    (cues : List (String × String)) (directory : System.FilePath) (balanced : Bool := false) : IO Unit := do
   controls
-  let memory := trainHeld words
+  let memory ← if balanced then do
+    let some terms := balancedTerms words
+      | throw (IO.userError "balanced training requires exactly one complementary pair")
+    pure (heldMean terms)
+  else pure (trainHeld words)
   check (validMemory memory) "invalid held training memory"
   let op := coupling structuralWeights (some memory) 0.25 0
   writeProbes directory "direct" op words cues resolution
@@ -401,6 +441,9 @@ def main (args : List String) : IO UInt32 := do
   | ["--compare-context", steps, words, cues, output] =>
     FirstRecall.compareContext (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
+  | ["--balanced-context", steps, words, cues, output] =>
+    FirstRecall.compareContext (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output true
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
@@ -409,7 +452,7 @@ def main (args : List String) : IO UInt32 := do
     IO.eprintln "       first-recall --held (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --compare-structure (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --held-strengths (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
-    IO.eprintln "       first-recall --compare-context (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall (--compare-context|--balanced-context) (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0

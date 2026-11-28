@@ -17,3 +17,27 @@ At revision `2412433`, Codex (GPT-6) reviewed this experimental slice under ADR-
 - **BW-01.** Identify the complementary words from the training library. Require exactly one complementary pair among four distinct binary words. Check that reordering words preserves the weighting and that libraries with zero or two pairs are rejected.
 - **BW-02.** Preserve total learned strength. Check symmetry and unit diagonal and an off-diagonal entry with distinct known equal and rebalanced values. Use the same held training phases and the same integration and scoring paths in both arms.
 - **BW-03.** Replay the equal-weight predictions against the archive and cross-check rebalanced predictions using a separate numerical implementation. Report abstentions as misses and keep the one- and sixteen-trajectory results distinct.
+
+## Reproduce the comparison
+
+Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) using the [native build commands](first-trained-recall.md#reproduce-the-measurement). The scorer exports the same visible cues to both conditions. Each prediction row records the cue ID, readout time and decoded symbols. The paired scoring command reports words gained and lost by ID.
+
+```sh
+for lib in docs/experiments/first-recall docs/experiments/queried-bit-recall/replication; do
+  out="$run_dir/$(basename "$lib")"
+  mkdir -p "$out"
+  lean --run "$scorer" --export-cues "$lib/schedule.tsv" > "$out/cues.tsv"
+  awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$lib/words.txt" > "$out/clean.tsv"
+  for r in 20 40; do
+    "$run_dir/pilot" --compare-context "$r" "$lib/words.txt" "$out/cues.tsv" "$out/equal-$r"
+    "$run_dir/pilot" --balanced-context "$r" "$lib/words.txt" "$out/cues.tsv" "$out/balanced-$r"
+    for readout in direct context; do
+      lean --run "$scorer" --compare-durations "$lib/schedule.tsv" \
+        "$out/equal-$r/$readout.tsv" "$out/balanced-$r/$readout.tsv"
+      lean --run "$scorer" "$out/clean.tsv" "$out/balanced-$r/$readout-clean.tsv"
+    done
+  done
+done
+```
+
+The existing paired scorer labels its two inputs by training duration. In these commands the first input is equal-weight and the second is rebalanced; the held fields are constant throughout each episode.
