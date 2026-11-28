@@ -30,3 +30,52 @@ On 2026-11-28, against `80e7299`, the assistant, acting as internal reviewer, cl
 - **CA-06, selection.** Both libraries have already informed this choice. Fix the screen and the fresh-library seeds before running, and treat every figure here as a development result.
 
 This scope authorizes the comparison only. Selection of a default alphabet and any claim about the mission criterion need further evidence. [Mission criterion](../decisions/ADR-100.md)
+
+## Results at t=40
+
+**One run at ±45° did not correct presented bits.** On both libraries the one-run readout recovered 0/16 corrupted words, kept all 192 presented bits and corrected none of the 32 flips, exactly as at ±90°. The comparison alphabet did not meet the screen, so the fresh-library seeds stay unused. [Frozen protocol](https://github.com/VORSAR/pwfa/commit/92ae673) · [Simulator revision](https://github.com/VORSAR/pwfa/commit/dabb510)
+
+| Library | Alphabet | Readout | Exact corrupted words | Initially correct bits retained | Flips corrected | Omitted bits recovered | Exact clean probes |
+|---|---|---|---:|---:|---:|---:|---:|
+| Original | ±90° | One run | 0/16 | 192/192 | 0/32 | 30/32 | 4/4 |
+| Original | ±45° | One run | 0/16 | 192/192 | 0/32 | 30/32 | 4/4 |
+| Original | ±90° | Hidden bit | 8/16 | 168/192 | 27/32 | 30/32 | 2/4 |
+| Original | ±45° | Hidden bit | 8/16 | 168/192 | 27/32 | 30/32 | 2/4 |
+| Second | ±90° | One run | 0/16 | 192/192 | 0/32 | 29/32 | 4/4 |
+| Second | ±45° | One run | 0/16 | 192/192 | 0/32 | 27/32 | 4/4 |
+| Second | ±90° | Hidden bit | 8/16 | 173/192 | 31/32 | 29/32 | 4/4 |
+| Second | ±45° | Hidden bit | 8/16 | 177/192 | 32/32 | 27/32 | 2/4 |
+
+The table uses step 0.05, and every symbol in it repeated at step 0.025. Every one-run answer was complete. The hidden-bit readout at ±45° left one symbol unresolved, position 2 of cue 008 on the second library, so its coverage there was 15/16. In both arms the hidden-bit readout recovered all four cues of each complementary word and none of the other eight on each library. No cue was gained or lost between the alphabets in either readout. On the same cues the Hopfield reference recovers 9/16 and 12/16 words and nearest-word lookup 16/16 and 16/16. [Primary-step predictions, original library](comparison-alphabet-recall/original/steps-20) · [Second library](comparison-alphabet-recall/second/steps-20) · [Static references](../research/learned-retrieval-at-time-zero.md#static-references-on-the-two-development-libraries)
+
+**The signal shrinks at ±45°.** The weakest anchored score among all decoded one-run positions was 0.112 and 0.056 at ±90°. At ±45° it was 0.000107 and 0.000014, against a dead band of 0.000001. The ±45° answers therefore rest on signals about a hundred times the dead band on the original library and about fourteen times on the second. [Recorded scores](comparison-alphabet-recall/original/steps-20/weakest-score.txt)
+
+### Diagnostic selected after the measurement
+
+A separate calculation, not reproduced in Lean, looked at the anchored scores behind the one-run symbols. At ±45° a presented bit starts at ±0.707. At $t=40$ correctly presented bits averaged 0.0017 toward their target on the original library and 0.0016 on the second. Flipped bits averaged 0.0008 on the wrong side on both. At ±90° flipped bits stayed at 0.93 and 0.98 on the wrong side. So at ±45° the wrong bits lost ground about twice as fast as the right ones, which agrees with the pull between unlike bits that Lean identified. Every bit was also drawn onto the background, the whole pattern shrank by a factor of several hundred, and no flipped bit reached the correct side by the deadline. This diagnostic uses the frozen runs after their results were known. It selects nothing.
+
+**Verification.** The ±90° arm reproduced the archived one-run and hidden-bit predictions byte for byte on both libraries at both step sizes. Every symbol in both arms agreed between the two step sizes. A separately written calculation, which applies each word's phase features and never forms the matrix, reproduced all 5,120 symbols of both arms and the four weakest scores. The Lean scorer reproduced the exact-word, coverage, flip and omitted-bit counts from the archived files, and a separate tally reproduced the retained-bit and per-target counts. The simulator's `--check` control covers CA-02. These are development results on two libraries that informed the choice of experiment. The held-out benchmark and independent Gate 1 remain open.
+
+## Reproduce the comparison
+
+Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) with the [native build commands](first-trained-recall.md#reproduce-the-measurement). Each output directory holds one folder per arm with the two readouts, their clean probes and the weakest anchored score.
+
+```sh
+for lib in docs/experiments/first-recall docs/experiments/queried-bit-recall/replication; do
+  out="$run_dir/$(basename "$lib")"
+  mkdir -p "$out"
+  lean --run "$scorer" --export-cues "$lib/schedule.tsv" > "$out/cues.tsv"
+  awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$lib/words.txt" > "$out/clean.tsv"
+  for r in 20 40; do
+    "$run_dir/pilot" --compare-alphabets "$r" "$lib/words.txt" "$out/cues.tsv" "$out/steps-$r"
+    for readout in direct context; do
+      lean --run "$scorer" --compare-durations "$lib/schedule.tsv" \
+        "$out/steps-$r/primary/$readout.tsv" "$out/steps-$r/comparison/$readout.tsv"
+      lean --run "$scorer" "$out/clean.tsv" "$out/steps-$r/comparison/$readout-clean.tsv"
+    done
+  done
+  lean --run scripts/experiments/pair-memory-reference.lean --roster "$lib/words.txt" "$lib/schedule.tsv"
+done
+```
+
+The paired scorer labels its two inputs by training duration. Here the first input is the ±90° arm and the second the ±45° arm.
