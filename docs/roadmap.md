@@ -101,6 +101,7 @@ The next simulation and recall work requires the following owner decisions.
 
 ## Further research and historical recovery
 
+- [x] **Check the literature for one-run correction.** The present learned interaction is the known Hebbian Kuramoto memory, reported to recognise patterns on short timescales without isolated resting states. Published remedies are a second-harmonic term and a mirrored two-network design. Lean relates each to the pull on a single bit. [Sources, Lean evaluation and review](research/one-run-correction-in-the-literature.md)
 - [x] **Review error correction for whole-word recall.** Compare distance-based decoding, constraint-based repair and oscillator attraction basins. Check community Lean results and the exact geometry of the four-word library. [Literature and Lean review](research/error-correction-and-recall.md)
 
 - [ ] Specify external knowledge payloads, provenance, retrieval/reinjection timing and error handling, or explicitly defer that component. [Interface inventory](architecture/interfaces.md)
