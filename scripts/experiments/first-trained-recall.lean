@@ -15,6 +15,8 @@ The [queried-bit experiment](../../docs/experiments/recall-with-queried-bit-hidd
 uses the same oscillator to reconstruct each position from a separately prepared cue.
 The [complement-weight comparison](../../docs/experiments/complement-balanced-training.md)
 changes only the coefficients of the four held episode matrices.
+The [alphabet comparison](../../docs/experiments/one-run-recall-at-the-comparison-alphabet.md)
+changes only the signed bit angle, in training and retrieval together.
 -/
 
 namespace FirstRecall
@@ -46,11 +48,12 @@ private def distanceSq (a b : Nat) : Float :=
 private def bump (s : Float) : Float :=
   if s < 1 then Float.exp (-s / (1-s)) else 0
 
-private def prepare (symbols : String) : FloatArray := Id.run do
+-- The bit angle is the primary quarter turn unless an arm states another.
+private def prepare (symbols : String) (amplitude : Float := pi/2) : FloatArray := Id.run do
   let mut a := vector sites fun _ => 0
   for (c, bit) in symbols.toList.zipIdx do
     if c != '?' then
-      let angle := if c == '1' then pi/2 else -pi/2
+      let angle := if c == '1' then amplitude else -amplitude
       for i in [:sites] do
         a := a.set! i (a[i]! + angle * bump (64 * distanceSq i (center bit)))
   return a
@@ -146,18 +149,19 @@ private def train (words : List String) (op : Coupling) (duration resolution : N
 -- In a held episode every midpoint has the same prepared phases. Integer
 -- numerators weight each complete matrix, including background sites.
 -- The denominator is their sum, so the learned gain has the same scale.
-private def heldMean (terms : List (String × Nat)) : FloatArray := Id.run do
+private def heldMean (terms : List (String × Nat)) (amplitude : Float := pi/2) :
+    FloatArray := Id.run do
   let mut sum := vector (sites*sites) fun _ => 0
   let mut total := 0
   for (word, count) in terms do
-    let field := phases (prepare word)
+    let field := phases (prepare word amplitude)
     for _ in [:count] do sum := accumulate sum field
     total := total + count
   return vector sum.size fun k => sum[k]! / total.toFloat
 
 -- ADR-124 gives each held episode one vote in the original control.
-private def trainHeld (words : List String) : FloatArray :=
-  heldMean (words.map fun w => (w, 1))
+private def trainHeld (words : List String) (amplitude : Float := pi/2) : FloatArray :=
+  heldMean (words.map fun w => (w, 1)) amplitude
 
 -- BW-01: readWords supplies four distinct binary words. For the experimental
 -- arm only, both members of the unique complementary pair get one sixth.
@@ -191,11 +195,22 @@ private def decode (a : FloatArray) : String := Id.run do
     bits := bits.push (if score > 0.000001 then '1' else if score < -0.000001 then '0' else '?')
   return bits
 
-private def retrieve (op : Coupling) (symbols : String) (resolution : Nat) : String := Id.run do
-  let mut a := prepare symbols
+private def evolveCue (op : Coupling) (symbols : String) (resolution : Nat)
+    (amplitude : Float := pi/2) : FloatArray := Id.run do
+  let mut a := prepare symbols amplitude
   let dt := 1 / resolution.toFloat
   for _ in [:40*resolution] do a := (step op a dt).1
-  return decode a
+  return a
+
+private def retrieve (op : Coupling) (symbols : String) (resolution : Nat)
+    (amplitude : Float := pi/2) : String :=
+  decode (evolveCue op symbols resolution amplitude)
+
+-- CA-04: the weakest anchored signal among the sixteen decoded positions.
+private def weakest (a : FloatArray) : Float :=
+  (List.range 16).foldl (fun m b =>
+    let score := Float.abs (Float.sin (a[center b]! - a[0]!))
+    if score < m then score else m) 1
 
 -- QB-01: restart with the original cue for every bit and omit that bit
 -- before encoding. Only its own decoded symbol enters the assembled word.
@@ -282,6 +297,28 @@ private def controls : IO Unit := do
   check (validMemory weighted && Float.abs ((trainHeld library)[k]!) < 1e-12 &&
     Float.abs (weighted[k]! + 1/3) < 1e-12 && reversed == terms.reverse)
     "complement weights, normalization and ordering"
+
+  -- CA-02: at the comparison alphabet a prepared cue still decodes at once.
+  -- For the HT-01 words the first three centers agree in 3, 1 and 2 of the
+  -- four fields, so they store 3/4, 1/4 and 1/2. A center stores cos 45° with
+  -- the origin. An isolated unlike pair pulls together at ±45° and feels no
+  -- pull at ±90°.
+  let quarter := pi/4
+  check (decode (prepare clean quarter) == clean && decode (prepare mixed quarter) == mixed)
+    "comparison alphabet encoding"
+  let heldQuarter := trainHeld ["0000000000000000", "0010000000000000",
+                                "1100000000000000", "0100000000000000"] quarter
+  let quarterPair (a b : Nat) := heldQuarter[center a * sites + center b]!
+  check (validMemory heldQuarter && Float.abs (quarterPair 0 1 - 0.75) < 1e-12 &&
+    Float.abs (quarterPair 1 2 - 0.25) < 1e-12 && Float.abs (quarterPair 0 2 - 0.5) < 1e-12 &&
+    Float.abs (heldQuarter[center 0 * sites]! - Float.cos quarter) < 1e-12)
+    "held memory at the comparison alphabet"
+  let unlike (amplitude : Float) := phases ((uniform.set! 0 amplitude).set! 1 (-amplitude))
+  let pullQuarter := velocity pair (unlike quarter)
+  let pullHalf := velocity pair (unlike (pi/2))
+  check (Float.abs (pullQuarter[0]! + rate) < 1e-12 && Float.abs (pullQuarter[1]! - rate) < 1e-12 &&
+    Float.abs pullHalf[0]! < 1e-12 && Float.abs pullHalf[1]! < 1e-12)
+    "pair pull at the two alphabets"
 
 private def wordOK (s : String) (allowMask : Bool) : Bool :=
   s.length == 16 && s.toList.all fun c => c == '0' || c == '1' || (allowMask && c == '?')
@@ -412,6 +449,29 @@ private def compareContext (resolution : Nat) (words : List String)
   writePredictions (directory / "context.tsv") cues predict
   writePredictions (directory / "context-clean.tsv") (cleanProbes words) predict
 
+-- CA-02 and CA-03: one alphabet per arm, for training and retrieval alike.
+-- The primary arm repeats the archived equal-weight runs as the control.
+private def compareAlphabets (resolution : Nat) (words : List String)
+    (cues : List (String × String)) (directory : System.FilePath) : IO Unit := do
+  controls
+  for (arm, amplitude) in [("primary", pi/2), ("comparison", pi/4)] do
+    let memory := trainHeld words amplitude
+    check (validMemory memory) s!"invalid held memory at the {arm} alphabet"
+    let op := coupling structuralWeights (some memory) 0.25 0
+    let dest := directory / arm
+    IO.FS.createDirAll dest
+    let run := fun s => retrieve op s resolution amplitude
+    let probes := cleanProbes words
+    writePredictions (dest / "direct.tsv") cues run
+    writePredictions (dest / "direct-clean.tsv") probes run
+    let predict := assembleContext run
+    writePredictions (dest / "context.tsv") cues predict
+    writePredictions (dest / "context-clean.tsv") probes predict
+    let margin := (cues ++ probes).foldl (fun m (_, s) =>
+      let score := weakest (evolveCue op s resolution amplitude)
+      if score < m then score else m) 1
+    IO.FS.writeFile (dest / "weakest-score.txt") s!"{margin}\n"
+
 private def resolution (arg : String) : IO Nat := do
   let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
   unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
@@ -444,6 +504,9 @@ def main (args : List String) : IO UInt32 := do
   | ["--balanced-context", steps, words, cues, output] =>
     FirstRecall.compareContext (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output true
+  | ["--compare-alphabets", steps, words, cues, output] =>
+    FirstRecall.compareAlphabets (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
@@ -453,6 +516,7 @@ def main (args : List String) : IO UInt32 := do
     IO.eprintln "       first-recall --compare-structure (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --held-strengths (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall (--compare-context|--balanced-context) (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --compare-alphabets (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0
