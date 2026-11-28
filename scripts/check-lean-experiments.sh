@@ -15,3 +15,8 @@ lake env lean --run scripts/experiments/four-word-memory.lean
 lake env lean --run scripts/experiments/first-trained-recall.lean --check
 # Check the coding-theory reference on the frozen word library.
 lake env lean --run scripts/experiments/error-erasure-distance.lean docs/experiments/first-recall/words.txt
+# Check the static pair-memory references and reproduce their exhaustive rates
+# on the frozen word library.
+lake env lean --run scripts/experiments/pair-memory-reference.lean --check
+lake env lean --run scripts/experiments/pair-memory-reference.lean --enumerate docs/experiments/first-recall/words.txt
+lake env lean --run scripts/experiments/pair-memory-reference.lean --roster docs/experiments/first-recall/words.txt docs/experiments/first-recall/schedule.tsv
