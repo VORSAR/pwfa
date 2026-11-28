@@ -17,6 +17,8 @@ Put every choice that belongs to the owner as a multiple-choice question. Use pl
 
 ## Lean experiments for research decisions
 
+**Every decision put to the owner is evaluated with a Lean program first.** The program checks what the options depend on, including any figure quoted for them. A figure that Lean has not reproduced is labelled as such. Where a choice has nothing Lean can evaluate, such as the wording of a record, use common sense: say so in the question and do not invent a check. [Standing rule](docs/decisions/ADR-131.md)
+
 When comparing approaches, identify a mathematical assumption that could change the ranking. After the bounded internal review under ADR-109, test it in Lean before presenting the options. Include a boundary or counterexample when it distinguishes candidates. Put the evidence beside the recommendation and say what still needs numerical simulation or held-out data. Record the owner's choice separately. [Research decision](docs/decisions/ADR-117.md) · [First worked example](docs/research/bit-to-phase-map.md)
 
 Keep each reproducible check in a standalone file directly under `scripts/experiments/`. Link its module comment to the governing specification or research note; link the note back to the check. Use the repository's pinned toolchain. Run the same collection locally and in CI with:

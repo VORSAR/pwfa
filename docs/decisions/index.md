@@ -47,6 +47,7 @@
 | [ADR-128](ADR-128.md) | Weights for learned retrieval | A | Use all stored pairs with equal cell area at both training durations. |
 | [ADR-129](ADR-129.md) | Phase lag for learned retrieval | A | Zero learned lag at both durations, with the historical lag in the structural channel. |
 | [ADR-130](ADR-130.md) | Owner decisions as plain-language multiple-choice questions | Owner directive | Accepted. Give pros and cons, rank by vision alignment, feasibility and accuracy, and mark a recommendation. |
+| [ADR-131](ADR-131.md) | Lean evaluation before every owner decision | Owner directive | Accepted. Evaluate each decision in Lean first. Use common sense where nothing can be checked. |
 
 ## What these statuses mean
 
