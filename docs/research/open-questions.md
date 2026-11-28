@@ -8,7 +8,7 @@ Questions here are not new accepted ADRs.
 4. Recover complete numerical integration stages, observation/residual/decoder formulas, and diagnostic calibration.
 5. Recover original ADR choice matrices, contemporary recommendations, and primary bibliography.
 6. Resolve the semantics of [ADR-057](../decisions/ADR-057.md), [ADR-058](../decisions/ADR-058.md), and [ADR-059](../decisions/ADR-059.md).
-7. Define preregistered primary comparator, resource budget, cluster unit, error treatment and exact recall metric.
+7. Define the comparator's resource budget and schedule, the cluster unit and the error treatment. [ADR-133](../decisions/ADR-133.md) selects the comparator and [ADR-122](../decisions/ADR-122.md) the exact recall metric.
 8. Obtain independent review and documentary closure of **every** Gate-1 finding.
 
 [Recovery status](../history/recovery-status.md) · [Evidence register](evidence-register.md) · [Review gates](../verification/review-gates.md).

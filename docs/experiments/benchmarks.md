@@ -79,6 +79,8 @@ lean --run scripts/experiments/recall-scoring.lean --compare-durations schedule.
 
 The command shows both individual reports and counts cues recovered in both conditions, only at 25, only at 50, and in neither. It lists cue IDs recovered in just one condition and gives the signed all-cue rate difference, 50 minus 25. Failed or missing predictions stay in the common denominator. The experiment runner must record the actual training conditions and pair the underlying libraries, seeds, and cues. [Paired scoring check](../research/recall-pilot-checks.md#paired-command-check)
 
-**Unspecified:** baseline identity, across-library aggregation, clustering unit, cue generator, rounding/seed specifics, model schedule, sample-size/power rationale and resource budget.
+The comparator is a classical Hopfield network on the same pair memory, with nearest-word lookup reported beside it. [Comparator decision](../decisions/ADR-133.md)
+
+**Unspecified:** the comparator's budget and schedule, across-library aggregation, clustering unit, cue generator, rounding/seed specifics, model schedule, sample-size/power rationale and resource budget.
 
 [Methodology](methodology.md) · [Controls](baselines.md) · [Research hypotheses](../vision/hypotheses.md) · [Verification obligations](../verification/proof-obligations.md).

@@ -49,6 +49,7 @@
 | [ADR-130](ADR-130.md) | Owner decisions as plain-language multiple-choice questions | Owner directive | Accepted. Give pros and cons, rank by vision alignment, feasibility and accuracy, and mark a recommendation. |
 | [ADR-131](ADR-131.md) | Lean evaluation before every owner decision | Owner directive | Accepted. Evaluate each decision in Lean first. Use common sense where nothing can be checked. |
 | [ADR-132](ADR-132.md) | Reviewer identity in internal review notes | 1 | New notes say the assistant acting as internal reviewer, with date and revision. Amends ADR-109. |
+| [ADR-133](ADR-133.md) | Matched comparator for the recall criterion | 1 | Classical Hopfield network on the same pair memory, with nearest-word lookup reported beside it. Budget and schedule open. |
 
 ## What these statuses mean
 
