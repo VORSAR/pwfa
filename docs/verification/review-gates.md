@@ -13,7 +13,7 @@ The historical [ADR-046](../decisions/ADR-046.md) and [ADR-055](../decisions/ADR
 1. Freeze a narrow mathematical contract and enumerate precisely stated theorem obligations.
 2. Document adversarial findings and their dispositions. Resolve **every in-scope finding**, including documentation problems, before experimental Lean work.
 3. Keep out-of-scope findings visible and their respective slices blocked. **No scope leakage.**
-4. Record the assistant-reviewer identity, review limits, owner governance authorization, contract SHA and experimental approval.
+4. Record the assistant-reviewer identity, review limits, owner governance authorization, contract SHA and experimental approval. Identify the reviewer as the assistant acting as internal reviewer, with the date and revision, and name no product or model. [Reviewer identity](../decisions/ADR-132.md)
 5. Pin Lean and mathlib, run compilation and check for `sorry`, `admit`, unsupported axioms and mismatches. Declare unexecuted checks **UNVERIFIED**.
 6. After the first code, re-review the actual statements against the contract.
 7. Require a distinct outside reviewer or a separately documented external audit before claiming **independent mathematical certification**. A tool-generated proof is not evidence of physical memory or recall.
