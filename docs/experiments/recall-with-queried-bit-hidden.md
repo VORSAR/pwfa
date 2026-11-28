@@ -20,6 +20,12 @@ At `5b2bf1b`, Codex (GPT-6), acting as internal reviewer under ADR-109, closed t
 - **QB-02.** Reuse the same held matrix, velocity, integration, origin and decoder for both arms. Rerun the direct control and match its primary-library outputs to the archive. Cross-check the assembled predictions by independently evaluating the same continuous-phase equations numerically.
 - **QB-03.** Keep retrieval inputs separate from the scoring schedule and count all 16 scheduled cues. Record the same-cue pairing, compute cost and conditional fresh-library criterion. Retain the ordinary single-trajectory result as the performance reference for this model.
 
+## Original development library
+
+The ordinary run recovered 0/16 corrupted words. The sixteen-query readout recovered **8/16**, with exactly the same eight gained cue IDs at both step sizes (002, 004, 005, 008, 009, 011, 013 and 014). It corrected 27/32 flips, filled 30/32 masks, and preserved 168/192 initially correct bits. All eight successes belonged to the first word and its complement. Both arms answered every cue. Every bit agreed under refinement and with a separate numerical implementation. The ordinary control also reproduced the published predictions. [Primary predictions](queried-bit-recall/primary/steps-20) · [Refined predictions](queried-bit-recall/primary/steps-40) · [Ordinary control](first-recall/steps-20/structural-off) · [Original schedule](first-recall/schedule.tsv)
+
+This met the preset replication rule. The four fresh words and sixteen corruptions were generated using the seeds above and committed before fresh retrieval. [Fresh words](queried-bit-recall/replication/words.txt) · [Fresh scoring schedule](queried-bit-recall/replication/schedule.tsv)
+
 ## Reproduce the runs
 
 Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) using the [original native compile commands](first-trained-recall.md#reproduce-the-measurement). Set `data` to the selected library directory containing the words and schedule. The scorer prepares the visible cues. Only it receives the corruption labels.
