@@ -5,11 +5,15 @@ GitHub `main` is the single source of truth. Chat conversations, local drafts, a
 ## Workflow (owner directive, 2026-11-22)
 
 1. Commit coherent changes **directly to `main`**, using Conventional Commit-style subjects: `docs:`, `adr:`, `research:`, `spec:`, `proof:`, `test:`, `fix:`, or `ci:`. Include rationale in the commit body when needed.
-2. For an architectural choice, present ranked alternatives, pros, cons, original-project alignment, feasibility and a recommendation. Record the owner's explicit selection in a stable ADR, with decision date and provenance. Never silently decide on behalf of the owner.
+2. For an architectural choice, present ranked alternatives, pros, cons, original-project alignment, feasibility and a recommendation. Ask the owner in the [multiple-choice form](#asking-the-owner-for-a-decision). Record the owner's explicit selection in a stable ADR, with decision date and provenance. Never silently decide on behalf of the owner.
 3. Keep requirements, ADRs, mathematical contracts, proof obligations, tests and evidence cross-linked. Verify local checks when possible, and record any checks not run.
 4. Issues, feature branches and pull requests are **optional** tools for coordination or isolated experiments, not mandatory for changes. Do not create them routinely.
 5. Direct commits **do not** constitute independent technical review or satisfy Gate 1. For **experimental** Lean, ADR-109 permits role-separated internal hostile review with closure of every applicable finding. This is not independent certification.
 6. Preserve append-only historical and decision provenance. Never silently rewrite the immutable recovery snapshot or previously approved decision meaning.
+
+## Asking the owner for a decision
+
+Put every choice that belongs to the owner as a multiple-choice question. Use plain, non-technical language as far as possible, and word the question so it can be answered on its own. For each option give a short description with its pros and cons. Rank the options by alignment with the original vision, feasibility and accuracy, list them best first, and mark the recommended one with the reason. Keep formulas and evidence in linked documents. [Owner decision](docs/decisions/ADR-130.md) · [Vision statement](docs/vision/vision-statement.md)
 
 ## Lean experiments for research decisions
 
