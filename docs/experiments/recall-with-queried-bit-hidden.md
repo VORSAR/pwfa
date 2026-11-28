@@ -26,12 +26,34 @@ The ordinary run recovered 0/16 corrupted words. The sixteen-query readout recov
 
 This met the preset replication rule. The four fresh words and sixteen corruptions were generated using the seeds above and committed before fresh retrieval. [Fresh words](queried-bit-recall/replication/words.txt) · [Fresh scoring schedule](queried-bit-recall/replication/schedule.tsv)
 
+## Results at t=40
+
+The held-memory model recovered eight complete corrupted words on each development library when it inferred each bit separately. Every corrupted word received a complete answer. Coverage was 16/16 in every row, so answered-only accuracy equals all-cue accuracy. Every decoded symbol in the table agreed at steps 0.05 and 0.025.
+
+| Library | Readout | Exact corrupted words | Correct presented bits retained | Flips corrected | Masks recovered | Exact clean probes |
+|---|---|---:|---:|---:|---:|---:|
+| Original | Ordinary | 0/16 | 192/192 | 0/32 | 30/32 | 4/4 |
+| Original | Each queried bit hidden | 8/16 | 168/192 | 27/32 | 30/32 | 2/4 |
+| Fresh | Ordinary | 0/16 | 192/192 | 0/32 | 29/32 | 4/4 |
+| Fresh | Each queried bit hidden | 8/16 | 173/192 | 31/32 | 29/32 | 4/4 |
+
+On the fresh roster the gained cue IDs were 001, 005, 006, 007, 009, 010, 014 and 016. Neither library lost an exact corrupted word relative to the ordinary control. At the positions already omitted from the original cue, the two arms received identical inputs and always returned the same bit. On a clean probe the ordinary arm measures retention with all bits supplied. The assembled arm reconstructs each queried bit from the other fifteen. [Frozen fresh inputs](https://github.com/VORSAR/pwfa/commit/9ab78cb) · [Fresh predictions](queried-bit-recall/replication/steps-20) · [Refined fresh predictions](queried-bit-recall/replication/steps-40)
+
+**Which words benefited?** In each library the per-target exact counts, in file order, were **4/4, 4/4, 0/4, 0/4**. Words 1 and 2 are complements. On the fresh roster the model repaired 31 of 32 flips overall, yet it also changed 19 of the 192 originally correct bits into errors. Looking only at flip correction would miss those errors and the concentration of successes on two targets. The ordinary static nearest-word lookup identified all 16 targets from the visible cues on each roster. That lookup uses the raw stored words and provides a separate reference. [Lookup and original-library geometry](../research/error-correction-and-recall.md#what-the-four-pwfa-words-actually-allow) · [Fresh lookup output](queried-bit-recall/replication/visible-lookup.tsv)
+
+Fresh cue 003 illustrates the cost of changing an initially correct position. The assembled output corrected both flips (positions 2 and 6) and filled both masks (1 and 3). It also changed position 8 from the correct 0 to 1. Its word `0110111101011001` therefore scored a miss against the target `0110111001011001`.
+
+The held training rule gives each episode one quarter of the memory. The encoder reverses the sign of every prepared angle for a complemented word on this uniform background. Cosine of the pairwise angle difference is invariant under that reversal. The complementary pair therefore contributes the same alignment matrix twice, for a total weight of one half. Each of the other words contributes one quarter. Whether that weighting explains the distribution of exact recalls is an open experimental question. [Lean reflection check](../../scripts/experiments/pairwise-phase-statistic.lean) · [Lean equal-episode check](../../scripts/experiments/episode-accumulation.lean)
+
+The assembled word uses **16 trajectories per cue**. Each trajectory contributes its answer only at its own hidden position. Across both libraries, resolutions and clean/corrupted probes this used 1,280 query trajectories plus 80 ordinary controls. For verification, a separately written numerical calculation applied the learned matrix through the sine and cosine features of the four words. It reproduced all 2,560 scored output symbols. The 100-library held-out benchmark, a matched-resource comparison and independent Gate 1 review remain open. [Benchmark and success criterion](benchmarks.md) · [Gate policy](../verification/review-gates.md)
+
 ## Reproduce the runs
 
 Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) using the [original native compile commands](first-trained-recall.md#reproduce-the-measurement). Set `data` to the selected library directory containing the words and schedule. The scorer prepares the visible cues. Only it receives the corruption labels.
 
 ```sh
 lean --run "$scorer" --export-cues "$data/schedule.tsv" > "$run_dir/cues.tsv"
+"$run_dir/pilot" --visible-lookup "$data/words.txt" "$run_dir/cues.tsv" > "$run_dir/visible-lookup.tsv"
 awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$data/words.txt" > "$run_dir/clean-schedule.tsv"
 for resolution in 20 40; do
   out="$run_dir/context-$resolution"

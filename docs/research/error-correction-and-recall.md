@@ -49,6 +49,8 @@ The counts agree at both step sizes. At strength zero the thresholded output sti
 
 **Can the other positions identify a flipped bit?** In a second static check we temporarily hid position $j$ in the original visible cue, ran the same lookup, and kept only bit $j$ of its chosen word. We repeated this for all sixteen positions without giving the lookup any target labels. An ambiguous nearest word yielded an abstention. This recovered all 32 flipped bits, all 32 masked bits and 189/192 initially correct bits. The other three positions tied, all on cue `013` (positions 3, 7 and 10). That gives **15/16 exact words and one abstention**. The ordinary full-cue lookup gives 16/16. This deliberately harder check shows that the other positions contain evidence for reversing every scheduled flip. A model-side diagnostic would repeat the same omission with the oscillator supplying the answer at $t=40$. Its cost would be sixteen retrieval trajectories per cue and it would need separate reporting under the matched-budget objective. [Original inputs](../experiments/first-recall/schedule.tsv) · [Scoring denominator](../decisions/ADR-122.md)
 
+The subsequent oscillator experiment tested the same omission using the held matrix as its only trained memory. The assembled readout recovered 8/16 whole words on the original library and 8/16 on a separately frozen fresh library. All successes on each roster came from the first word and its complement. [Predictions, cost and replication](../experiments/recall-with-queried-bit-hidden.md#results-at-t40)
+
 ## Contributions from the Lean community
 
 | Contribution | What its source establishes | How it applies here |

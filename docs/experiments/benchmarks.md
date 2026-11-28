@@ -1,6 +1,6 @@
 # Exact-recall benchmark
 
-**Status.** The first single-library trained development run is [recorded](first-trained-recall.md#measured-exact-recall). The 100-library held-out benchmark and matched-comparator comparison are pending.
+**Status.** In the latest development experiment the ordinary held-memory control recovered 0/16 whole words on each of two libraries. Predicting each bit on its own trajectory recovered 8/16 on each. The 100-library held-out benchmark and matched-comparator comparison are pending. [First trained run](first-trained-recall.md#measured-exact-recall) · [Queried-bit experiment and cost](recall-with-queried-bit-hidden.md#results-at-t40)
 
 The [paired structural retrieval experiment](structural-coupling-at-retrieval.md#paired-results-at-t40) reports full-word recovery, clean retention and flipped versus masked recovery for both free and held training.
 
