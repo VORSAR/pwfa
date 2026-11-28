@@ -18,6 +18,36 @@ At revision `2412433`, Codex (GPT-6) reviewed this experimental slice under ADR-
 - **BW-02.** Preserve total learned strength. Check symmetry and unit diagonal and an off-diagonal entry with distinct known equal and rebalanced values. Use the same held training phases and the same integration and scoring paths in both arms.
 - **BW-03.** Replay the equal-weight predictions against the archive and cross-check rebalanced predictions using a separate numerical implementation. Report abstentions as misses and keep the one- and sixteen-trajectory results distinct.
 
+## Exact words at t=40
+
+Each column for a stored word counts complete recoveries among its four corrupted cues. Words 1 and 2 form the complementary pair in both libraries. The primary readout assembles sixteen separate oscillator trajectories per cue. Every cue received a complete answer, so accuracy among answered cues equals accuracy among scheduled cues. [Frozen comparison](https://github.com/VORSAR/pwfa/commit/7a7cdba) · [Simulator revision](https://github.com/VORSAR/pwfa/commit/1e5925f)
+
+| Development library | Training weights | Word 1 | Word 2 | Word 3 | Word 4 | All cues |
+|---|---|---:|---:|---:|---:|---:|
+| Original | Equal | 4/4 | 4/4 | 0/4 | 0/4 | 8/16 |
+| Original | Rebalanced | 3/4 | 1/4 | 0/4 | 3/4 | 7/16 |
+| Second | Equal | 4/4 | 4/4 | 0/4 | 0/4 | 8/16 |
+| Second | Rebalanced | 2/4 | 2/4 | 4/4 | 2/4 | 10/16 |
+
+On the original library rebalancing gained cues 010, 012 and 015 and lost 002, 004, 008 and 013. On the second library it gained 003, 004, 008, 012, 013 and 015 and lost 001, 007, 009 and 014. Four previously exact cues stayed exact on each library. Across the two rosters, rebalancing added nine exact recalls from outside the complementary pairs and lost eight from those pairs. The net gain of one word combines opposite changes in the two libraries. Both had already informed the choice of experiment.
+
+### What happened to individual bits
+
+| Library | Training weights | Initially correct bits retained | Flips corrected | Masks recovered | Exact clean probes |
+|---|---|---:|---:|---:|---:|
+| Original | Equal | 168/192 | 27/32 | 30/32 | 2/4 |
+| Original | Rebalanced | 176/192 | 27/32 | 31/32 | 3/4 |
+| Second | Equal | 173/192 | 31/32 | 29/32 | 4/4 |
+| Second | Rebalanced | 185/192 | 32/32 | 31/32 | 4/4 |
+
+On the original library the rebalanced model decoded nine more bits correctly, yet recovered one fewer complete word. It could reconstruct word 3 from a clean presentation one hidden position at a time, but missed all four corrupted cues for that word. On the second library it corrected every flip, and six cues still fell short of exact recall.
+
+The ordinary one-trajectory control recovered 0/16 corrupted words and retained 4/4 clean words in each library under either weighting. It kept every presented bit, including all flips. With rebalancing it filled 31/32 omitted bits correctly on each roster. Its equal-weight counts were 30/32 and 29/32 respectively.
+
+**Verification.** Every reported symbol, including every clean prediction, agreed across time steps. The equal-weight reruns reproduced the earlier prediction files byte for byte. A separate calculation applied each training word's phase features with explicit fractional coefficients and reproduced all 2,560 rebalanced output symbols across both libraries, time steps and readouts. The simulator's compile-time guards and `--check` control cover BW-01 and BW-02. They identify the complementary pair in either file order, reject libraries with zero or two pairs, and check symmetry, unit diagonal and a known off-diagonal entry under both weightings. On 2026-11-28 a complete rerun of both weightings at the simulator revision above regenerated the archived prediction files. From those files the Lean scorer reproduced the exact-word, coverage, mask, flip and clean-probe counts and the gained and lost cue IDs. A separate tally of the same files reproduced the per-target and retained-bit counts.
+
+The test shows that the choice of weights affects *which* targets are recovered. It gives mixed evidence about improving whole-word accuracy across libraries. Both sixteen-trajectory arms have the same retrieval cost. Selecting a default and testing the project's matched-budget mission criterion require further evidence. [Baseline predictions](recall-with-queried-bit-hidden.md#results-at-t40) · [Rebalanced predictions, original library](complement-balanced-recall/original) · [Rebalanced predictions, second library](complement-balanced-recall/second) · [Mission benchmark](benchmarks.md)
+
 ## Reproduce the comparison
 
 Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) using the [native build commands](first-trained-recall.md#reproduce-the-measurement). The scorer exports the same visible cues to both conditions. Each prediction row records the cue ID, readout time and decoded symbols. The paired scoring command reports words gained and lost by ID.
