@@ -11,6 +11,8 @@ The [held-training comparison](../../docs/experiments/held-word-training.md)
 changes the phase history during training and reuses the original retrieval path.
 The [structural retrieval comparison](../../docs/experiments/structural-coupling-at-retrieval.md)
 uses each trained matrix in both retrieval conditions.
+The [queried-bit experiment](../../docs/experiments/recall-with-queried-bit-hidden.md)
+uses the same oscillator to reconstruct each position from a separately prepared cue.
 -/
 
 namespace FirstRecall
@@ -171,6 +173,27 @@ private def retrieve (op : Coupling) (symbols : String) (resolution : Nat) : Str
   for _ in [:40*resolution] do a := (step op a dt).1
   return decode a
 
+-- QB-01: restart with the original cue for every bit and omit that bit
+-- before encoding. Only its own decoded symbol enters the assembled word.
+private def assembleContext (predict : String → String) (symbols : String) : String := Id.run do
+  let original := symbols.toList
+  let mut answer := ""
+  for j in [:original.length] do
+    let decoded := predict (String.ofList (original.set j '?'))
+    if decoded == "FAILED" then return "FAILED"
+    answer := answer.push decoded.toList[j]!
+  return answer
+
+#guard assembleContext id "10?0" == "????"
+#guard assembleContext (fun _ => "10?0") "0110" == "10?0"
+#guard assembleContext (fun q => if q == "0?10" then "FAILED" else "1111") "0110" == "FAILED"
+#guard assembleContext (fun q => match q with
+  | "?10?" => "1???"
+  | "0?0?" => "?0??"
+  | "01??" => "??1?"
+  | "010?" => "???0"
+  | _ => "FAILED") "010?" == "1010"
+
 private def check (p : Bool) (msg : String) : IO Unit :=
   unless p do throw (IO.userError msg)
 
@@ -231,11 +254,15 @@ private def readLines (path : String) : IO (List String) := do
   return ((← IO.FS.readFile path).splitOn "\n").map (·.dropSuffix "\r" |>.toString)
     |>.filter (!·.isEmpty)
 
-private def writeArm (output : System.FilePath) (op : Coupling) (cues : List (String × String))
-    (resolution : Nat) : IO Unit := do
-  let rows := cues.map fun (id, symbols) => id ++ "\t40\t" ++ retrieve op symbols resolution
+private def writePredictions (output : System.FilePath) (cues : List (String × String))
+    (predict : String → String) : IO Unit := do
+  let rows := cues.map fun (id, symbols) => id ++ "\t40\t" ++ predict symbols
   IO.FS.writeFile output (String.intercalate "\n" rows ++ "\n")
   IO.eprintln s!"Wrote {output}"
+
+private def writeArm (output : System.FilePath) (op : Coupling) (cues : List (String × String))
+    (resolution : Nat) : IO Unit :=
+  writePredictions output cues (fun s => retrieve op s resolution)
 
 private def readWords (wordsFile : String) : IO (List String) := do
   let words ← readLines wordsFile
@@ -331,6 +358,20 @@ private def compareHeldStrengths (resolution : Nat) (words : List String)
     let op := coupling weights (some held) 0.25 strength
     writeProbes (directory / arm) "held" op words cues resolution
 
+-- QB-02: the only difference between the two readouts is the presented
+-- cue and which bit is taken from each trajectory. Neither predictor sees
+-- the target or the positions that were deliberately flipped.
+private def compareContext (resolution : Nat) (words : List String)
+    (cues : List (String × String)) (directory : System.FilePath) : IO Unit := do
+  controls
+  let memory := trainHeld words
+  check (validMemory memory) "invalid held training memory"
+  let op := coupling structuralWeights (some memory) 0.25 0
+  writeProbes directory "direct" op words cues resolution
+  let predict := assembleContext (fun s => retrieve op s resolution)
+  writePredictions (directory / "context.tsv") cues predict
+  writePredictions (directory / "context-clean.tsv") (cleanProbes words) predict
+
 private def resolution (arg : String) : IO Nat := do
   let some r := arg.toNat? | throw (IO.userError "expected steps per unit")
   unless r == 20 || r == 40 do throw (IO.userError "use 20 or 40 steps per time unit")
@@ -357,6 +398,9 @@ def main (args : List String) : IO UInt32 := do
   | ["--held-strengths", steps, words, cues, output] =>
     FirstRecall.compareHeldStrengths (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
+  | ["--compare-context", steps, words, cues, output] =>
+    FirstRecall.compareContext (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
+      (← FirstRecall.readCues cues) output
   | [steps, words, cues, output] =>
     FirstRecall.run (← FirstRecall.resolution steps) (← FirstRecall.readWords words)
       (← FirstRecall.readCues cues) output
@@ -365,6 +409,7 @@ def main (args : List String) : IO UInt32 := do
     IO.eprintln "       first-recall --held (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --compare-structure (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --held-strengths (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
+    IO.eprintln "       first-recall --compare-context (20|40) WORDS VISIBLE_CUES OUTPUT_DIRECTORY"
     IO.eprintln "       first-recall --clean (20|40) WORDS OUTPUT_DIRECTORY | --visible-lookup WORDS VISIBLE_CUES"
     return 2
   return 0

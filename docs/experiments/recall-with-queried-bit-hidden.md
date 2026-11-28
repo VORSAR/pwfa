@@ -19,3 +19,20 @@ At `5b2bf1b`, Codex (GPT-6), acting as internal reviewer under ADR-109, closed t
 - **QB-01.** Hide the queried symbol before physical encoding, independent of its original value; preserve every other symbol, including other masks. Test a copy-only predictor, indexing including both ends, an already masked bit, a partial abstention, and failure propagation.
 - **QB-02.** Reuse the same held matrix, velocity, integration, origin and decoder for both arms. Rerun the direct control and match its primary-library outputs to the archive. Cross-check the assembled predictions by independently evaluating the same continuous-phase equations numerically.
 - **QB-03.** Keep retrieval inputs separate from the scoring schedule and count all 16 scheduled cues. Record the same-cue pairing, compute cost and conditional fresh-library criterion. Retain the ordinary single-trajectory result as the performance reference for this model.
+
+## Reproduce the runs
+
+Build the [Lean simulator](../../scripts/experiments/first-trained-recall.lean) using the [original native compile commands](first-trained-recall.md#reproduce-the-measurement). Set `data` to the selected library directory containing the words and schedule. The scorer prepares the visible cues. Only it receives the corruption labels.
+
+```sh
+lean --run "$scorer" --export-cues "$data/schedule.tsv" > "$run_dir/cues.tsv"
+awk '{printf "word-%d\t%s\t................\n", NR, $0}' "$data/words.txt" > "$run_dir/clean-schedule.tsv"
+for resolution in 20 40; do
+  out="$run_dir/context-$resolution"
+  "$run_dir/pilot" --compare-context "$resolution" "$data/words.txt" "$run_dir/cues.tsv" "$out"
+  for arm in direct context; do
+    lean --run "$scorer" "$data/schedule.tsv" "$out/$arm.tsv"
+    lean --run "$scorer" "$run_dir/clean-schedule.tsv" "$out/$arm-clean.tsv"
+  done
+done
+```
